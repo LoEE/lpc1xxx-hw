@@ -1,0 +1,47 @@
+/*
+ * This is the linker file fragment for code running from flash 
+ * on NXP LPC17xx family of microprocessors. It lacks MEMORY declarations
+ * so it must be included from an apropriate model-specific file.
+ *
+ * TODO: 
+ * - handle the exotic input sections (e.g. glue and veneer, C++ sections)
+ * - add boot ROM memory regions
+ *
+ * See also: http://bitbucket.org/jpc/lpc17xx/
+ *
+ * Copyright (c) 2010 LoEE - Jakub Piotr Cłapa
+ * This program is released under the new BSD license.
+ */
+OUTPUT_FORMAT("elf32-littlearm")
+OUTPUT_ARCH(arm)
+
+ENTRY(Reset_Handler)
+
+SECTIONS {
+  . = 0;
+
+  .text : {
+    _stext = .;
+    KEEP(*(.cs3.interrupt_vector))
+    *(.text*)
+    *(.rodata*)
+    . = ALIGN(4);
+    _etext = .;
+  } > flash
+
+  .data : {
+    _sdata = .;
+    *(.data*)
+    _edata = .;
+  } > ram AT > flash
+
+  .bss : {
+    _sbss = .;
+    *(.bss*)
+    *(COMMON)
+    . = ALIGN(4);
+    _ebss = .;
+  } > ram
+  
+  _sstack = ORIGIN(ram) + LENGTH(ram);
+}

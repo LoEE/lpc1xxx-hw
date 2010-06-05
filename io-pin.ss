@@ -12,6 +12,8 @@
 #ifndef IO_PIN_H
 #define IO_PIN_H
 
+#include "LPC17xx.h"
+
 enum pin_port {
 @(add-newlines
   (for/list ([i (in-naturals)]
@@ -34,6 +36,21 @@ extern void invalid_pin_error () __attribute__((error ("Invalid IO pin number.")
                         [register registers])
                @list{case @(* i 32) ... @(sub1 (* (add1 i) 32)):
                        @template}))
+           default:
+             invalid_pin_error ();
+             break;
+         }})
+@(define-syntax-rule (switch-pinsel pin_no i register template)
+   @list{switch(pin_no) {
+           @(add-newlines
+             (for/list ([i (in-naturals)]
+                        [_ (in-list ports)])
+               @list{case @(* i 32) ... @(sub1 (+ (* i 32) 16)):
+                       @(let ([register (format "PINSEL~a" (* i 2))])
+                          template)
+                     case @(+ (* i 32) 16) ... @(sub1 (+ (* i 32) 32)):
+                       @(let ([register (format "PINSEL~a" (add1 (* i 2)))])
+                          template)}))
            default:
              invalid_pin_error ();
              break;
@@ -68,6 +85,14 @@ void pin_dir (int pin_no, enum pin_dir dir)
                  } else {
                    @|register|->FIODIR @"&=" (1 << (pin_no - @(* i 32)));
                  }
+                 break;})
+}
+           
+@INLINE
+void pin_setup (int pin_no, int pinsel)
+{
+  @(switch-pinsel @{pin_no} i register
+           @list{LPC_PINCON->@|register| = (LPC_PINCON->@|register| & ~(3 << ((pin_no - @(* i 32)) * 2 % 32))) | (pinsel << ((pin_no - @(* i 32)) * 2 % 32));
                  break;})
 }
            

@@ -9,6 +9,8 @@
 #ifndef IO_PIN_H
 #define IO_PIN_H
 
+#include "LPC17xx.h"
+
 enum pin_port {
 P0 = 0,
 P1 = 32,
@@ -128,6 +130,46 @@ void pin_dir (int pin_no, enum pin_dir dir)
       } else {
         LPC_GPIO4->FIODIR &= (1 << (pin_no - 128));
       }
+      break;
+    default:
+      invalid_pin_error ();
+      break;
+  }
+}
+
+extern __inline__ __attribute__((always_inline))
+void pin_setup (int pin_no, int pinsel)
+{
+  switch(pin_no) {
+    case 0 ... 15:
+      LPC_PINCON->PINSEL0 = (LPC_PINCON->PINSEL0 & ~(3 << ((pin_no - 0) * 2 % 32))) | (pinsel << ((pin_no - 0) * 2 % 32));
+      break;
+    case 16 ... 31:
+      LPC_PINCON->PINSEL1 = (LPC_PINCON->PINSEL1 & ~(3 << ((pin_no - 0) * 2 % 32))) | (pinsel << ((pin_no - 0) * 2 % 32));
+      break;
+    case 32 ... 47:
+      LPC_PINCON->PINSEL2 = (LPC_PINCON->PINSEL2 & ~(3 << ((pin_no - 32) * 2 % 32))) | (pinsel << ((pin_no - 32) * 2 % 32));
+      break;
+    case 48 ... 63:
+      LPC_PINCON->PINSEL3 = (LPC_PINCON->PINSEL3 & ~(3 << ((pin_no - 32) * 2 % 32))) | (pinsel << ((pin_no - 32) * 2 % 32));
+      break;
+    case 64 ... 79:
+      LPC_PINCON->PINSEL4 = (LPC_PINCON->PINSEL4 & ~(3 << ((pin_no - 64) * 2 % 32))) | (pinsel << ((pin_no - 64) * 2 % 32));
+      break;
+    case 80 ... 95:
+      LPC_PINCON->PINSEL5 = (LPC_PINCON->PINSEL5 & ~(3 << ((pin_no - 64) * 2 % 32))) | (pinsel << ((pin_no - 64) * 2 % 32));
+      break;
+    case 96 ... 111:
+      LPC_PINCON->PINSEL6 = (LPC_PINCON->PINSEL6 & ~(3 << ((pin_no - 96) * 2 % 32))) | (pinsel << ((pin_no - 96) * 2 % 32));
+      break;
+    case 112 ... 127:
+      LPC_PINCON->PINSEL7 = (LPC_PINCON->PINSEL7 & ~(3 << ((pin_no - 96) * 2 % 32))) | (pinsel << ((pin_no - 96) * 2 % 32));
+      break;
+    case 128 ... 143:
+      LPC_PINCON->PINSEL8 = (LPC_PINCON->PINSEL8 & ~(3 << ((pin_no - 128) * 2 % 32))) | (pinsel << ((pin_no - 128) * 2 % 32));
+      break;
+    case 144 ... 159:
+      LPC_PINCON->PINSEL9 = (LPC_PINCON->PINSEL9 & ~(3 << ((pin_no - 128) * 2 % 32))) | (pinsel << ((pin_no - 128) * 2 % 32));
       break;
     default:
       invalid_pin_error ();

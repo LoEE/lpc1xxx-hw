@@ -26,10 +26,6 @@
   TXEN = 1<< 7,                 /* LPC_UART->TER */ \
   RXFIFOLVL = 0, TXFIFOLVL = 8, /* LPC_UART->FIFOLVL */ \
   FIFOLVL_MAX = 15, FIFOLVL_MASK = 0xf,              \
-  PCUART0 = 3,  TxD0 = P0+2,  RxD0 = P0+3,  TxD0_PINSEL = 1, RxD0_PINSEL = 1, \
-  PCUART1 = 4,  TxD1 = P0+15, RxD1 = P0+16, TxD1_PINSEL = 1, RxD1_PINSEL = 1, \
-  PCUART2 = 24, TxD2 = P0+10, RxD2 = P0+11, TxD2_PINSEL = 1, RxD2_PINSEL = 1, \
-  PCUART3 = 25, TxD3 = P0+0,  RxD3 = P0+1,  TxD3_PINSEL = 2, RxD3_PINSEL = 2, \
 }
 
 INLINE
@@ -189,57 +185,48 @@ void uart_baud_setup (LPC_UART_TypeDef *LPC_UART, int clk, int baud,
 }
 
 INLINE
-void uart_system_setup (LPC_UART_TypeDef *LPC_UART, int clk_divider)
+void uart_system_setup (LPC_UART_TypeDef *LPC_UART, int clk_divider, int tx_pin, int rx_pin)
 {
   switch ((uint32_t)LPC_UART) {
     case (uint32_t)LPC_UART0:
-      power_control (POWER_UART0, 1); pclk_set_divider (PCLK_UART0, clk_divider); break;
+      power_control (POWER_UART0, 1); pclk_set_divider (PCLK_UART0, clk_divider);
+      if (tx_pin == P0+2) pin_setup (tx_pin, 1);
+      else ERROR("UART0 TxD can only be on P0.2.");
+      if (rx_pin == P0+3) pin_setup (rx_pin, 1);
+      else ERROR("UART0 RxD can only be on P0.3.");
+      break;
     case (uint32_t)LPC_UART1:
-      power_control (POWER_UART1, 1); pclk_set_divider (PCLK_UART1, clk_divider); break;
+      power_control (POWER_UART1, 1); pclk_set_divider (PCLK_UART1, clk_divider);
+      if (tx_pin == P0+15) pin_setup (tx_pin, 1);
+      else if (tx_pin == P2+0) pin_setup (tx_pin, 2);
+      else ERROR("UART1 TxD can only be on P0.15 or P2.0.");
+      if (rx_pin == P0+16) pin_setup (rx_pin, 1);
+      else if (rx_pin == P2+1) pin_setup (rx_pin, 2);
+      else ERROR("UART1 RxD can only be on P0.16 or P2.1.");
+      break;
     case (uint32_t)LPC_UART2:
-      power_control (POWER_UART2, 1); pclk_set_divider (PCLK_UART2, clk_divider); break;
+      power_control (POWER_UART2, 1); pclk_set_divider (PCLK_UART2, clk_divider);
+      if (tx_pin == P0+10) pin_setup (tx_pin, 1); else
+      if (tx_pin == P2+ 8) pin_setup (tx_pin, 2);
+      else ERROR("UART2 TxD can only be on P0.10 or P2.8.");
+      if (rx_pin == P0+11) pin_setup (rx_pin, 1); else
+      if (rx_pin == P2+ 9) pin_setup (rx_pin, 2);
+      else ERROR("UART2 RxD can only be on P0.11 or P2.9.");
+      break;
     case (uint32_t)LPC_UART3:
-      power_control (POWER_UART3, 1); pclk_set_divider (PCLK_UART3, clk_divider); break;
+      power_control (POWER_UART3, 1); pclk_set_divider (PCLK_UART3, clk_divider);
+      if (tx_pin == P0+ 0) pin_setup (tx_pin, 2); else
+      if (tx_pin == P0+25) pin_setup (tx_pin, 3); else
+      if (tx_pin == P4+28) pin_setup (tx_pin, 3);
+      else ERROR("UART3 TxD can only be on P0.0, P0.25 or P4.28.");
+      if (rx_pin == P0+ 1) pin_setup (rx_pin, 2); else
+      if (rx_pin == P0+26) pin_setup (rx_pin, 3); else
+      if (rx_pin == P4+29) pin_setup (rx_pin, 3);
+      else ERROR("UART3 RxD can only be on P0.1, P0.26 or P4.29.");
+      break;
     default:
       ERROR("Invalid UART register address."); break;
   }
 }
 
-/*
-INLINE
-void uart0_system_setup ()
-{
-  LPC_UART_BITS;
-  power_control (PCUART0, 1);
-  pin_setup (TxD0, TxD0_PINSEL);
-  pin_setup (RxD0, RxD0_PINSEL);
-}
-
-INLINE
-void uart1_system_setup ()
-{
-  LPC_UART_BITS;
-  power_control (PCUART1, 1);
-  pin_setup (TxD1, TxD1_PINSEL);
-  pin_setup (RxD1, RxD1_PINSEL);
-}
-
-INLINE
-void uart2_system_setup ()
-{
-  LPC_UART_BITS;
-  power_control (PCUART2, 1);
-  pin_setup (TxD2, TxD2_PINSEL);
-  pin_setup (RxD2, RxD2_PINSEL);
-}
-
-INLINE
-void uart3_system_setup ()
-{
-  LPC_UART_BITS;
-  power_control (PCUART3, 1);
-  pin_setup (TxD3, TxD3_PINSEL);
-  pin_setup (RxD3, RxD3_PINSEL);
-}
-*/
 #endif

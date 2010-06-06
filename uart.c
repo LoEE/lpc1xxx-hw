@@ -1,5 +1,5 @@
 /*
- * UART functions for NXP LPC1768.
+ * UART functions for NXP LPC17xx.
  *
  * Copyright (c) 2008-2010 Jakub Piotr Cłapa
  * This program is released under the new BSD license.

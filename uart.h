@@ -25,7 +25,7 @@
   DLAB = 1<< 7,                                      \
   TXEN = 1<< 7,                 /* LPC_UART->TER */ \
   RXFIFOLVL = 0, TXFIFOLVL = 8, /* LPC_UART->FIFOLVL */ \
-  FIFOLVL_MAX = 15, FIFOLVL_MASK = 0xf,              \
+  FIFOLVL_MAX = 16, FIFOLVL_MASK = 0x1f,              \
 }
 
 INLINE

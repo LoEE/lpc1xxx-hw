@@ -345,7 +345,7 @@ typedef struct
        uint8_t  RESERVED5[7];
   __IO uint8_t  TER;
        uint8_t  RESERVED6[39];
-  __I  uint8_t  FIFOLVL;
+  __I  uint32_t FIFOLVL;
 } LPC_UART_TypeDef;
 
 typedef struct
@@ -377,7 +377,7 @@ typedef struct
        uint8_t  RESERVED5[7];
   __IO uint8_t  TER;
        uint8_t  RESERVED6[39];
-  __I  uint8_t  FIFOLVL;
+  __I  uint32_t FIFOLVL;
 } LPC_UART0_TypeDef;
 
 typedef struct
@@ -418,7 +418,7 @@ typedef struct
        uint8_t  RESERVED10[3];
   __IO uint8_t  RS485DLY;
        uint8_t  RESERVED11[3];
-  __I  uint8_t  FIFOLVL;
+  __I  uint32_t FIFOLVL;
 } LPC_UART1_TypeDef;
 
 /*------------- Serial Peripheral Interface (SPI) ----------------------------*/

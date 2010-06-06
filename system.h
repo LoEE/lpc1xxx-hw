@@ -48,7 +48,7 @@ void main_oscillator_setup (enum main_oscillator_speed speed)
 INLINE
 void cpu_clock_divider_setup (int divider)
 {
-  if (divider < 3 || divider > 256) invalid_argument_error ();
+  if (divider < 3 || divider > 256) ERROR("CPU clock divider value out of range [3-256].");
 
   LPC_SC->CCLKCFG = divider - 1;
 }
@@ -130,10 +130,10 @@ void pll0_disable ()
 INLINE
 void pll0_setup (enum pll0_clock_source source, int mult, int div)
 {
-  if ( div < 1  ||  div > 32 ) invalid_argument_error ();
+  if ( div < 1  ||  div > 32 ) ERROR("PLL0 divider value out of range [1-32].");
   // FIXME: support large values for 32kHz input
-  if (mult < 12 || mult > 1024) invalid_argument_error ();
-  if (mult % 2) invalid_argument_error ();
+  if (mult % 2) ERROR("PLL0 multiplier value must be even.");
+  if (mult < 12 || mult > 1024) ERROR("PLL0 multiplier value out of range [12-1024].");
   mult = mult / 2 - 1;
   div -= 1;
 
@@ -149,7 +149,7 @@ void pll0_setup (enum pll0_clock_source source, int mult, int div)
 /*
  * Peripheral clock control.
  */
-enum peripheral_clocks {
+enum peripheral_clock_id {
   PCLK_WDT = 0, PCLK_TIMER0 = 1, PCLK_TIMER1 = 2, PCLK_UART0 = 3,
   PCLK_UART1 = 4, PCLK_PWM1 = 6, PCLK_I2C0 = 7, PCLK_SPI = 8, PCLK_SSP1 = 10,
   PCLK_DAC = 11, PCLK_ADC = 12, PCLK_CAN1 = 13, PCLK_CAN2 = 14, PCLK_ACF = 15,
@@ -160,7 +160,7 @@ enum peripheral_clocks {
 };
 
 INLINE
-void pclk_set_divider (enum peripheral_clocks clk, int div)
+void pclk_set_divider (enum peripheral_clock_id clk, int div)
 {
   switch(div) {
     case 4: div = 0; break;
@@ -187,6 +187,29 @@ void pclk_set_divider (enum peripheral_clocks clk, int div)
       LPC_SC->PCLKSEL0 = (LPC_SC->PCLKSEL0 & ~(3 << pin_off)) | (div << pin_off); break;
     case 16 ... 31:
       LPC_SC->PCLKSEL1 = (LPC_SC->PCLKSEL0 & ~(3 << pin_off)) | (div << pin_off); break;
+  }
+}
+
+/*
+ * Peripheral power control.
+ */
+enum peripheral_power_id {
+  POWER_TIM0 = 1, POWER_TIM1 = 2, POWER_UART0 = 3, POWER_UART1 = 4,
+  POWER_PWM1 = 6, POWER_I2C0 = 7, POWER_SPI = 8, POWER_RTC = 9,
+  POWER_SSP1 = 10, POWER_ADC = 12, POWER_CAN1 = 13, POWER_CAN2 = 14,
+  POWER_RIT = 16, POWER_MCPWM = 17, POWER_QEI = 18, POWER_I2C1 = 19,
+  POWER_SSP0 = 21, POWER_TIM2 = 22, POWER_TIM3 = 23, POWER_UART2 = 24,
+  POWER_UART3 = 25, POWER_I2C2 = 26, POWER_I2S = 27, POWER_GPDMA = 29,
+  POWER_ENET = 30, POWER_USB = 31
+};
+
+INLINE
+void power_control (enum peripheral_power_id id, int on)
+{
+  if (on) {
+    LPC_SC->PCONP |= 1<< id;
+  } else {
+    LPC_SC->PCONP &= ~(1 << id);
   }
 }
 #endif

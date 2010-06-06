@@ -37,8 +37,7 @@ void uart_put_hex (LPC_UART_TypeDef *LPC_UART, const void *x, int len)
 
 void uart_rput_hex (LPC_UART_TypeDef *LPC_UART, const void *x, int len)
 {
-  const char *s = x;
-  x += len;
+  const char *s = x + len;
   while (len--)
     uart_putc_hex (LPC_UART, *--s);
 }

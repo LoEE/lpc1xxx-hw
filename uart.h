@@ -119,7 +119,7 @@ void uart_setup (LPC_UART_TypeDef *LPC_UART, int divisor, int mulval, int divadd
 }
 
 #ifndef UART_BAUD_ALLOWED_ERROR
-#define UART_BAUD_ALLOWED_ERROR (0.1/100)
+#define UART_BAUD_ALLOWED_ERROR (0.2/100)
 #endif
 
 INLINE

@@ -74,7 +74,9 @@ extern uint32_t _etext, _sdata, _edata, _sbss, _ebss;
 void
 Reset_Handler(void)
 {
-  setup_clocks (); // Must be provided by the user
+  // Disabled due to PLL0 and PCLK settings interaction.
+  // Run manualy when appropriate.
+  //setup_clocks (); // Must be provided by the user
 
   uint32_t *s, *d;
   // Copy initialization data to RAM (.data section)

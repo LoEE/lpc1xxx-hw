@@ -1,6 +1,5 @@
 #lang scribble/text
-@(define ports '(P0 P1 P2 P3 P4))
-@(define registers '(LPC_GPIO0 LPC_GPIO1 LPC_GPIO2 LPC_GPIO3 LPC_GPIO4))
+@(define ports '(0 1 2 3 4))
 /* 
  * IO functions for NXP LPC1768. (generated file, check io-pin.ss)
  *
@@ -18,7 +17,7 @@ enum pin_port {
 @(add-newlines
   (for/list ([i (in-naturals)]
              [port ports])
-    @list{@port = @(* i 32),}))
+    @list{P@port = @(* i 32),}))
 };
 
 enum pin_dir {
@@ -29,11 +28,11 @@ enum pin_dir {
 extern void invalid_pin_error () __attribute__((error ("Invalid IO pin number.")));
  
 @(define INLINE "extern __inline__ __attribute__((always_inline))")
-@(define-syntax-rule (switch pin_no i register template)
+@(define-syntax-rule (switch pin_no i port template)
    @list{switch(pin_no) {
            @(add-newlines
              (for/list ([i (in-naturals)]
-                        [register registers])
+                        [port (in-list ports)])
                @list{case @(* i 32) ... @(sub1 (* (add1 i) 32)):
                        @template}))
            default:
@@ -59,19 +58,19 @@ extern void invalid_pin_error () __attribute__((error ("Invalid IO pin number.")
 @INLINE
 int pin_read (int pin_no)
 {
-  @(switch @{pin_no} i register
-           @list{return @|register|->FIOPIN & (1 << (pin_no - @(* i 32)));})
+  @(switch @{pin_no} i port
+           @list{return LPC_GPIO@|port|->FIOPIN & (1 << (pin_no - @(* i 32)));})
   return 0;
 }
 
 @INLINE
 void pin_write (int pin_no, int value)
 {
-  @(switch @{pin_no} i register
+  @(switch @{pin_no} i port
            @list{if (value) {
-                   @|register|->FIOSET = (1 << (pin_no - @(* i 32)));
+                   LPC_GPIO@|port|->FIOSET = (1 << (pin_no - @(* i 32)));
                  } else {
-                   @|register|->FIOCLR = (1 << (pin_no - @(* i 32)));
+                   LPC_GPIO@|port|->FIOCLR = (1 << (pin_no - @(* i 32)));
                  }
                  break;})
 }
@@ -79,11 +78,11 @@ void pin_write (int pin_no, int value)
 @INLINE
 void pin_dir (int pin_no, enum pin_dir dir)
 {
-  @(switch @{pin_no} i register
+  @(switch @{pin_no} i port
            @list{if (dir == PIN_OUT) {
-                   @|register|->FIODIR @"|=" (1 << (pin_no - @(* i 32)));
+                   LPC_GPIO@|port|->FIODIR @"|=" (1 << (pin_no - @(* i 32)));
                  } else {
-                   @|register|->FIODIR @"&=" (1 << (pin_no - @(* i 32)));
+                   LPC_GPIO@|port|->FIODIR @"&=" (1 << (pin_no - @(* i 32)));
                  }
                  break;})
 }

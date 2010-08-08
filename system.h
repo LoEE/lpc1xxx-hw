@@ -48,7 +48,7 @@ void main_oscillator_setup (enum main_oscillator_speed speed)
 INLINE
 void cpu_clock_divider_setup (int divider)
 {
-  if (divider < 3 || divider > 256) ERROR("CPU clock divider value out of range [3-256].");
+  if (divider < 1 || divider > 256) ERROR("CPU clock divider value out of range [1-256].");
 
   LPC_SC->CCLKCFG = divider - 1;
 }

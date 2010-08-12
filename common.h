@@ -10,7 +10,7 @@
 #define COMMON_H
 
 #define NOINLINE __attribute__((__noinline__))
-#define INLINE extern __inline__ __attribute__((__always_inline__))
+#define INLINE extern __inline__ __attribute__((__always_inline__,__gnu_inline__))
 
 #define _CONCAT(a,b) a##b
 #define CONCAT(a,b) _CONCAT(a,b)

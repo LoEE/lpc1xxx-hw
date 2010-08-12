@@ -27,7 +27,7 @@ enum pin_dir {
 
 extern void invalid_pin_error () __attribute__((error ("Invalid IO pin number.")));
  
-@(define INLINE "extern __inline__ __attribute__((always_inline))")
+@(define INLINE "extern __inline__ __attribute__((always_inline,gnu_inline))")
 @(define-syntax-rule (switch pin_no i port template)
    @list{switch(pin_no) {
            @(add-newlines

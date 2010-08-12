@@ -26,7 +26,7 @@ enum pin_dir {
 
 extern void invalid_pin_error () __attribute__((error ("Invalid IO pin number.")));
 
-extern __inline__ __attribute__((always_inline))
+extern __inline__ __attribute__((always_inline,gnu_inline))
 int pin_read (int pin_no)
 {
   switch(pin_no) {
@@ -47,7 +47,7 @@ int pin_read (int pin_no)
   return 0;
 }
 
-extern __inline__ __attribute__((always_inline))
+extern __inline__ __attribute__((always_inline,gnu_inline))
 void pin_write (int pin_no, int value)
 {
   switch(pin_no) {
@@ -92,7 +92,7 @@ void pin_write (int pin_no, int value)
   }
 }
 
-extern __inline__ __attribute__((always_inline))
+extern __inline__ __attribute__((always_inline,gnu_inline))
 void pin_dir (int pin_no, enum pin_dir dir)
 {
   switch(pin_no) {
@@ -137,7 +137,7 @@ void pin_dir (int pin_no, enum pin_dir dir)
   }
 }
 
-extern __inline__ __attribute__((always_inline))
+extern __inline__ __attribute__((always_inline,gnu_inline))
 void pin_setup (int pin_no, int pinsel)
 {
   switch(pin_no) {

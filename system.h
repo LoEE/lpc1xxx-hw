@@ -1,7 +1,5 @@
 /*
- * System (clocks & power control) functions for NXP LPC17xx.
- *
- * See also: http://bitbucket.org/jpc/lpc17xx/
+ * Periprerial clocks & power control for LPC17xx.
  *
  * Copyright (c) 2010 LoEE - Jakub Piotr Cłapa
  * This program is released under the new BSD license.

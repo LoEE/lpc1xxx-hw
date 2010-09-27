@@ -1,9 +1,7 @@
 /*
  * Common macros and definitions.
  *
- * See also: http://bitbucket.org/jpc/lpc17xx/
- *
- * Copyright (c) 2010 LoEE - Jakub Piotr Cłapa
+ * Copyright (c) 2008-2010 LoEE - Jakub Piotr Cłapa
  * This program is released under the new BSD license.
  */
 #ifndef COMMON_H

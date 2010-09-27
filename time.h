@@ -1,7 +1,7 @@
 /*
- * Generic timers.
+ * Timers.
  *
- * Copyright (c) 2008-2010 Jakub Piotr Cłapa
+ * Copyright (c) 2008-2010 LoEE - Jakub Piotr Cłapa
  * This program is released under the new BSD license.
  */
 #ifndef TIME_H

@@ -1,9 +1,7 @@
 /*
- * This is an ARM Cortex-M3 startup file for the NXP LPC1768.
+ * ARM Cortex-M3 startup file for the NXP LPC17xx processors.
  *
- * TODO: Add vendor (NXP) specific interrupt vectors.
- *
- * See also: http://bitbucket.org/jpc/lpc1768/
+ * TODO: Add vendor specific interrupt vectors.
  *
  * Copyright (c) 2010 LoEE - Jakub Piotr Cłapa
  * This program is released under the new BSD license.

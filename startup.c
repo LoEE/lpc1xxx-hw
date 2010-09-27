@@ -10,60 +10,57 @@
  */
 #include "LPC17xx.h"
 
+#define VECTORS \
+  HANDLER(Reset) \
+  WEAK_HANDLER(NMI) \
+  WEAK_HANDLER(HardFault) \
+  WEAK_HANDLER(MemManage) \
+  WEAK_HANDLER(BusFault) \
+  WEAK_HANDLER(UsageFault) \
+  RESERVED \
+  RESERVED \
+  RESERVED \
+  RESERVED \
+  WEAK_HANDLER(SVC) \
+  WEAK_HANDLER(DebugMon) \
+  RESERVED \
+  WEAK_HANDLER(PendSV) \
+  WEAK_HANDLER(SysTick)
+
 // Dummy handler.
 void Default_Handler (void) { while (1); }
 
-// Weakly bind all interrupt vectors to the dummy handler.
-void __attribute__((weak)) Reset_Handler(void);
-void __attribute__((weak)) NMI_Handler(void);
-void __attribute__((weak)) HardFault_Handler(void);
-void __attribute__((weak)) MemManage_Handler(void);
-void __attribute__((weak)) BusFault_Handler(void);
-void __attribute__((weak)) UsageFault_Handler(void);
-void __attribute__((weak)) SVC_Handler(void);
-void __attribute__((weak)) DebugMon_Handler(void);
-void __attribute__((weak)) PendSV_Handler(void);
-void __attribute__((weak)) SysTick_Handler(void);
-#pragma weak NMI_Handler        = Default_Handler
-#pragma weak HardFault_Handler  = Default_Handler
-#pragma weak MemManage_Handler  = Default_Handler
-#pragma weak BusFault_Handler   = Default_Handler
-#pragma weak UsageFault_Handler = Default_Handler
-#pragma weak SVC_Handler        = Default_Handler
-#pragma weak DebugMon_Handler   = Default_Handler
-#pragma weak PendSV_Handler     = Default_Handler
-#pragma weak SysTick_Handler    = Default_Handler
+// Weakly bind most interrupt vectors to the dummy handler.
+#define HANDLER(name) \
+  void __attribute__((weak,externally_visible)) name##_Handler(void);
+#define WEAK_HANDLER(name) \
+  void __attribute__((weak,alias("Default_Handler"),externally_visible)) name##_Handler(void);
+#define RESERVED
+VECTORS
+#undef HANDLER
+#undef WEAK_HANDLER
+#undef RESERVED
 
 // Start of the stack (last RAM address; exported in the linker script)
-extern void _sstack;
+extern char _sstack;
 
 // The signature of Cortex-M3 interrupt handlers.
 typedef void (* const Interrupt_Handler_P)(void);
 
 // Interrupt vectors table
-__attribute__ ((section(".cs3.interrupt_vector")))
+__attribute__ ((externally_visible,section(".cs3.interrupt_vector")))
 Interrupt_Handler_P interrupt_vectors[] = {
-  &_sstack,                     // the first  word contains  the initial
+  (void*)&_sstack,              // the first  word contains  the initial
                                 // stack pointer  the hardware  loads it
                                 // to the  SP register before  the first
                                 // instruction
-  // Standard Cortex-M3 interrupts:
-  Reset_Handler,
-  NMI_Handler,
-  HardFault_Handler,
-  MemManage_Handler,
-  BusFault_Handler,
-  UsageFault_Handler,
-  0,
-  0,
-  0,
-  0,
-  SVC_Handler,
-  DebugMon_Handler,
-  0,
-  PendSV_Handler,
-  SysTick_Handler,
-  // Vendor specific interrupts for LPC1768:
+#define HANDLER(name) name##_Handler,
+#define WEAK_HANDLER(name) name##_Handler,
+#define RESERVED 0,
+VECTORS
+#undef HANDLER
+#undef WEAK_HANDLER
+#undef RESERVED
 };
 
 extern int main (void);

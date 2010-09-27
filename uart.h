@@ -16,16 +16,22 @@
  * API
  */
 
-#define LPC_UART_BITS enum {                         \
-  TEMT = 1<< 6, RDR = 1<< 0,    /* LPC_UART->LSR */ \
-  DIVADDVAL = 0, MULVAL = 4,    /* LPC_UART->FDR */ \
-  FIFO_EN = 1<< 0, RX_FIFO_RESET = 1<< 1, TX_FIFO_RESET = 1<< 2, /* LPC_UART->FCR */ \
-  RX_TRIG_SELECT = 6,                                \
-  CHAR_SIZE = 0, STOP_BITS = 1<< 2, PARITY = 3, BREAK = 1<< 6,   /* LPC_UART->LCR */ \
-  DLAB = 1<< 7,                                      \
-  TXEN = 1<< 7,                 /* LPC_UART->TER */ \
-  RXFIFOLVL = 0, TXFIFOLVL = 8, /* LPC_UART->FIFOLVL */ \
-  FIFOLVL_MAX = 16, FIFOLVL_MASK = 0x1f,              \
+#define LPC_UART_BITS enum {                        \
+  /* LSR */                                         \
+  TEMT = 1<< 6, THRE = 1 << 5, RDR = 1<< 0,         \
+  /* FDR */                                         \
+  DIVADDVAL = 0, MULVAL = 4,                        \
+  /* FCR */                                         \
+  FIFO_EN = 1<< 0, RX_RESET = 1<< 1,                \
+  TX_RESET = 1<< 2, DMA_MODE = 1<< 3, RX_TRIG = 6,  \
+  /* LCR */                                         \
+  CHAR_SIZE = 0, STOP_BITS = 1<< 2, PARITY = 3,     \
+  BREAK = 1<< 6, DLAB = 1<< 7,                      \
+  /* TER */                                         \
+  TXEN = 1<< 7,                                     \
+  /* FIFOLVL (FIXME: removed from the manual!) */   \
+  RXFIFOLVL = 0, TXFIFOLVL = 8,                     \
+  FIFOLVL_MAX = 16, FIFOLVL_MASK = 0x1f,            \
 }
 
 INLINE
@@ -33,6 +39,13 @@ int uart_tx_finished (LPC_UART_TypeDef *LPC_UART)
 { 
   LPC_UART_BITS;
   return (LPC_UART->LSR & TEMT) != 0;
+}
+
+INLINE
+int uart_tx_empty (LPC_UART_TypeDef *LPC_UART)
+{
+  LPC_UART_BITS;
+  return (LPC_UART->LSR & THRE) != 0;
 }
 
 INLINE
@@ -72,10 +85,14 @@ extern void uart_rput_hex (LPC_UART_TypeDef *LPC_UART, const void *x, int len);
 extern void uart_puts (LPC_UART_TypeDef *LPC_UART, const char *x);
 
 INLINE
-unsigned char uart_getc_nowait (LPC_UART_TypeDef *LPC_UART)
+char uart_getc_nowait (LPC_UART_TypeDef *LPC_UART)
 {
   return LPC_UART->RBR;
 }
+
+extern char uart_getc (LPC_UART_TypeDef *LPC_UART);
+
+extern void uart_get (LPC_UART_TypeDef *LPC_UART, void *x, int len);
 
 /*
  * Setup
@@ -115,7 +132,7 @@ void uart_setup (LPC_UART_TypeDef *LPC_UART, int divisor, int mulval, int divadd
 
   LPC_UART->TER = TXEN;
 
-  LPC_UART->FCR = FIFO_EN | RX_FIFO_RESET | TX_FIFO_RESET;
+  LPC_UART->FCR = FIFO_EN | RX_RESET | TX_RESET;
 }
 
 #ifndef UART_BAUD_ALLOWED_ERROR

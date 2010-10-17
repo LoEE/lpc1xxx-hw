@@ -23,22 +23,22 @@ SECTIONS {
   .text : {
     _stext = .;
     KEEP(*(.cs3.interrupt_vector))
-    *(.text*)
-    *(.rodata*)
+    *(SORT_BY_ALIGNMENT(SORT_BY_NAME(.text*)))
+    *(SORT_BY_ALIGNMENT(SORT_BY_NAME(.rodata*)))
     . = ALIGN(4);
     _etext = .;
   } > flash
 
   .data : {
     _sdata = .;
-    *(.data*)
+    *(SORT_BY_ALIGNMENT(SORT_BY_NAME(.data*)))
     _edata = .;
   } > ram AT > flash
 
   .bss : {
     _sbss = .;
-    *(.bss*)
-    *(COMMON)
+    *(SORT_BY_ALIGNMENT(SORT_BY_NAME(.bss*)))
+    *(SORT_BY_ALIGNMENT(SORT_BY_NAME(COMMON)))
     . = ALIGN(4);
     _ebss = .;
   } > ram

@@ -6,7 +6,7 @@
  */
 #include "LPC17xx.h"
 
-#define VECTORS \
+#define CM3_VECTORS \
   HANDLER(Reset) \
   WEAK_HANDLER(NMI) \
   WEAK_HANDLER(HardFault) \
@@ -22,6 +22,45 @@
   RESERVED \
   WEAK_HANDLER(PendSV) \
   WEAK_HANDLER(SysTick) \
+
+#define LPC17xx_VECTORS \
+  WEAK_HANDLER(WDT)    \
+  WEAK_HANDLER(TIMER0) \
+  WEAK_HANDLER(TIMER1) \
+  WEAK_HANDLER(TIMER2) \
+  WEAK_HANDLER(TIMER3) \
+  WEAK_HANDLER(UART0)  \
+  WEAK_HANDLER(UART1)  \
+  WEAK_HANDLER(UART2)  \
+  WEAK_HANDLER(UART3)  \
+  WEAK_HANDLER(PWM1)   \
+  WEAK_HANDLER(I2C0)   \
+  WEAK_HANDLER(I2C1)   \
+  WEAK_HANDLER(I2C2)   \
+  WEAK_HANDLER(SPI)    \
+  WEAK_HANDLER(SSP0)   \
+  WEAK_HANDLER(SSP1)   \
+  WEAK_HANDLER(PLL0)   \
+  WEAK_HANDLER(RTC)    \
+  WEAK_HANDLER(EINT0)  \
+  WEAK_HANDLER(EINT1)  \
+  WEAK_HANDLER(EINT2)  \
+  WEAK_HANDLER(EINT3GPIO) \
+  WEAK_HANDLER(ADC)    \
+  WEAK_HANDLER(BOD)    \
+  WEAK_HANDLER(USB)    \
+  WEAK_HANDLER(CAN)    \
+  WEAK_HANDLER(GPDMA)  \
+  WEAK_HANDLER(I2S)    \
+  WEAK_HANDLER(ETHERNET) \
+  WEAK_HANDLER(RIT)    \
+  WEAK_HANDLER(MCPWM)  \
+  WEAK_HANDLER(QENC)   \
+  WEAK_HANDLER(PLL1)   \
+  WEAK_HANDLER(USB_ACT) \
+  WEAK_HANDLER(CAN_ACT)
+
+#define LPC13xx_VECTORS \
   /* Vendor specific interrupts for the LPC13xx: */ \
   /* Wake-up pin interrupts (40 interrupts): */ \
   WEAK_HANDLER(WakeUp0_0) WEAK_HANDLER(WakeUp0_1) WEAK_HANDLER(WakeUp0_2) WEAK_HANDLER(WakeUp0_3) \
@@ -56,6 +95,14 @@
   WEAK_HANDLER(PIO2) \
   WEAK_HANDLER(PIO1) \
   WEAK_HANDLER(PIO0)
+
+#ifdef __NXP_LPC17xx__
+#define VECTORS CM3_VECTORS LPC17xx_VECTORS
+#elif defined (__NXP_LPC13xx__)
+#define VECTORS CM3_VECTORS LPC13xx_VECTORS
+#else
+#error "Unknown LPC1xxx processor type. Define either __NXP_LPC17xx__ or __NXP_LPC13xx__."
+#endif
 
 // Dummy handler.
 void Default_Handler (void) { while (1); }

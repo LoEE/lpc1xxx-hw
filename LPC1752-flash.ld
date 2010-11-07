@@ -2,10 +2,9 @@
  * This is the NXP LPC1752 linker file for code running from flash.
  *
  * TODO: 
- * - handle the exotic input sections (e.g. glue and veneer, C++ sections)
  * - add boot ROM memory regions
  *
- * See also: http://bitbucket.org/jpc/lpc17xx/
+ * See also: http://bb.loee.pl/lpc1xxx-hw
  *
  * Copyright (c) 2010 LoEE - Jakub Piotr Cłapa
  * This program is released under the new BSD license.

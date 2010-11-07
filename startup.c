@@ -1,5 +1,5 @@
 /*
- * ARM Cortex-M3 startup file for the NXP LPC13xx processors.
+ * ARM Cortex-M3 startup file for the NXP LPC1xxx processors.
  *
  * Copyright (c) 2010 LoEE - Jakub Piotr Cłapa
  * This program is released under the new BSD license.
@@ -24,6 +24,7 @@
   WEAK_HANDLER(SysTick) \
 
 #define LPC17xx_VECTORS \
+  /* Vendor specific interrupts for the LPC17xx: */ \
   WEAK_HANDLER(WDT)    \
   WEAK_HANDLER(TIMER0) \
   WEAK_HANDLER(TIMER1) \
@@ -141,17 +142,12 @@ VECTORS
 };
 
 extern int main (void);
-extern void setup_clocks (void);
 
 extern uint32_t _etext, _sdata, _edata, _sbss, _ebss;
 
 void
 Reset_Handler(void)
 {
-  // Disabled due to PLL0 and PCLK settings interaction.
-  // Run manualy when appropriate.
-  //setup_clocks (); // Must be provided by the user
-
   uint32_t *s, *d;
   // Copy initialization data to RAM (.data section)
   s = &_etext;

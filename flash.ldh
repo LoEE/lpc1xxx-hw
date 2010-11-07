@@ -1,13 +1,13 @@
 /*
  * This is the linker file fragment for code running from flash 
- * on NXP LPC17xx family of microprocessors. It lacks MEMORY declarations
- * so it must be included from an apropriate model-specific file.
+ * on NXP LPC1xxx family of microprocessors. It lacks MEMORY declarations
+ * so it must be included from an appropriate model-specific file.
  *
  * TODO: 
- * - handle the exotic input sections (e.g. glue and veneer, C++ sections)
+ * - handle exotic input sections (e.g. glue and veneer, C++ sections)
  * - add boot ROM memory regions
  *
- * See also: http://bitbucket.org/jpc/lpc17xx/
+ * See also: http://bb.loee.pl/lpc1xxx-hw
  *
  * Copyright (c) 2010 LoEE - Jakub Piotr Cłapa
  * This program is released under the new BSD license.

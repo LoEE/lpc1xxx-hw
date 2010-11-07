@@ -1,7 +1,7 @@
 /*
- * IO functions for NXP LPC1768. (generated file, check io-pin.ss)
+ * IO functions for NXP LPC17xx. (generated file, check io-pin.ss)
  *
- * See also: http://bitbucket.org/jpc/lpc1768/
+ * See also: http://bb.loee.pl/lpc1xxx-hw
  *
  * Copyright (c) 2010 LoEE - Jakub Piotr Cłapa
  * This program is released under the new BSD license.

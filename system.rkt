@@ -5,7 +5,6 @@
 (define output-dir "hw/system")
 
 (define (main)
-  (output (generate-13xx-system))
   (make-directory/remove output-dir)
   (parameterize ([current-directory output-dir])
     (with-output-to-file "LPC13xx.h" #:exists 'replace

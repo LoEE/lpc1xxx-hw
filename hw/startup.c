@@ -1,10 +1,13 @@
 /*
- * ARM Cortex-M3 startup file for the NXP LPC1xxx processors.
- *
- * Copyright (c) 2010 LoEE - Jakub Piotr CÅ‚apa
- * This program is released under the new BSD license.
+   ARM Cortex-M3 startup file for the NXP LPC1xxx processors.
+  
+   For more details see:
+       http://bitbucket.org/jpc/lpc1xxx-hw/
+ 
+   Copyright (c) 2010-2011 LoEE - Jakub Piotr C³apa
+   This program is released under the new BSD license.
  */
-#include "LPC17xx.h"
+#include "hw.h"
 
 #define CM3_VECTORS \
   HANDLER(Reset) \
@@ -97,12 +100,12 @@
   WEAK_HANDLER(PIO1) \
   WEAK_HANDLER(PIO0)
 
-#ifdef __NXP_LPC17xx__
+#if defined (LPC17xx)
 #define VECTORS CM3_VECTORS LPC17xx_VECTORS
-#elif defined (__NXP_LPC13xx__)
+#elif defined (LPC13xx)
 #define VECTORS CM3_VECTORS LPC13xx_VECTORS
 #else
-#error "Unknown LPC1xxx processor type. Define either __NXP_LPC17xx__ or __NXP_LPC13xx__."
+#error "Unknown processor type."
 #endif
 
 // Dummy handler.
@@ -152,10 +155,10 @@ Reset_Handler(void)
   // Copy initialization data to RAM (.data section)
   s = &_etext;
   d = &_sdata;
-  while (d < &_edata) *d++ = *s++;
+  do *d++ = *s++; while (d < &_edata);
   // Zero the remaining allocated RAM (.bss section)
-  d = &_sbss;
-  while (d < &_ebss)  *d++ = 0;
+  d = &_edata;
+  do *d++ = 0; while (d < &_ebss);
   
   // Everything is ready. Run the user program.
   main();

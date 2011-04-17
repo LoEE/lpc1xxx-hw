@@ -4,8 +4,7 @@
  * Copyright (c) 2008-2010 LoEE - Jakub Piotr Cłapa
  * This program is released under the new BSD license.
  */
-#include "LPC17xx.h"
-#include "time.h"
+#include "hw.h"
 
 volatile uint32_t current_time = 0;
 

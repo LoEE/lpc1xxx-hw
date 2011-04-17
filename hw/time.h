@@ -7,8 +7,6 @@
 #ifndef TIME_H
 #define TIME_H
 
-#include "common.h"
-
 extern volatile uint32_t current_time;
 
 typedef struct timer {

@@ -8,34 +8,43 @@
 (define (main)
   (make-directory/ignore output-dir)
   (parameterize ([current-directory output-dir])
+    (with-output-to-file "cpu.h" #:exists 'replace
+      (λ () (output (generate-cpu))))
     (with-output-to-file "hw.h" #:exists 'replace
       (λ () (output (generate-hw))))))
 
-(define (generate-hw)
+(define (generate-cpu)
   @list{
-@header[url]{Main include file for the LPC1xxx processor support package.}
+@header[url]{CPU type and features.}
 @cpp-wrap['CPU]{
 
-#include "stdint.h"
-#include "common.h"
-                
 #if defined(LPC1311) || defined(LPC1313)
 #  define LPC13xx
 #  define LPC131x
-#  include "CMSIS/LPC13xx.h"
 #elif defined(LPC1342) || defined(LPC1343)
 #  define LPC13xx
 #  define LPC134x
 #  define CPU_HAS_USB
-#  include "CMSIS/LPC13xx.h"
 #else
 #  error "No supported CPU type defined."
 #endif
+}})
+
+(define (generate-hw)
+  @list{
+@header[url]{Main include file for the LPC1xxx processor support package.}
+@cpp-wrap['HW]{
+
+#include "stdint.h"
+#include "common.h"
+
+#include "cpu.h"
 
 #ifdef LPC13xx
 #  if !defined(LQFP48) && !defined(HVQFN33)
 #    error "No supported CPU package types defined."
 #  endif
+#  include "CMSIS/LPC13xx.h"
 #  include "system/LPC13xx.h"
 #endif
 

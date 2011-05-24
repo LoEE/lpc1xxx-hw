@@ -12,7 +12,8 @@
 
 #define _CONCAT(a,b) a##b
 #define CONCAT(a,b) _CONCAT(a,b)
-#define ERROR(msg) ({ void CONCAT(e,__LINE__)(void) __attribute__((__noreturn__,__error__("\n\t"msg)));\
-    CONCAT(e,__LINE__)(); })
+#define _ERROR(msg,cnt) ({ extern void CONCAT(e,cnt)(void) __attribute__((__noreturn__,__error__("\n\t"msg)));\
+    CONCAT(e,cnt)(); })
+#define ERROR(msg) _ERROR(msg,__COUNTER__)
 
 #endif

@@ -139,12 +139,12 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
   if (mul * in != out) ERROR("PLL output frequency is not divisible by input frequency.");
   if (mul < 1 || mul > 32) ERROR("Required system PLL frequency multiplier value out of range [1-32].");
   int div;
-  if (out * 2 > 156) div = 2;
-  else if (out * 4 > 156) div = 4;
-  else if (out * 8 > 156) div = 8;
-  else if (out * 16 > 156) div = 16;
+  if (out * 2 > 156e6) div = 2;
+  else if (out * 4 > 156e6) div = 4;
+  else if (out * 8 > 156e6) div = 8;
+  else if (out * 16 > 156e6) div = 16;
   else ERROR("Output frequency too low for the CCO [156 < F_CCO < 320].");
-  if (out * div > 320) ERROR("CCO frequency too high [156 < F_CC0 < 320].");
+  if (out * div > 320e6) ERROR("CCO frequency too high [156 < F_CC0 < 320].");
   mul--;
   div = div / 2 - 1;
   *reg = mul << 0 | div << 5;
@@ -256,7 +256,7 @@ INLINE void wdt_setup (enum clock_source src, int div)
 }
 
 #ifdef CPU_HAS_USB
-INLINE void usb_setup (enum clock_source src, int div)
+INLINE void usb_clock_setup (enum clock_source src, int div)
 {
   if (div < 0 || div > 255) ERROR("USB clock divider value out of range [0-255].");
   set_power (10, div ? 1 : 0); set_clock (14, div ? 1 : 0);

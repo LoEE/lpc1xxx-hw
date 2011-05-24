@@ -125,12 +125,9 @@ enum pio_pin {
         (when (usb-f? fun) @list{@disable-prefix{#ifdef CPU_HAS_USB}})
         (cond
           [(ormap adc-f? (pin-functions pin))
-           @list{case @(function-name->enum-name fun): f = @i; mask |= 1 << 7; @;
-                   @(unless (adc-f? fun) "other |= 1 << 7; ")@;
-                   break;}]
+           @list{case @(function-name->enum-name fun): f = @i;@(unless (adc-f? fun) " other |= 1 << 7;") break;}]
           [(ormap i2c-f? (pin-functions pin))
-           @list{case @(function-name->enum-name fun): f = @i;
-                   mask = 0x7 | 0x3 << 8; other = mode << 8;
+           @list{case @(function-name->enum-name fun): f = @i; other = mode << 8;
                    @(unless (i2c-f? fun)
                       @list{if (mode == I2C_FAST_PLUS)
                               ERROR("I2C_FAST_PLUS cannot be used with PIO function.");@"\n"})@;
@@ -149,8 +146,7 @@ enum pio_pin {
         void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int hyst)
         {
           int f = 0;
-          int mask = 0x3f;
-          int other = mode << 3 | hyst << 5;
+          int other = mode << 3 | hyst << 5 | 1 << 6;
           switch (pin) {
             @(for/nl ([p (in-list po)]
                       #:when (and (pin-name p) (pin-has-functions? p)))
@@ -163,7 +159,7 @@ enum pio_pin {
                                                                       (remove "PIO" (pin-enum-names p))
                                                                       #:sep ", ") or PIO.");
                        }
-                       @list{@(pin-iocon-name p) = (@(pin-iocon-name p) & ~mask) | f | other;}
+                       @list{@(pin-iocon-name p) = f | other;}
                        break;})
             default:
               ERROR("Invalid IO pin.");

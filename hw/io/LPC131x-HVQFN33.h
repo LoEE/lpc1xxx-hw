@@ -38,8 +38,7 @@ INLINE
 void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int hyst)
 {
   int f = 0;
-  int mask = 0x3f;
-  int other = mode << 3 | hyst << 5;
+  int other = mode << 3 | hyst << 5 | 1 << 6;
   switch (pin) {
     case P0_0:
       switch (func) {
@@ -48,7 +47,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO0_0 can only be used as nRESET or PIO.");
       }
-      LPC_IOCON->RESET_PIO0_0 = (LPC_IOCON->RESET_PIO0_0 & ~mask) | f | other;
+      LPC_IOCON->RESET_PIO0_0 = f | other;
       break;
     case P0_1:
       switch (func) {
@@ -61,7 +60,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO0_1 can only be used as CLKOUT, CT32B0_MAT2, USB_FTOGGLE or PIO.");
       }
-      LPC_IOCON->PIO0_1 = (LPC_IOCON->PIO0_1 & ~mask) | f | other;
+      LPC_IOCON->PIO0_1 = f | other;
       break;
     case P0_2:
       switch (func) {
@@ -71,7 +70,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO0_2 can only be used as SSEL, CT16B0_CAP0 or PIO.");
       }
-      LPC_IOCON->PIO0_2 = (LPC_IOCON->PIO0_2 & ~mask) | f | other;
+      LPC_IOCON->PIO0_2 = f | other;
       break;
     case P0_3:
       switch (func) {
@@ -82,41 +81,37 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO0_3 can only be used as USB_VBUS or PIO.");
       }
-      LPC_IOCON->PIO0_3 = (LPC_IOCON->PIO0_3 & ~mask) | f | other;
+      LPC_IOCON->PIO0_3 = f | other;
       break;
     case P0_4:
       switch (func) {
-        case PIO: f = 0;
-          mask = 0x7 | 0x3 << 8; other = mode << 8;
+        case PIO: f = 0; other = mode << 8;
           if (mode == I2C_FAST_PLUS)
             ERROR("I2C_FAST_PLUS cannot be used with PIO function.");
           if (hyst)
             ERROR("Hysteresis is not available on I2C pins.");
-        case SCL: f = 1;
-          mask = 0x7 | 0x3 << 8; other = mode << 8;
+        case SCL: f = 1; other = mode << 8;
           if (hyst)
             ERROR("Hysteresis is not available on I2C pins.");
         default:
           ERROR("PIO0_4 can only be used as SCL or PIO.");
       }
-      LPC_IOCON->PIO0_4 = (LPC_IOCON->PIO0_4 & ~mask) | f | other;
+      LPC_IOCON->PIO0_4 = f | other;
       break;
     case P0_5:
       switch (func) {
-        case PIO: f = 0;
-          mask = 0x7 | 0x3 << 8; other = mode << 8;
+        case PIO: f = 0; other = mode << 8;
           if (mode == I2C_FAST_PLUS)
             ERROR("I2C_FAST_PLUS cannot be used with PIO function.");
           if (hyst)
             ERROR("Hysteresis is not available on I2C pins.");
-        case SDA: f = 1;
-          mask = 0x7 | 0x3 << 8; other = mode << 8;
+        case SDA: f = 1; other = mode << 8;
           if (hyst)
             ERROR("Hysteresis is not available on I2C pins.");
         default:
           ERROR("PIO0_5 can only be used as SDA or PIO.");
       }
-      LPC_IOCON->PIO0_5 = (LPC_IOCON->PIO0_5 & ~mask) | f | other;
+      LPC_IOCON->PIO0_5 = f | other;
       break;
     case P0_6:
       switch (func) {
@@ -126,7 +121,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO0_6 can only be used as nUSB_CONNECT, SCK or PIO.");
       }
-      LPC_IOCON->PIO0_6 = (LPC_IOCON->PIO0_6 & ~mask) | f | other;
+      LPC_IOCON->PIO0_6 = f | other;
       break;
     case P0_7:
       switch (func) {
@@ -135,7 +130,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO0_7 can only be used as CTS or PIO.");
       }
-      LPC_IOCON->PIO0_7 = (LPC_IOCON->PIO0_7 & ~mask) | f | other;
+      LPC_IOCON->PIO0_7 = f | other;
       break;
     case P0_8:
       switch (func) {
@@ -145,7 +140,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO0_8 can only be used as MISO, CT16B0_MAT0 or PIO.");
       }
-      LPC_IOCON->PIO0_8 = (LPC_IOCON->PIO0_8 & ~mask) | f | other;
+      LPC_IOCON->PIO0_8 = f | other;
       break;
     case P0_9:
       switch (func) {
@@ -156,7 +151,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO0_9 can only be used as MOSI, CT16B0_MAT1, SWO or PIO.");
       }
-      LPC_IOCON->PIO0_9 = (LPC_IOCON->PIO0_9 & ~mask) | f | other;
+      LPC_IOCON->PIO0_9 = f | other;
       break;
     case P0_10:
       switch (func) {
@@ -167,69 +162,69 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO0_10 can only be used as SWCLK, SCK, CT16B0_MAT2 or PIO.");
       }
-      LPC_IOCON->JTAG_TCK_PIO0_10 = (LPC_IOCON->JTAG_TCK_PIO0_10 & ~mask) | f | other;
+      LPC_IOCON->JTAG_TCK_PIO0_10 = f | other;
       break;
     case P0_11:
       switch (func) {
-        case PIO: f = 1; mask |= 1 << 7; other |= 1 << 7; break;
-        case AD0: f = 2; mask |= 1 << 7; break;
-        case CT32B0_MAT3: f = 3; mask |= 1 << 7; other |= 1 << 7; break;
+        case PIO: f = 1; other |= 1 << 7; break;
+        case AD0: f = 2; break;
+        case CT32B0_MAT3: f = 3; other |= 1 << 7; break;
         default:
           ERROR("PIO0_11 can only be used as AD0, CT32B0_MAT3 or PIO.");
       }
-      LPC_IOCON->JTAG_TDI_PIO0_11 = (LPC_IOCON->JTAG_TDI_PIO0_11 & ~mask) | f | other;
+      LPC_IOCON->JTAG_TDI_PIO0_11 = f | other;
       break;
     case P1_0:
       switch (func) {
-        case PIO: f = 1; mask |= 1 << 7; other |= 1 << 7; break;
-        case AD1: f = 2; mask |= 1 << 7; break;
-        case CT32B1_CAP0: f = 3; mask |= 1 << 7; other |= 1 << 7; break;
+        case PIO: f = 1; other |= 1 << 7; break;
+        case AD1: f = 2; break;
+        case CT32B1_CAP0: f = 3; other |= 1 << 7; break;
         default:
           ERROR("PIO1_0 can only be used as AD1, CT32B1_CAP0 or PIO.");
       }
-      LPC_IOCON->JTAG_TMS_PIO1_0 = (LPC_IOCON->JTAG_TMS_PIO1_0 & ~mask) | f | other;
+      LPC_IOCON->JTAG_TMS_PIO1_0 = f | other;
       break;
     case P1_1:
       switch (func) {
-        case PIO: f = 1; mask |= 1 << 7; other |= 1 << 7; break;
-        case AD2: f = 2; mask |= 1 << 7; break;
-        case CT32B1_MAT0: f = 3; mask |= 1 << 7; other |= 1 << 7; break;
+        case PIO: f = 1; other |= 1 << 7; break;
+        case AD2: f = 2; break;
+        case CT32B1_MAT0: f = 3; other |= 1 << 7; break;
         default:
           ERROR("PIO1_1 can only be used as AD2, CT32B1_MAT0 or PIO.");
       }
-      LPC_IOCON->JTAG_TDO_PIO1_1 = (LPC_IOCON->JTAG_TDO_PIO1_1 & ~mask) | f | other;
+      LPC_IOCON->JTAG_TDO_PIO1_1 = f | other;
       break;
     case P1_2:
       switch (func) {
-        case PIO: f = 1; mask |= 1 << 7; other |= 1 << 7; break;
-        case AD3: f = 2; mask |= 1 << 7; break;
-        case CT32B1_MAT1: f = 3; mask |= 1 << 7; other |= 1 << 7; break;
+        case PIO: f = 1; other |= 1 << 7; break;
+        case AD3: f = 2; break;
+        case CT32B1_MAT1: f = 3; other |= 1 << 7; break;
         default:
           ERROR("PIO1_2 can only be used as AD3, CT32B1_MAT1 or PIO.");
       }
-      LPC_IOCON->JTAG_nTRST_PIO1_2 = (LPC_IOCON->JTAG_nTRST_PIO1_2 & ~mask) | f | other;
+      LPC_IOCON->JTAG_nTRST_PIO1_2 = f | other;
       break;
     case P1_3:
       switch (func) {
-        case SWDIO: f = 0; mask |= 1 << 7; other |= 1 << 7; break;
-        case PIO: f = 1; mask |= 1 << 7; other |= 1 << 7; break;
-        case AD4: f = 2; mask |= 1 << 7; break;
-        case CT32B1_MAT2: f = 3; mask |= 1 << 7; other |= 1 << 7; break;
+        case SWDIO: f = 0; other |= 1 << 7; break;
+        case PIO: f = 1; other |= 1 << 7; break;
+        case AD4: f = 2; break;
+        case CT32B1_MAT2: f = 3; other |= 1 << 7; break;
         default:
           ERROR("PIO1_3 can only be used as SWDIO, AD4, CT32B1_MAT2 or PIO.");
       }
-      LPC_IOCON->ARM_SWDIO_PIO1_3 = (LPC_IOCON->ARM_SWDIO_PIO1_3 & ~mask) | f | other;
+      LPC_IOCON->ARM_SWDIO_PIO1_3 = f | other;
       break;
     case P1_4:
       switch (func) {
-        case PIO: f = 0; mask |= 1 << 7; other |= 1 << 7; break;
-        case AD5: f = 1; mask |= 1 << 7; break;
-        case CT32B1_MAT3: f = 2; mask |= 1 << 7; other |= 1 << 7; break;
-        case WAKEUP: f = 3; mask |= 1 << 7; other |= 1 << 7; break;
+        case PIO: f = 0; other |= 1 << 7; break;
+        case AD5: f = 1; break;
+        case CT32B1_MAT3: f = 2; other |= 1 << 7; break;
+        case WAKEUP: f = 3; other |= 1 << 7; break;
         default:
           ERROR("PIO1_4 can only be used as AD5, CT32B1_MAT3, WAKEUP or PIO.");
       }
-      LPC_IOCON->PIO1_4 = (LPC_IOCON->PIO1_4 & ~mask) | f | other;
+      LPC_IOCON->PIO1_4 = f | other;
       break;
     case P1_5:
       switch (func) {
@@ -239,7 +234,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO1_5 can only be used as nRTS, CT32B0_CAP0 or PIO.");
       }
-      LPC_IOCON->PIO1_5 = (LPC_IOCON->PIO1_5 & ~mask) | f | other;
+      LPC_IOCON->PIO1_5 = f | other;
       break;
     case P1_6:
       switch (func) {
@@ -249,7 +244,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO1_6 can only be used as RXD, CT32B0_MAT0 or PIO.");
       }
-      LPC_IOCON->PIO1_6 = (LPC_IOCON->PIO1_6 & ~mask) | f | other;
+      LPC_IOCON->PIO1_6 = f | other;
       break;
     case P1_7:
       switch (func) {
@@ -259,7 +254,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO1_7 can only be used as TXD, CT32B0_MAT1 or PIO.");
       }
-      LPC_IOCON->PIO1_7 = (LPC_IOCON->PIO1_7 & ~mask) | f | other;
+      LPC_IOCON->PIO1_7 = f | other;
       break;
     case P1_8:
       switch (func) {
@@ -268,7 +263,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO1_8 can only be used as CT16B1_CAP0 or PIO.");
       }
-      LPC_IOCON->PIO1_8 = (LPC_IOCON->PIO1_8 & ~mask) | f | other;
+      LPC_IOCON->PIO1_8 = f | other;
       break;
     case P1_9:
       switch (func) {
@@ -277,26 +272,26 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO1_9 can only be used as CT16B1_MAT0 or PIO.");
       }
-      LPC_IOCON->PIO1_9 = (LPC_IOCON->PIO1_9 & ~mask) | f | other;
+      LPC_IOCON->PIO1_9 = f | other;
       break;
     case P1_10:
       switch (func) {
-        case PIO: f = 0; mask |= 1 << 7; other |= 1 << 7; break;
-        case AD6: f = 1; mask |= 1 << 7; break;
-        case CT16B1_MAT1: f = 2; mask |= 1 << 7; other |= 1 << 7; break;
+        case PIO: f = 0; other |= 1 << 7; break;
+        case AD6: f = 1; break;
+        case CT16B1_MAT1: f = 2; other |= 1 << 7; break;
         default:
           ERROR("PIO1_10 can only be used as AD6, CT16B1_MAT1 or PIO.");
       }
-      LPC_IOCON->PIO1_10 = (LPC_IOCON->PIO1_10 & ~mask) | f | other;
+      LPC_IOCON->PIO1_10 = f | other;
       break;
     case P1_11:
       switch (func) {
-        case PIO: f = 0; mask |= 1 << 7; other |= 1 << 7; break;
-        case AD7: f = 1; mask |= 1 << 7; break;
+        case PIO: f = 0; other |= 1 << 7; break;
+        case AD7: f = 1; break;
         default:
           ERROR("PIO1_11 can only be used as AD7 or PIO.");
       }
-      LPC_IOCON->PIO1_11 = (LPC_IOCON->PIO1_11 & ~mask) | f | other;
+      LPC_IOCON->PIO1_11 = f | other;
       break;
     case P2_0:
       switch (func) {
@@ -305,7 +300,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
         default:
           ERROR("PIO2_0 can only be used as nDTR or PIO.");
       }
-      LPC_IOCON->PIO2_0 = (LPC_IOCON->PIO2_0 & ~mask) | f | other;
+      LPC_IOCON->PIO2_0 = f | other;
       break;
     default:
       ERROR("Invalid IO pin.");

@@ -302,6 +302,11 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       }
       LPC_IOCON->PIO2_0 = f | other;
       break;
+    case P3_2:
+      if (func != PIO) ERROR("PIO3_2 can only be used as PIO.");
+      f = 0;
+      LPC_IOCON->PIO3_2 = f | other;
+      break;
     default:
       ERROR("Invalid IO pin.");
   }

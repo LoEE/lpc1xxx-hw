@@ -329,6 +329,51 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       }
       LPC_IOCON->PIO2_3 = f | other;
       break;
+    case P2_4:
+      if (func != PIO) ERROR("PIO2_4 can only be used as PIO.");
+      f = 0;
+      LPC_IOCON->PIO2_4 = f | other;
+      break;
+    case P2_4:
+      if (func != PIO) ERROR("PIO2_4 can only be used as PIO.");
+      f = 0;
+      LPC_IOCON->PIO2_4 = f | other;
+      break;
+    case P2_5:
+      if (func != PIO) ERROR("PIO2_5 can only be used as PIO.");
+      f = 0;
+      LPC_IOCON->PIO2_5 = f | other;
+      break;
+    case P2_5:
+      if (func != PIO) ERROR("PIO2_5 can only be used as PIO.");
+      f = 0;
+      LPC_IOCON->PIO2_5 = f | other;
+      break;
+    case P2_6:
+      if (func != PIO) ERROR("PIO2_6 can only be used as PIO.");
+      f = 0;
+      LPC_IOCON->PIO2_6 = f | other;
+      break;
+    case P2_7:
+      if (func != PIO) ERROR("PIO2_7 can only be used as PIO.");
+      f = 0;
+      LPC_IOCON->PIO2_7 = f | other;
+      break;
+    case P2_8:
+      if (func != PIO) ERROR("PIO2_8 can only be used as PIO.");
+      f = 0;
+      LPC_IOCON->PIO2_8 = f | other;
+      break;
+    case P2_9:
+      if (func != PIO) ERROR("PIO2_9 can only be used as PIO.");
+      f = 0;
+      LPC_IOCON->PIO2_9 = f | other;
+      break;
+    case P2_10:
+      if (func != PIO) ERROR("PIO2_10 can only be used as PIO.");
+      f = 0;
+      LPC_IOCON->PIO2_10 = f | other;
+      break;
     case P2_11:
       switch (func) {
         case PIO: f = 0; break;
@@ -337,6 +382,26 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
           ERROR("PIO2_11 can only be used as SCK or PIO.");
       }
       LPC_IOCON->PIO2_11 = f | other;
+      break;
+    case P3_0:
+      if (func != PIO) ERROR("PIO3_0 can only be used as PIO.");
+      f = 0;
+      LPC_IOCON->PIO3_0 = f | other;
+      break;
+    case P3_1:
+      if (func != PIO) ERROR("PIO3_1 can only be used as PIO.");
+      f = 0;
+      LPC_IOCON->PIO3_1 = f | other;
+      break;
+    case P3_2:
+      if (func != PIO) ERROR("PIO3_2 can only be used as PIO.");
+      f = 0;
+      LPC_IOCON->PIO3_2 = f | other;
+      break;
+    case P3_3:
+      if (func != PIO) ERROR("PIO3_3 can only be used as PIO.");
+      f = 0;
+      LPC_IOCON->PIO3_3 = f | other;
       break;
     default:
       ERROR("Invalid IO pin.");

@@ -149,16 +149,19 @@ enum pio_pin {
           int other = mode << 3 | hyst << 5 | 1 << 6;
           switch (pin) {
             @(for/nl ([p (in-list po)]
-                      #:when (and (pin-name p) (pin-has-functions? p)))
+                      #:when (and (pin-name p)))
                @list{case @(pin-enum-name p):
-                       switch (func) {
-                         @(for/nl ([i (in-naturals)] [f (in-list (pin-functions p))])
-                            (do-pin i p f))
-                         default:
-                           ERROR("@(pin-name p) can only be used as @(add-newlines
-                                                                      (remove "PIO" (pin-enum-names p))
-                                                                      #:sep ", ") or PIO.");
-                       }
+                       @(if (pin-has-functions? p)
+                            @list{switch (func) {
+                                    @(for/nl ([i (in-naturals)] [f (in-list (pin-functions p))])
+                                       (do-pin i p f))
+                                    default:
+                                      ERROR("@(pin-name p) can only be used as @(add-newlines
+                                                                                 (remove "PIO" (pin-enum-names p))
+                                                                                 #:sep ", ") or PIO.");
+                                  }}
+                            @list{if (func != PIO) ERROR("@(pin-name p) can only be used as PIO.");
+                                  f = 0;})
                        @list{@(pin-iocon-name p) = f | other;}
                        break;})
             default:

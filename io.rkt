@@ -132,7 +132,8 @@ enum pio_pin {
                       @list{if (mode == I2C_FAST_PLUS)
                               ERROR("I2C_FAST_PLUS cannot be used with PIO function.");@"\n"})@;
                    if (hyst)
-                     ERROR("Hysteresis is not available on I2C pins.");}]
+                     ERROR("Hysteresis is not available on I2C pins.");
+                   break;}]
           [(equal? fun "SCK")
            (define v (dict-ref '([PIO0_10 0]
                                  [PIO2_11 1]

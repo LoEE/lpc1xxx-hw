@@ -90,9 +90,11 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
             ERROR("I2C_FAST_PLUS cannot be used with PIO function.");
           if (hyst)
             ERROR("Hysteresis is not available on I2C pins.");
+          break;
         case SCL: f = 1; other = mode << 8;
           if (hyst)
             ERROR("Hysteresis is not available on I2C pins.");
+          break;
         default:
           ERROR("PIO0_4 can only be used as SCL or PIO.");
       }
@@ -105,9 +107,11 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
             ERROR("I2C_FAST_PLUS cannot be used with PIO function.");
           if (hyst)
             ERROR("Hysteresis is not available on I2C pins.");
+          break;
         case SDA: f = 1; other = mode << 8;
           if (hyst)
             ERROR("Hysteresis is not available on I2C pins.");
+          break;
         default:
           ERROR("PIO0_5 can only be used as SDA or PIO.");
       }

@@ -78,13 +78,13 @@ INLINE void set_clock (int bit, int on)
 
 @(decl 'gpio "int on") { set_clock (6, on); }
 
-@(decl 'ct16b0 "int on") { set_clock (6, on); }
+@(decl 'ct16b0 "int on") { set_clock (7, on); }
 
-@(decl 'ct16b1 "int on") { set_clock (7, on); }
+@(decl 'ct16b1 "int on") { set_clock (8, on); }
 
-@(decl 'ct32b0 "int on") { set_clock (8, on); }
+@(decl 'ct32b0 "int on") { set_clock (9, on); }
 
-@(decl 'ct32b1 "int on") { set_clock (9, on); }
+@(decl 'ct32b1 "int on") { set_clock (10, on); }
 
 @(decl 'iocon "int on") { set_clock (16, on); }
 

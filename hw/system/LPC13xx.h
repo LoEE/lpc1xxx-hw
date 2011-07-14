@@ -48,13 +48,13 @@ INLINE void i2c_system_setup (int on)
 
 INLINE void gpio_setup (int on) { set_clock (6, on); }
 
-INLINE void ct16b0_setup (int on) { set_clock (6, on); }
+INLINE void ct16b0_setup (int on) { set_clock (7, on); }
 
-INLINE void ct16b1_setup (int on) { set_clock (7, on); }
+INLINE void ct16b1_setup (int on) { set_clock (8, on); }
 
-INLINE void ct32b0_setup (int on) { set_clock (8, on); }
+INLINE void ct32b0_setup (int on) { set_clock (9, on); }
 
-INLINE void ct32b1_setup (int on) { set_clock (9, on); }
+INLINE void ct32b1_setup (int on) { set_clock (10, on); }
 
 INLINE void iocon_setup (int on) { set_clock (16, on); }
 

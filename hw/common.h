@@ -16,4 +16,6 @@
     CONCAT(e,cnt)(); })
 #define ERROR(msg) _ERROR(msg,__COUNTER__)
 
+#define VOLATILE(x) (*(volatile typeof(x) *)(&x))
+
 #endif

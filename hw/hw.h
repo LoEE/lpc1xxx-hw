@@ -22,6 +22,9 @@
 #  endif
 #  include "CMSIS/LPC13xx.h"
 #  include "system/LPC13xx.h"
+
+#  define _WakeUp_Handler_FOR(pin_name) WakeUp##pin_name##_Handler
+#  define WakeUp_Handler_FOR(pin_name) _WakeUp_Handler_FOR(pin_name)
 #endif
 
 #if defined(LPC131x) && defined(LQFP48)
@@ -38,5 +41,6 @@
 
 #include "uart.h"
 #include "time.h"
+#include "ssp.h"
 
 #endif // HW_H

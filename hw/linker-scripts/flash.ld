@@ -19,10 +19,6 @@ OUTPUT_ARCH(arm)
 
 ENTRY(Reset_Handler)
 
-MEMORY {
-  MESSAGES (wx)  : ORIGIN = 0xFF000000, LENGTH = 64K * 16
-}
-
 SECTIONS {
   . = 0;
 
@@ -48,13 +44,6 @@ SECTIONS {
     . = ALIGN(4);
     _ebss = .;
   } > SRAM
-
-  .messages : {
-    LONG(ORIGIN(MESSAGES));
-    LONG(LENGTH(MESSAGES));
-    . = ALIGN(16);
-    *(SORT_BY_NAME(.messages))
-  } > MESSAGES
 
   _sstack = ORIGIN(SRAM) + LENGTH(SRAM) - 32; /* 32 bytes for IAP */
 }

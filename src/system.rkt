@@ -2,7 +2,7 @@
 (require scribble/text
          "common.rkt")
 
-(define output-dir "hw/system")
+(define output-dir "../system")
 
 (define (main)
   (make-directory/remove output-dir)

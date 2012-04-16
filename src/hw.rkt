@@ -3,7 +3,7 @@
          "common.rkt"
          "devices.rkt")
 
-(define output-dir "hw")
+(define output-dir "../")
 
 (define (main)
   (make-directory/ignore output-dir)

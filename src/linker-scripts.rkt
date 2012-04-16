@@ -3,7 +3,7 @@
          "common.rkt"
          "devices.rkt")
 
-(define output-dir "hw/linker-scripts")
+(define output-dir "../linker-scripts")
 
 (define (main)
   (make-directory/remove output-dir)

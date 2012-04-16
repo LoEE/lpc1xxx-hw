@@ -3,7 +3,7 @@
          "common.rkt"
          "devices.rkt")
 
-(define output-dir "hw/io")
+(define output-dir "../io")
 
 (define (main)
   (make-directory/remove output-dir)

@@ -42,7 +42,7 @@ INLINE void flash_array_setup (int on) { set_clock (4, on); }
 
 INLINE void i2c_system_setup (int on)
 {
-  LPC_SYSCON->PRESETCTRL = (LPC_SYSCON->PRESETCTRL & ~(1 << 0)) | (on ? 1 << 0 : 0);
+  LPC_SYSCON->PRESETCTRL = (LPC_SYSCON->PRESETCTRL & ~(1 << 1)) | (on ? 1 << 1 : 0);
   set_clock (5, on);
 }
 

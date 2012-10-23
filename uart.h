@@ -15,6 +15,10 @@
 /*
  * API
  */
+#ifdef LPC12xx
+#define UART_TypeDef LPC_UART0_Type
+#endif
+
 #define UART_ERRORS enum {                                                         \
   OVERRUN = 1<< (1+8), PARITY = 1<< (2+8), FRAMING = 1<< (3+8), BREAK = 1<< (4+8), \
 }

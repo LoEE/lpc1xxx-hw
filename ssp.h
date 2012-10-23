@@ -1,6 +1,12 @@
 #ifndef SSP_H
 #define SSP_H
 
+#ifdef LPC12xx
+#define SSP_TypeDef LPC_SSP_Type
+#endif
+
+
+
 #define SSP_BITS enum { \
   DSS = 0, CPOL = 6, CPHA = 7, SCR = 8, /* CR0 */ \
   LBM = 0, SSE = 1, MS = 2, SOD = 3, /* CR1 */ \

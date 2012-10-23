@@ -104,6 +104,9 @@
 #define VECTORS CM3_VECTORS LPC17xx_VECTORS
 #elif defined (LPC13xx)
 #define VECTORS CM3_VECTORS LPC13xx_VECTORS
+#elif defined (LPC12xx)
+#define VECTORS CM3_VECTORS
+// TODO: add LPC12xx_VECTORS
 #else
 #error "Unknown processor type."
 #endif

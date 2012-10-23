@@ -41,7 +41,7 @@
   (define-values (start size)
     (case (device-family device)
       [(lpc17xx) (values 0 #x200)] ;; FIXME: wrong start
-      [(lpc13xx) (values 0 #x260)]
+      [(lpc13xx lpc12xx) (values 0 #x260)]
       [else (unknown-device-family-error device)]))
   (memory-subblock (device-ram-block device) 'boot-ram start size))
 
@@ -52,15 +52,15 @@
        [(8 16) (memory-map
                 `[SRAM  #x10000000 ,(device-total-ram device)])]
        [(32)   (memory-map #:size-unit 'k
-                `[SRAM  #x10000000 16]
-                `[SRAM0 #x2007C000 16])]
+                           `[SRAM  #x10000000 16]
+                           `[SRAM0 #x2007C000 16])]
        [(64)   (memory-map #:size-unit 'k
-                `[SRAM  #x10000000 32]
-                `[SRAM0 #x2007C000 16]
-                `[SRAM1 #x20080000 16])]
+                           `[SRAM  #x10000000 32]
+                           `[SRAM0 #x2007C000 16]
+                           `[SRAM1 #x20080000 16])]
        [else
         (error 'device-ram-map "device RAM map unknown for device: ~a" (device-model device))])]
-    [(lpc13xx)
+    [(lpc13xx lpc12xx)
      (memory-map
       `[SRAM #x10000000 ,(device-total-ram device)])]
     [else
@@ -112,4 +112,18 @@
   [#x25001121 lpc17xx LPC1752 LQFP80    64 16]
   [#x25001118 lpc17xx LPC1751 LQFP80    32  8]
   [#x25001110 lpc17xx LPC1751 LQFP80    32  8]
+  ;; LPC12xx
+  [#x3670002B lpc12xx LPC12D27_301 LQFP100 128 8]
+  [#x3670002B lpc12xx LPC1227_301  LQFP64  128 8]
+  [#x3670002B lpc12xx LPC1227_301  LQFP48  128 8]
+  [#x3660002B lpc12xx LPC1226_301  LQFP64  96  8]
+  [#x3660002B lpc12xx LPC1226_301  LQFP48  96  8]
+  [#x3652002B lpc12xx LPC1225_321  LQFP64  80  8]
+  [#x3650002B lpc12xx LPC1225_301  LQFP64  64  8]
+  [#x3652002B lpc12xx LPC1225_321  LQFP48  80  8]
+  [#x3650002B lpc12xx LPC1225_301  LQFP48  64  8]
+  [#x3642C02B lpc12xx LPC1224_121  LQFP64  48  4]
+  [#x3640C02B lpc12xx LPC1224_101  LQFP64  32  4]
+  [#x3642C02B lpc12xx LPC1224_121  LQFP48  48  4]
+  [#x3640C02B lpc12xx LPC1224_101  LQFP48  32  4]
   )

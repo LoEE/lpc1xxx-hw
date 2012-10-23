@@ -18,6 +18,11 @@
 #  define LPC13xx
 #  define LPC134x
 #  define CPU_HAS_USB
+#elif defined(LPC12D27_301) || defined(LPC1227_301) || defined(LPC1227_301) || defined(LPC1226_301) || defined(LPC1226_301) \
+   || defined(LPC1225_321) || defined(LPC1225_301) || defined(LPC1225_321) || defined(LPC1225_301) || defined(LPC1224_121) \
+   || defined(LPC1224_101) || defined(LPC1224_121) || defined(LPC1224_101)
+#  define LPC12xx
+#  define LPC122x
 #else
 #  error "No supported CPU type defined."
 #endif

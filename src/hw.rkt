@@ -25,6 +25,11 @@
 #  define LPC13xx
 #  define LPC134x
 #  define CPU_HAS_USB
+#elif defined(LPC12D27_301) || defined(LPC1227_301) || defined(LPC1227_301) || defined(LPC1226_301) || defined(LPC1226_301) \
+   || defined(LPC1225_321) || defined(LPC1225_301) || defined(LPC1225_321) || defined(LPC1225_301) || defined(LPC1224_121) \
+   || defined(LPC1224_101) || defined(LPC1224_121) || defined(LPC1224_101)
+#  define LPC12xx
+#  define LPC122x
 #else
 #  error "No supported CPU type defined."
 #endif
@@ -40,7 +45,7 @@
 
 #include "cpu.h"
 
-#ifdef LPC13xx
+#if defined(LPC13xx)
 #  if !defined(LQFP48) && !defined(HVQFN33)
 #    error "No supported CPU package types defined."
 #  endif
@@ -49,12 +54,24 @@
 
 #  define _WakeUp_Handler_FOR(pin_name) WakeUp##pin_name##_Handler
 #  define WakeUp_Handler_FOR(pin_name) _WakeUp_Handler_FOR(pin_name)
+#elif defined(LPC122x)
+#  if !defined(LQFP48) && !defined(LQFP64)
+#    error "No supported CPU package types defined."
+#  endif
+#  include "CMSIS/LPC122x.h"
 #endif
 
 #if@;
 @(disable-prefix (add-newlines #:sep "\n#elif"
    (for*/list ([family '(LPC131x LPC134x)]
                [package '(LQFP48 HVQFN33)])
+     @list{
+ defined(@family) && defined(@package)
+#  include "io/@|family|-@|package|.h"})))
+#elif@;
+@(disable-prefix (add-newlines #:sep "\n#elif"
+   (for*/list ([family '(LPC122x)]
+               [package '(LQFP48 LQFP64)])
      @list{
  defined(@family) && defined(@package)
 #  include "io/@|family|-@|package|.h"})))

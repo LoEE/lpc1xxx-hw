@@ -298,9 +298,9 @@ INLINE void uart_clock_setup (int div)
 INLINE void ssp_clock_setup (int div)
 {
   if (div < 0 || div > 255) ERROR("SSP clock divider value out of range [0-255].");
-  LPC_SYSCON->PRESETCTRL = (LPC_SYSCON->PRESETCTRL & ~(1 << 0)) | (div ? 1 << 0 : 0);
   set_clock (11, div ? 1 : 0);
   LPC_SYSCON->SSPCLKDIV = div;
+  LPC_SYSCON->PRESETCTRL = (LPC_SYSCON->PRESETCTRL & ~(1 << 0)) | (div ? 1 << 0 : 0);
 }
 
 INLINE void adc_system_setup (int on) { set_power (4, on); set_clock (13, on); }

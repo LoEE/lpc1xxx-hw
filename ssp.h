@@ -7,8 +7,13 @@
   TFE = 0, TNF = 1, RNE = 2, RFF = 3, BSY = 4, /* SR */ \
 }
 
+enum {
+  SSP_SLAVE  = 1 << 2,
+  SSP_MASTER = 0 << 2,
+};
+
 INLINE
-void ssp_setup_raw (SSP_TypeDef *SSP, int div1, int div2, int data_size, int cpol, int cpha)
+void ssp_setup_raw (SSP_TypeDef *SSP, int mode, int div1, int div2, int data_size, int cpol, int cpha)
 {
   data_size--; div2--;
 
@@ -17,12 +22,14 @@ void ssp_setup_raw (SSP_TypeDef *SSP, int div1, int div2, int data_size, int cpo
   SSP->CR1 = 0;
   SSP->CR0 = (data_size << DSS) | (cpol << CPOL) | (cpha << CPHA) | (div2 << SCR);
   SSP->CPSR = div1;
-  SSP->CR1 = (1 << SSE);// | (1<<LBM) ;
+  SSP->CR1 = mode;
+  SSP->CR1 = (1 << SSE) | mode;// | (1<<LBM) ;
 }
 
 INLINE
-void ssp_setup (SSP_TypeDef *SSP, int div1, int div2, int data_size, int cpol, int cpha)
+void ssp_setup (SSP_TypeDef *SSP, int mode, int div1, int div2, int data_size, int cpol, int cpha)
 {
+  if (mode != SSP_MASTER && mode != SSP_SLAVE) { ERROR ("Mode is not SSP_MASTER or SSP_SLAVE."); }
   if (data_size < 4 || data_size > 16) { ERROR ("Data size is out of range [4-16]."); }
   if (cpol != 0 && cpol != 1) { ERROR ("CPOL is not 1 or 0."); }
   if (cpha != 0 && cpha != 1) { ERROR ("CPHA is not 1 or 0."); }
@@ -30,7 +37,7 @@ void ssp_setup (SSP_TypeDef *SSP, int div1, int div2, int data_size, int cpol, i
   if (div1 % 2 != 0) { ERROR ("Divisor 1 is not even."); }
   if (div2 < 1 || div2 > 256) { ERROR ("Divisor 2 is out of range [1-256]."); }
 
-  ssp_setup_raw (SSP, div1, div2, data_size, cpol, cpha);
+  ssp_setup_raw (SSP, mode, div1, div2, data_size, cpol, cpha);
 }
 
 int ssp_tx_empty (SSP_TypeDef *SSP);

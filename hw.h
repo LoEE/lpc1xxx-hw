@@ -16,7 +16,7 @@
 
 #include "cpu.h"
 
-#ifdef LPC13xx
+#if defined(LPC13xx)
 #  if !defined(LQFP48) && !defined(HVQFN33)
 #    error "No supported CPU package types defined."
 #  endif
@@ -25,6 +25,11 @@
 
 #  define _WakeUp_Handler_FOR(pin_name) WakeUp##pin_name##_Handler
 #  define WakeUp_Handler_FOR(pin_name) _WakeUp_Handler_FOR(pin_name)
+#elif defined(LPC122x)
+#  if !defined(LQFP48) && !defined(LQFP64)
+#    error "No supported CPU package types defined."
+#  endif
+#  include "CMSIS/LPC122x.h"
 #endif
 
 #if defined(LPC131x) && defined(LQFP48)
@@ -35,6 +40,10 @@
 #  include "io/LPC134x-LQFP48.h"
 #elif defined(LPC134x) && defined(HVQFN33)
 #  include "io/LPC134x-HVQFN33.h"
+#elif defined(LPC122x) && defined(LQFP48)
+#  include "io/LPC122x-LQFP48.h"
+#elif defined(LPC122x) && defined(LQFP64)
+#  include "io/LPC122x-LQFP64.h"
 #else
 #  error "The given CPU type and package combination is invalid."
 #endif

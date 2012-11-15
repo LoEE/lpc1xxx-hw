@@ -72,7 +72,7 @@ INLINE void set_clock (int bit, int on)
 
 @(decl 'i2c_system "int on")
 {
-  @(set/bit 'LPC_SYSCON->PRESETCTRL 0 'on)
+  @(set/bit 'LPC_SYSCON->PRESETCTRL 1 'on)
   set_clock (5, on);
 }
 

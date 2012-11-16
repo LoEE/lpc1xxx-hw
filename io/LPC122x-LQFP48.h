@@ -24,7 +24,7 @@ enum io_mode {
 };
 
 enum io_function {
-  PIO, nRTS0, RXD0, CT32B0_CAP0, CT32B0_MAT0, TXD0, CT32B0_CAP1, CT32B0_MAT1, nDTR0, CT32B0_CAP2, CT32B0_MAT2, nDSR0, CT32B0_CAP3, CT32B0_MAT3, nDCD0, nRI0, CT32B1_CAP0, CT32B1_MAT0, nCTS0, CT32B1_CAP1, CT32B1_MAT1, RXD1, CT32B1_CAP2, CT32B1_MAT2, TXD1, CT32B1_CAP3, CT32B1_MAT3, SCL, SDA, CT16B0_CAP0, CT16B0_MAT0, CLKOUT, CT16B0_CAP1, CT16B0_MAT1, nRESET, SCK, SSEL, CT16B1_CAP0, CT16B1_MAT0, MISO, CT16B1_CAP1, CT16B1_MAT1, MOSI, SWCLK, ACMP0_I0, ACMP0_I1, ACMP0_I2, ACMP0_I3, ACMP1_I0, ACMP1_I1, SWDIO, ACMP1_I2, ACMP1_I3, ACMP0_O, ACMP1_O, ROSC, AD0, AD1, AD2, AD3, AD4, AD5, WAKEUP, AD6, AD7
+  PIO, nRTS0, RXD0, CT32B0_CAP0, CT32B0_MAT0, TXD0, CT32B0_CAP1, CT32B0_MAT1, nDTR0, CT32B0_CAP2, CT32B0_MAT2, nDSR0, CT32B0_CAP3, CT32B0_MAT3, nDCD0, nRI0, CT32B1_CAP0, CT32B1_MAT0, nCTS0, CT32B1_CAP1, CT32B1_MAT1, RXD1, CT32B1_CAP2, CT32B1_MAT2, TXD1, CT32B1_CAP3, CT32B1_MAT3, SCL, SDA, CT16B0_CAP0, CT16B0_MAT0, CLKOUT, CT16B0_CAP1, CT16B0_MAT1, nRESET, SCK, SSEL, CT16B1_CAP0, CT16B1_MAT0, MISO, CT16B1_CAP1, CT16B1_MAT1, MOSI, SWCLK, ACMP0_I0, ACMP0_I1, ACMP0_I2, ACMP0_I3, ACMP1_I0, ACMP1_I1, SWDIO, ACMP1_I2, ACMP1_I3, ACMP0_O, ACMP1_O, ROSC, AD0, AD1, AD2, AD3, AD4, AD5, AD6, AD7
 };
 
 enum pio_pin {
@@ -40,7 +40,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_0:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case nRTS0: f = 1; other |= 1 << 7; break;
+        case nRTS0: f = 2; other |= 1 << 7; break;
         default:
           ERROR("PIO0_0 can only be used as nRTS0 or PIO.");
       }
@@ -49,9 +49,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_1:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case RXD0: f = 1; other |= 1 << 7; break;
-        case CT32B0_CAP0: f = 2; other |= 1 << 7; break;
-        case CT32B0_MAT0: f = 3; other |= 1 << 7; break;
+        case RXD0: f = 2; other |= 1 << 7; break;
+        case CT32B0_CAP0: f = 3; other |= 1 << 7; break;
+        case CT32B0_MAT0: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_1 can only be used as RXD0, CT32B0_CAP0, CT32B0_MAT0 or PIO.");
       }
@@ -60,9 +60,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_2:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case TXD0: f = 1; other |= 1 << 7; break;
-        case CT32B0_CAP1: f = 2; other |= 1 << 7; break;
-        case CT32B0_MAT1: f = 3; other |= 1 << 7; break;
+        case TXD0: f = 2; other |= 1 << 7; break;
+        case CT32B0_CAP1: f = 3; other |= 1 << 7; break;
+        case CT32B0_MAT1: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_2 can only be used as TXD0, CT32B0_CAP1, CT32B0_MAT1 or PIO.");
       }
@@ -71,9 +71,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_3:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case nDTR0: f = 1; other |= 1 << 7; break;
-        case CT32B0_CAP2: f = 2; other |= 1 << 7; break;
-        case CT32B0_MAT2: f = 3; other |= 1 << 7; break;
+        case nDTR0: f = 2; other |= 1 << 7; break;
+        case CT32B0_CAP2: f = 3; other |= 1 << 7; break;
+        case CT32B0_MAT2: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_3 can only be used as nDTR0, CT32B0_CAP2, CT32B0_MAT2 or PIO.");
       }
@@ -82,9 +82,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_4:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case nDSR0: f = 1; other |= 1 << 7; break;
-        case CT32B0_CAP3: f = 2; other |= 1 << 7; break;
-        case CT32B0_MAT3: f = 3; other |= 1 << 7; break;
+        case nDSR0: f = 2; other |= 1 << 7; break;
+        case CT32B0_CAP3: f = 3; other |= 1 << 7; break;
+        case CT32B0_MAT3: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_4 can only be used as nDSR0, CT32B0_CAP3, CT32B0_MAT3 or PIO.");
       }
@@ -93,7 +93,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_5:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case nDCD0: f = 1; other |= 1 << 7; break;
+        case nDCD0: f = 2; other |= 1 << 7; break;
         default:
           ERROR("PIO0_5 can only be used as nDCD0 or PIO.");
       }
@@ -102,9 +102,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_6:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case nRI0: f = 1; other |= 1 << 7; break;
-        case CT32B1_CAP0: f = 2; other |= 1 << 7; break;
-        case CT32B1_MAT0: f = 3; other |= 1 << 7; break;
+        case nRI0: f = 2; other |= 1 << 7; break;
+        case CT32B1_CAP0: f = 3; other |= 1 << 7; break;
+        case CT32B1_MAT0: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_6 can only be used as nRI0, CT32B1_CAP0, CT32B1_MAT0 or PIO.");
       }
@@ -113,9 +113,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_7:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case nCTS0: f = 1; other |= 1 << 7; break;
-        case CT32B1_CAP1: f = 2; other |= 1 << 7; break;
-        case CT32B1_MAT1: f = 3; other |= 1 << 7; break;
+        case nCTS0: f = 2; other |= 1 << 7; break;
+        case CT32B1_CAP1: f = 3; other |= 1 << 7; break;
+        case CT32B1_MAT1: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_7 can only be used as nCTS0, CT32B1_CAP1, CT32B1_MAT1 or PIO.");
       }
@@ -124,9 +124,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_8:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case RXD1: f = 1; other |= 1 << 7; break;
-        case CT32B1_CAP2: f = 2; other |= 1 << 7; break;
-        case CT32B1_MAT2: f = 3; other |= 1 << 7; break;
+        case RXD1: f = 2; other |= 1 << 7; break;
+        case CT32B1_CAP2: f = 3; other |= 1 << 7; break;
+        case CT32B1_MAT2: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_8 can only be used as RXD1, CT32B1_CAP2, CT32B1_MAT2 or PIO.");
       }
@@ -135,9 +135,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_9:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case TXD1: f = 1; other |= 1 << 7; break;
-        case CT32B1_CAP3: f = 2; other |= 1 << 7; break;
-        case CT32B1_MAT3: f = 3; other |= 1 << 7; break;
+        case TXD1: f = 2; other |= 1 << 7; break;
+        case CT32B1_CAP3: f = 3; other |= 1 << 7; break;
+        case CT32B1_MAT3: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_9 can only be used as TXD1, CT32B1_CAP3, CT32B1_MAT3 or PIO.");
       }
@@ -145,13 +145,13 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
       break;
     case P0_10:
       switch (func) {
-        case PIO: f = 0; other |= 1 << 7;
+        case PIO: f = 0; other |= 1 << 7 | 1 << 10;
           if (mode & PULL_UP)
             ERROR("Pull-up is not available on I2C pins.");
           if (mode & IO_HIGH_DRIVE)
             ERROR("High output drive is not available on I2C pins.");
           break;
-        case SCL: f = 1; other |= 1 << 7;
+        case SCL: f = 2; other |= 1 << 7 | 1 << 10;
           if (mode & PULL_UP)
             ERROR("Pull-up is not available on I2C pins.");
           if (mode & IO_HIGH_DRIVE)
@@ -164,25 +164,25 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
       break;
     case P0_11:
       switch (func) {
-        case PIO: f = 0; other |= 1 << 7;
+        case PIO: f = 0; other |= 1 << 7 | 1 << 10;
           if (mode & PULL_UP)
             ERROR("Pull-up is not available on I2C pins.");
           if (mode & IO_HIGH_DRIVE)
             ERROR("High output drive is not available on I2C pins.");
           break;
-        case SDA: f = 1; other |= 1 << 7;
+        case SDA: f = 2; other |= 1 << 7 | 1 << 10;
           if (mode & PULL_UP)
             ERROR("Pull-up is not available on I2C pins.");
           if (mode & IO_HIGH_DRIVE)
             ERROR("High output drive is not available on I2C pins.");
           break;
-        case CT16B0_CAP0: f = 2; other |= 1 << 7;
+        case CT16B0_CAP0: f = 3; other |= 1 << 7 | 1 << 10;
           if (mode & PULL_UP)
             ERROR("Pull-up is not available on I2C pins.");
           if (mode & IO_HIGH_DRIVE)
             ERROR("High output drive is not available on I2C pins.");
           break;
-        case CT16B0_MAT0: f = 3; other |= 1 << 7;
+        case CT16B0_MAT0: f = 4; other |= 1 << 7 | 1 << 10;
           if (mode & PULL_UP)
             ERROR("Pull-up is not available on I2C pins.");
           if (mode & IO_HIGH_DRIVE)
@@ -196,9 +196,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_12:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case CLKOUT: f = 1; other |= 1 << 7; break;
-        case CT16B0_CAP1: f = 2; other |= 1 << 7; break;
-        case CT16B0_MAT1: f = 3; other |= 1 << 7; break;
+        case CLKOUT: f = 2; other |= 1 << 7; break;
+        case CT16B0_CAP1: f = 3; other |= 1 << 7; break;
+        case CT16B0_MAT1: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_12 can only be used as CLKOUT, CT16B0_CAP1, CT16B0_MAT1 or PIO.");
       }
@@ -216,7 +216,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_14:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case SCK: f = 1; other |= 1 << 7; break;
+        case SCK: f = 2; other |= 1 << 7; break;
         default:
           ERROR("PIO0_14 can only be used as SCK or PIO.");
       }
@@ -225,9 +225,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_15:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case SSEL: f = 1; other |= 1 << 7; break;
-        case CT16B1_CAP0: f = 2; other |= 1 << 7; break;
-        case CT16B1_MAT0: f = 3; other |= 1 << 7; break;
+        case SSEL: f = 2; other |= 1 << 7; break;
+        case CT16B1_CAP0: f = 3; other |= 1 << 7; break;
+        case CT16B1_MAT0: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_15 can only be used as SSEL, CT16B1_CAP0, CT16B1_MAT0 or PIO.");
       }
@@ -236,9 +236,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_16:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case MISO: f = 1; other |= 1 << 7; break;
-        case CT16B1_CAP1: f = 2; other |= 1 << 7; break;
-        case CT16B1_MAT1: f = 3; other |= 1 << 7; break;
+        case MISO: f = 2; other |= 1 << 7; break;
+        case CT16B1_CAP1: f = 3; other |= 1 << 7; break;
+        case CT16B1_MAT1: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_16 can only be used as MISO, CT16B1_CAP1, CT16B1_MAT1 or PIO.");
       }
@@ -247,7 +247,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_17:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case MOSI: f = 1; other |= 1 << 7; break;
+        case MOSI: f = 2; other |= 1 << 7; break;
         default:
           ERROR("PIO0_17 can only be used as MOSI or PIO.");
       }
@@ -257,8 +257,8 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
         case SWCLK: f = 1; other |= 1 << 7; break;
-        case CT32B0_CAP0: f = 2; other |= 1 << 7; break;
-        case CT32B0_MAT0: f = 3; other |= 1 << 7; break;
+        case CT32B0_CAP0: f = 3; other |= 1 << 7; break;
+        case CT32B0_MAT0: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_18 can only be used as SWCLK, CT32B0_CAP0, CT32B0_MAT0 or PIO.");
       }
@@ -267,9 +267,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_19:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case ACMP0_I0: f = 1; other |= 1 << 7; break;
-        case CT32B0_CAP1: f = 2; other |= 1 << 7; break;
-        case CT32B0_MAT1: f = 3; other |= 1 << 7; break;
+        case ACMP0_I0: f = 2; other |= 1 << 7; break;
+        case CT32B0_CAP1: f = 3; other |= 1 << 7; break;
+        case CT32B0_MAT1: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_19 can only be used as ACMP0_I0, CT32B0_CAP1, CT32B0_MAT1 or PIO.");
       }
@@ -278,9 +278,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_20:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case ACMP0_I1: f = 1; other |= 1 << 7; break;
-        case CT32B0_CAP2: f = 2; other |= 1 << 7; break;
-        case CT32B0_MAT2: f = 3; other |= 1 << 7; break;
+        case ACMP0_I1: f = 2; other |= 1 << 7; break;
+        case CT32B0_CAP2: f = 3; other |= 1 << 7; break;
+        case CT32B0_MAT2: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_20 can only be used as ACMP0_I1, CT32B0_CAP2, CT32B0_MAT2 or PIO.");
       }
@@ -289,9 +289,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_21:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case ACMP0_I2: f = 1; other |= 1 << 7; break;
-        case CT32B0_CAP3: f = 2; other |= 1 << 7; break;
-        case CT32B0_MAT3: f = 3; other |= 1 << 7; break;
+        case ACMP0_I2: f = 2; other |= 1 << 7; break;
+        case CT32B0_CAP3: f = 3; other |= 1 << 7; break;
+        case CT32B0_MAT3: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_21 can only be used as ACMP0_I2, CT32B0_CAP3, CT32B0_MAT3 or PIO.");
       }
@@ -300,7 +300,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_22:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case ACMP0_I3: f = 1; other |= 1 << 7; break;
+        case ACMP0_I3: f = 2; other |= 1 << 7; break;
         default:
           ERROR("PIO0_22 can only be used as ACMP0_I3 or PIO.");
       }
@@ -309,9 +309,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_23:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case ACMP1_I0: f = 1; other |= 1 << 7; break;
-        case CT32B1_CAP0: f = 2; other |= 1 << 7; break;
-        case CT32B1_MAT0: f = 3; other |= 1 << 7; break;
+        case ACMP1_I0: f = 2; other |= 1 << 7; break;
+        case CT32B1_CAP0: f = 3; other |= 1 << 7; break;
+        case CT32B1_MAT0: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_23 can only be used as ACMP1_I0, CT32B1_CAP0, CT32B1_MAT0 or PIO.");
       }
@@ -320,9 +320,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_24:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case ACMP1_I1: f = 1; other |= 1 << 7; break;
-        case CT32B1_CAP1: f = 2; other |= 1 << 7; break;
-        case CT32B1_MAT1: f = 3; other |= 1 << 7; break;
+        case ACMP1_I1: f = 2; other |= 1 << 7; break;
+        case CT32B1_CAP1: f = 3; other |= 1 << 7; break;
+        case CT32B1_MAT1: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_24 can only be used as ACMP1_I1, CT32B1_CAP1, CT32B1_MAT1 or PIO.");
       }
@@ -331,10 +331,10 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_25:
       switch (func) {
         case SWDIO: f = 0; other |= 1 << 7; break;
-        case ACMP1_I2: f = 1; other |= 1 << 7; break;
-        case CT32B1_CAP2: f = 2; other |= 1 << 7; break;
-        case CT32B1_MAT2: f = 3; other |= 1 << 7; break;
-        case PIO: f = 4; other |= 1 << 7; break;
+        case ACMP1_I2: f = 2; other |= 1 << 7; break;
+        case CT32B1_CAP2: f = 3; other |= 1 << 7; break;
+        case CT32B1_MAT2: f = 4; other |= 1 << 7; break;
+        case PIO: f = 6; other |= 1 << 7; break;
         default:
           ERROR("PIO0_25 can only be used as SWDIO, ACMP1_I2, CT32B1_CAP2, CT32B1_MAT2 or PIO.");
       }
@@ -343,10 +343,10 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_26:
       switch (func) {
         case SWCLK: f = 0; other |= 1 << 7; break;
-        case ACMP1_I3: f = 1; other |= 1 << 7; break;
-        case CT32B1_CAP3: f = 2; other |= 1 << 7; break;
-        case CT32B1_MAT3: f = 3; other |= 1 << 7; break;
-        case PIO: f = 4; other |= 1 << 7; break;
+        case ACMP1_I3: f = 2; other |= 1 << 7; break;
+        case CT32B1_CAP3: f = 3; other |= 1 << 7; break;
+        case CT32B1_MAT3: f = 4; other |= 1 << 7; break;
+        case PIO: f = 6; other |= 1 << 7; break;
         default:
           ERROR("PIO0_26 can only be used as SWCLK, ACMP1_I3, CT32B1_CAP3, CT32B1_MAT3 or PIO.");
       }
@@ -355,7 +355,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_27:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case ACMP0_O: f = 1; other |= 1 << 7; break;
+        case ACMP0_O: f = 2; other |= 1 << 7; break;
         default:
           ERROR("PIO0_27 can only be used as ACMP0_O or PIO.");
       }
@@ -364,9 +364,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_28:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case ACMP1_O: f = 1; other |= 1 << 7; break;
-        case CT16B0_CAP0: f = 2; other |= 1 << 7; break;
-        case CT16B0_MAT0: f = 3; other |= 1 << 7; break;
+        case ACMP1_O: f = 2; other |= 1 << 7; break;
+        case CT16B0_CAP0: f = 3; other |= 1 << 7; break;
+        case CT16B0_MAT0: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_28 can only be used as ACMP1_O, CT16B0_CAP0, CT16B0_MAT0 or PIO.");
       }
@@ -375,9 +375,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_29:
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
-        case ROSC: f = 1; other |= 1 << 7; break;
-        case CT16B0_CAP1: f = 2; other |= 1 << 7; break;
-        case CT16B0_MAT1: f = 3; other |= 1 << 7; break;
+        case ROSC: f = 2; other |= 1 << 7; break;
+        case CT16B0_CAP1: f = 3; other |= 1 << 7; break;
+        case CT16B0_MAT1: f = 4; other |= 1 << 7; break;
         default:
           ERROR("PIO0_29 can only be used as ROSC, CT16B0_CAP1, CT16B0_MAT1 or PIO.");
       }
@@ -386,7 +386,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_30:
       switch (func) {
         case PIO: f = 1; other |= 1 << 7; break;
-        case AD0: f = 2; break;
+        case AD0: f = 3; break;
         default:
           ERROR("PIO0_30 can only be used as AD0 or PIO.");
       }
@@ -395,7 +395,7 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     case P0_31:
       switch (func) {
         case PIO: f = 1; other |= 1 << 7; break;
-        case AD1: f = 2; break;
+        case AD1: f = 3; break;
         default:
           ERROR("PIO0_31 can only be used as AD1 or PIO.");
       }
@@ -433,9 +433,8 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
       switch (func) {
         case PIO: f = 0; other |= 1 << 7; break;
         case AD5: f = 1; break;
-        case WAKEUP: f = 2; other |= 1 << 7; break;
         default:
-          ERROR("PIO1_3 can only be used as AD5, WAKEUP or PIO.");
+          ERROR("PIO1_3 can only be used as AD5 or PIO.");
       }
       LPC_IOCON->PIO1_3 = f | other;
       break;

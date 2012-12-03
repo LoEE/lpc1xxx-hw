@@ -14,6 +14,16 @@ void timer_start (timer *ti, uint32_t interval)
   ti->interval = interval;
 }
 
+void timer_restart (timer *ti)
+{
+  ti->start = current_time();
+}
+
+void timer_advance (timer *ti)
+{
+  ti->start += ti->interval;
+}
+
 void timer_stop (timer *ti)
 {
   timer_start (ti, 0xffffffff);

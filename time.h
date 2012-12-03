@@ -14,10 +14,14 @@ typedef struct timer {
 
 #define STOPPED_TIMER {0,-1}
 
-void timer_start (timer *ti, uint32_t interval);
-void timer_stop (timer *ti);
+void timer_start (timer *ti, uint32_t interval); // end = now + interval
+void timer_restart (timer *ti); // end = now + timer_interval
+void timer_advance (timer *ti); // end = old_end + timer_interval
+void timer_stop (timer *ti); // end = NEVER
+
 int timer_expired (timer *ti);
 int timer_stopped (timer *ti);
+
 void delay (uint32_t interval);
 uint32_t current_time (void);
 

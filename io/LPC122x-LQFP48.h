@@ -145,13 +145,13 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
       break;
     case P0_10:
       switch (func) {
-        case PIO: f = 0; other |= 1 << 7 | 1 << 10;
+        case PIO: f = 0; other |= 1 << 7;
           if (mode & PULL_UP)
             ERROR("Pull-up is not available on I2C pins.");
           if (mode & IO_HIGH_DRIVE)
             ERROR("High output drive is not available on I2C pins.");
           break;
-        case SCL: f = 2; other |= 1 << 7 | 1 << 10;
+        case SCL: f = 2; other |= 1 << 7;
           if (mode & PULL_UP)
             ERROR("Pull-up is not available on I2C pins.");
           if (mode & IO_HIGH_DRIVE)
@@ -164,25 +164,25 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
       break;
     case P0_11:
       switch (func) {
-        case PIO: f = 0; other |= 1 << 7 | 1 << 10;
+        case PIO: f = 0; other |= 1 << 7;
           if (mode & PULL_UP)
             ERROR("Pull-up is not available on I2C pins.");
           if (mode & IO_HIGH_DRIVE)
             ERROR("High output drive is not available on I2C pins.");
           break;
-        case SDA: f = 2; other |= 1 << 7 | 1 << 10;
+        case SDA: f = 2; other |= 1 << 7;
           if (mode & PULL_UP)
             ERROR("Pull-up is not available on I2C pins.");
           if (mode & IO_HIGH_DRIVE)
             ERROR("High output drive is not available on I2C pins.");
           break;
-        case CT16B0_CAP0: f = 3; other |= 1 << 7 | 1 << 10;
+        case CT16B0_CAP0: f = 3; other |= 1 << 7;
           if (mode & PULL_UP)
             ERROR("Pull-up is not available on I2C pins.");
           if (mode & IO_HIGH_DRIVE)
             ERROR("High output drive is not available on I2C pins.");
           break;
-        case CT16B0_MAT0: f = 4; other |= 1 << 7 | 1 << 10;
+        case CT16B0_MAT0: f = 4; other |= 1 << 7;
           if (mode & PULL_UP)
             ERROR("Pull-up is not available on I2C pins.");
           if (mode & IO_HIGH_DRIVE)

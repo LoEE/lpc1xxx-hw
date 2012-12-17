@@ -125,7 +125,7 @@ enum pio_pin {
           [(ormap adc-f? (pin-functions pin))
            @list{case @(function-name->enum-name fun): f = @i;@(unless (adc-f? fun) " other |= 1 << 7;") break;}]
           [(ormap i2c-f? (pin-functions pin))
-           @list{case @(function-name->enum-name fun): f = @i; other |= 1 << 7 | 1 << 10;
+           @list{case @(function-name->enum-name fun): f = @i; other |= 1 << 7;
                    if (mode & PULL_UP)
                      ERROR("Pull-up is not available on I2C pins.");
                    if (mode & IO_HIGH_DRIVE)

@@ -72,8 +72,8 @@ INLINE void set_clock (int bit, int on)
 
 @(decl 'i2c_system "int on")
 {
-  @(set/bit 'LPC_SYSCON->PRESETCTRL 1 'on)
   set_clock (5, on);
+  @(set/bit 'LPC_SYSCON->PRESETCTRL 1 'on)
 }
 
 @(decl 'gpio "int on") { set_clock (6, on); }
@@ -304,9 +304,9 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
 @(decl 'ssp_clock "int div")
 {
   @check-range[0 'div 255]{SSP clock divider}
-  @(set/bit 'LPC_SYSCON->PRESETCTRL 0 'div)
   set_clock (11, div ? 1 : 0);
   LPC_SYSCON->SSPCLKDIV = div;
+  @(set/bit 'LPC_SYSCON->PRESETCTRL 0 'div)
 }
 
 @(decl 'adc_system "int on") { set_power (4, on); set_clock (13, on); }

@@ -6,8 +6,8 @@
 
 (define (main)
   (parameterize ([current-directory output-dir])
-    (with-output-to-file "LPC13xx.h" #:exists 'replace
-      (λ () (output (generate-13xx-system))))))
+    (with-output-to-file "LPC122x.h" #:exists 'replace
+      (λ () (output (generate-122x-system))))))
 
 (define (decl name . args)
   @list{INLINE void @|name|_setup (@(add-newlines #:sep ", " args))})
@@ -35,10 +35,10 @@
              @list{if (@in == @(car p)) @out = @(cdr p);}))
         else ERROR ("@error");})
 
-(define (generate-13xx-system)
+(define (generate-122x-system)
   @list{
-@header[url]{System configuration functions for the LPC13xx processors.}
-@cpp-wrap['SYSTEM]{                   
+@header[url]{System configuration functions for the LPC122x processors.}
+@cpp-wrap['SYSTEM]{
 INLINE void set_power (int bit, int on)
 {
   @(set/bit 'LPC_SYSCON->PDRUNCFG 'bit "!on")
@@ -49,20 +49,27 @@ INLINE void set_clock (int bit, int on)
   @(set/bit 'LPC_SYSCON->SYSAHBCLKCTRL 'bit "on")
 }
 
+INLINE void set_reset (int bit, int reset)
+{
+  @(set/bit 'LPC_SYSCON->PRESETCTRL 'bit '!reset)
+}
+
 @(decl 'rom "int on") { set_clock (1, on); }
 
 @(decl 'ram "int on") { set_clock (2, on); }
 
-#define FLASHCFG (*(volatile uint32_t *)(0x4003C010))
-
 @(decl 'flash_timing "int clock")
 {
-  int t = 0;
-  if (clock > 72e6) ERROR("Clock frequency too high (> 72 Mhz).");
-  if (clock > 40e6) t = 2;
-  else if (clock > 20e6) t = 1;
-  else t = 0;
-  @(set/mask 'FLASHCFG #x3 't)
+  int ws = 0;
+  if (clock > 45e6) ERROR("Clock frequency too high (> 45 Mhz).");
+  if (clock > 30e6) ws = 1;
+  else ws = 0;
+  if (ws) {
+    @(set/mask 'LPC_FLASHCTRL->FLASHCFG #x3 'ws)
+    @(set/bit 'LPC_SYSCON->PRESETCTRL 15 0)
+  } else {
+    @(set/bit 'LPC_SYSCON->PRESETCTRL 15 1)
+  }
 }
 
 @(decl 'flash_registers "int on") { set_clock (3, on); }
@@ -71,55 +78,77 @@ INLINE void set_clock (int bit, int on)
 
 @(decl 'i2c_system "int on")
 {
+  set_reset (1, 1);
   set_clock (5, on);
-  @(set/bit 'LPC_SYSCON->PRESETCTRL 1 'on)
+  set_reset (1, !on);
 }
 
-@(decl 'gpio "int on") { set_clock (6, on); }
+@(decl 'crc "int on") { set_reset (9, 1); set_clock (6, on); set_reset (9, !on); }
 
-@(decl 'ct16b0 "int on") { set_clock (7, on); }
+@(decl 'ct16b0 "int on") { set_reset (4, 1); set_clock (7, on); set_reset (4, !on); }
 
-@(decl 'ct16b1 "int on") { set_clock (8, on); }
+@(decl 'ct16b1 "int on") { set_reset (5, 1); set_clock (8, on); set_reset (5, !on); }
 
-@(decl 'ct32b0 "int on") { set_clock (9, on); }
+@(decl 'ct32b0 "int on") { set_reset (6, 1); set_clock (9, on); set_reset (6, !on); }
 
-@(decl 'ct32b1 "int on") { set_clock (10, on); }
+@(decl 'ct32b1 "int on") { set_reset (7, 1); set_clock (10, on); set_reset (7, !on); }
 
 @(decl 'iocon "int on") { set_clock (16, on); }
+
+@(decl 'dma "int on") { set_reset (10, 1); set_clock (17, on); set_reset (10, !on); }
+
+@(decl 'rtc "int on") { set_clock (19, on); }
+
+@(decl 'cmp "int on") { set_power (15, on); set_reset (8, 1); set_clock (20, on); set_reset (8, !on); }
+
+@(decl 'gpio0 "int on") { set_clock (29, on); }
+
+@(decl 'gpio1 "int on") { set_clock (30, on); }
+
+@(decl 'gpio2 "int on") { set_clock (31, on); }
 
 @(decl 'irc "int on") { set_power (1, on); set_power (0, on); }
 
 @(decl 'flash "int on") { set_power (2, on); }
 
-@(decl 'bod "int on" "int reset" "float int_level")
+@(decl 'bod "int on" "int reset" "float reset_level" "float int_level")
 {
   set_power (3, on);
-  int lvl = 0;
-  @(assoc/if 'int_level 'lvl "Invalid BOD interrupt level."
-             `([1.69 . 0]
-               [2.29 . 1]
-               [2.59 . 2]
-               [2.87 . 3]))
-  LPC_SYSCON->BODCTRL = (lvl << 2) | (reset ? 1 << 4 : 0);
+  int rlvl = 0, ilvl = 0;
+  @(assoc/if 'reset_level 'rlvl "Invalid BOD reset level."
+             `([0 . 0]
+               [2.038 . 1]
+               [2.336 . 2]
+               [2.624 . 3]))
+  @(assoc/if 'int_level 'ilvl "Invalid BOD interrupt level."
+             `([0 . 0]
+               [2.248 . 1]
+               [2.541 . 2]
+               [2.828 . 3]))
+  LPC_SYSCON->BODCTRL = (rlvl << 0) | (ilvl << 2) | (reset ? 1 << 4 : 0);
 }
 
-enum sysosc_mode {
-  SYSOSC_OFF,
-  SYSOSC_BYPASS,
-  SYSOSC_SLOW,
-  SYSOSC_FAST,
+enum {
+  OSC_BYPASS,
 };
 
-@(decl 'sysosc "enum sysosc_mode range")
+@(decl 'sysosc "int freq")
 {
-  if (range == SYSOSC_OFF) {
+  if (freq == 0) {
     set_power (5, 0);
   } else {
     set_power (5, 1);
-    @(assoc/if 'range 'LPC_SYSCON->SYSOSCCTRL "Invalid system oscillator mode."
-               `([SYSOSC_BYPASS . "1"]
-                 [SYSOSC_SLOW   . "0"]
-                 [SYSOSC_FAST   . "1 << 1"]))
+    if (freq == OSC_BYPASS) {
+      LPC_SYSCON->SYSOSCCTRL = (1 << 0);
+    } else if (freq < 1e6) {
+      ERROR("System oscillator frequency too high [> 25 MHz].");
+    } else if (freq < 17e6) {
+      LPC_SYSCON->SYSOSCCTRL = (0 << 1);
+    } else if (freq <= 25e6) {
+      LPC_SYSCON->SYSOSCCTRL = (1 << 1);
+    } else {
+      ERROR("System oscillator frequency too high [> 25 MHz].");
+    }
   }
 }
 
@@ -167,18 +196,18 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
   int mul = out / in;
   if (mul * in != out) ERROR("PLL output frequency is not divisible by input frequency.");
   @check-range[1 'mul 32]{Required system PLL frequency multiplier}
+  if (out > 100e6) ERROR("PLL output frequency too high [out > 100 MHz].");
   int div;
   if (out * 2 > 156e6) div = 2;
   else if (out * 4 > 156e6) div = 4;
   else if (out * 8 > 156e6) div = 8;
-  else if (out * 16 > 156e6) div = 16;
   else ERROR("Output frequency too low for the CCO [156 < F_CCO < 320].");
   if (out * div > 320e6) ERROR("CCO frequency too high [156 < F_CC0 < 320].");
   mul--;
   div = div / 2 - 1;
   *reg = mul << 0 | div << 5;
-}  
- 
+}
+
 @(decl 'syspll "int on" "enum clock_source src" "int in" "int out")
 {
   set_power (7, 0);
@@ -195,25 +224,6 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
   set_power (7, 1);
   while (!LPC_SYSCON->SYSPLLSTAT);
 }
-
-#ifdef CPU_HAS_USB
-@(decl 'usbpll "int on" "enum clock_source src" "int in" "int out")
-{
-  set_power (8, 0);
-  if (!on) return;
-  pll_setup_shared (in, out, &LPC_SYSCON->USBPLLCTRL);
-  int s = 0;
-  @(clksrc-switch 'src 's '([OSC_IRC 0]
-                            [OSC_SYS 1]))
-  if (s != -1) {
-    LPC_SYSCON->USBPLLCLKSEL = s;
-    LPC_SYSCON->USBPLLCLKUEN = 0;
-    LPC_SYSCON->USBPLLCLKUEN = 1;
-  }
-  set_power (8, 1);
-  while (!LPC_SYSCON->USBPLLSTAT);
-}
-#endif // CPU_HAS_USB
 
 @(decl 'system_clock "enum clock_source src" "int div")
 {
@@ -232,6 +242,11 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
   LPC_SYSCON->SYSAHBCLKDIV = div;
 }
 
+@(decl 'rtc_clock "enum clock_source src" "int div")
+{
+  ERROR("Not implemented");
+}
+
 @(decl 'clkout "enum clock_source src" "int div")
 {
   @check-range[0 'div 255]{CLKOUT divider}
@@ -248,6 +263,7 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
   }
 }
 
+#if 0 // TODO
 @(decl 'wdt "enum clock_source src" "int div")
 {
   @check-range[0 'div 255]{Watchdog clock divider}
@@ -263,52 +279,49 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
     LPC_SYSCON->WDTCLKUEN = 1;
   }
 }
+#endif
 
-#ifdef CPU_HAS_USB
-@(decl 'usb_clock "enum clock_source src" "int div")
+INLINE void wdt_feed (void)
 {
-  @check-range[0 'div 255]{USB clock divider}
-  set_power (10, div ? 1 : 0); set_clock (14, div ? 1 : 0); 
-  int s = 0;
-  LPC_SYSCON->USBCLKDIV = div;
-  @(clksrc-switch 'src 's '([PLL_USB 0]
-                            [CLK_MAIN 1]))
-  if (s != -1) {
-    LPC_SYSCON->USBCLKSEL = s;
-    LPC_SYSCON->USBCLKUEN = 0;
-    LPC_SYSCON->USBCLKUEN = 1;
-  }
-}
-#endif // CPU_HAS_USB
-
-@(decl 'systick_clock "int div")
-{
-  @check-range[0 'div 255]{SYSTICK timer clock divider}
-  LPC_SYSCON->SYSTICKCLKDIV = div;
+  LPC_WWDT->FEED = 0xAA;
+  LPC_WWDT->FEED = 0x55;
 }
 
-@(decl 'trace_clock "int div")
+INLINE void wdt_setup (int on)
 {
-  @check-range[0 'div 255]{ARM trace clock divider}
-  LPC_SYSCON->TRACECLKDIV = div;
+  wdt_feed();
+  @(set/bit 'LPC_WWDT->MOD 0 'on)
+  wdt_feed();
 }
 
-@(decl 'uart_clock "int div")
+@(decl 'uart0_clock "int div")
 {
-  @check-range[0 'div 255]{UART clock divider}
+  @check-range[0 'div 255]{UART0 clock divider}
+  set_reset (2, 1);
   set_clock (12, div ? 1 : 0);
-  LPC_SYSCON->UARTCLKDIV = div;
+  LPC_SYSCON->UART0CLKDIV = div;
+  set_reset (2, div ? 0 : 1);
+}
+
+@(decl 'uart1_clock "int div")
+{
+  @check-range[0 'div 255]{UART1 clock divider}
+  set_reset (3, 1);
+  set_clock (13, div ? 1 : 0);
+  LPC_SYSCON->UART1CLKDIV = div;
+  set_reset (3, div ? 0 : 1);
 }
 
 @(decl 'ssp_clock "int div")
 {
   @check-range[0 'div 255]{SSP clock divider}
+  set_reset (0, 1);
   set_clock (11, div ? 1 : 0);
   LPC_SYSCON->SSPCLKDIV = div;
-  @(set/bit 'LPC_SYSCON->PRESETCTRL 0 'div)
+  set_reset (0, div ? 0 : 1);
 }
 
-@(decl 'adc_system "int on") { set_power (4, on); set_clock (13, on); }
+@(decl 'adc_system "int on") { set_power (4, on); set_clock (14, on); }
 
 enum memory_map {
   MEMORY_MAP_BOOT  = 0,

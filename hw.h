@@ -30,6 +30,7 @@
 #    error "No supported CPU package types defined."
 #  endif
 #  include "CMSIS/LPC122x.h"
+#  include "system/LPC122x.h"
 #endif
 
 #if defined(LPC131x) && defined(LQFP48)

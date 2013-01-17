@@ -38,7 +38,7 @@
 (define (generate-13xx-system)
   @list{
 @header[url]{System configuration functions for the LPC13xx processors.}
-@cpp-wrap['SYSTEM]{                   
+@cpp-wrap['SYSTEM]{
 INLINE void set_power (int bit, int on)
 {
   @(set/bit 'LPC_SYSCON->PDRUNCFG 'bit "!on")
@@ -96,10 +96,10 @@ INLINE void set_clock (int bit, int on)
   set_power (3, on);
   int lvl = 0;
   @(assoc/if 'int_level 'lvl "Invalid BOD interrupt level."
-             `([1.69 . 0]
-               [2.29 . 1]
-               [2.59 . 2]
-               [2.87 . 3]))
+             `([1.69f . 0]
+               [2.29f . 1]
+               [2.59f . 2]
+               [2.87f . 3]))
   LPC_SYSCON->BODCTRL = (lvl << 2) | (reset ? 1 << 4 : 0);
 }
 
@@ -177,8 +177,8 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
   mul--;
   div = div / 2 - 1;
   *reg = mul << 0 | div << 5;
-}  
- 
+}
+
 @(decl 'syspll "int on" "enum clock_source src" "int in" "int out")
 {
   set_power (7, 0);
@@ -268,7 +268,7 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
 @(decl 'usb_clock "enum clock_source src" "int div")
 {
   @check-range[0 'div 255]{USB clock divider}
-  set_power (10, div ? 1 : 0); set_clock (14, div ? 1 : 0); 
+  set_power (10, div ? 1 : 0); set_clock (14, div ? 1 : 0);
   int s = 0;
   LPC_SYSCON->USBCLKDIV = div;
   @(clksrc-switch 'src 's '([PLL_USB 0]

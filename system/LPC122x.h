@@ -87,14 +87,14 @@ INLINE void bod_setup (int on, int reset, float reset_level, float int_level)
   set_power (3, on);
   int rlvl = 0, ilvl = 0;
   if (reset_level == 0) rlvl = 0;
-  else if (reset_level == 2.038) rlvl = 1;
-  else if (reset_level == 2.336) rlvl = 2;
-  else if (reset_level == 2.624) rlvl = 3;
+  else if (reset_level == 2.038f) rlvl = 1;
+  else if (reset_level == 2.336f) rlvl = 2;
+  else if (reset_level == 2.624f) rlvl = 3;
   else ERROR ("Invalid BOD reset level.");
   if (int_level == 0) ilvl = 0;
-  else if (int_level == 2.248) ilvl = 1;
-  else if (int_level == 2.541) ilvl = 2;
-  else if (int_level == 2.828) ilvl = 3;
+  else if (int_level == 2.248f) ilvl = 1;
+  else if (int_level == 2.541f) ilvl = 2;
+  else if (int_level == 2.828f) ilvl = 3;
   else ERROR ("Invalid BOD interrupt level.");
   LPC_SYSCON->BODCTRL = (rlvl << 0) | (ilvl << 2) | (reset ? 1 << 4 : 0);
 }

@@ -66,10 +66,10 @@ INLINE void bod_setup (int on, int reset, float int_level)
 {
   set_power (3, on);
   int lvl = 0;
-  if (int_level == 1.69) lvl = 0;
-  else if (int_level == 2.29) lvl = 1;
-  else if (int_level == 2.59) lvl = 2;
-  else if (int_level == 2.87) lvl = 3;
+  if (int_level == 1.69f) lvl = 0;
+  else if (int_level == 2.29f) lvl = 1;
+  else if (int_level == 2.59f) lvl = 2;
+  else if (int_level == 2.87f) lvl = 3;
   else ERROR ("Invalid BOD interrupt level.");
   LPC_SYSCON->BODCTRL = (lvl << 2) | (reset ? 1 << 4 : 0);
 }

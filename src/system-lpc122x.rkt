@@ -117,14 +117,14 @@ INLINE void set_reset (int bit, int reset)
   int rlvl = 0, ilvl = 0;
   @(assoc/if 'reset_level 'rlvl "Invalid BOD reset level."
              `([0 . 0]
-               [2.038 . 1]
-               [2.336 . 2]
-               [2.624 . 3]))
+               [2.038f . 1]
+               [2.336f . 2]
+               [2.624f . 3]))
   @(assoc/if 'int_level 'ilvl "Invalid BOD interrupt level."
              `([0 . 0]
-               [2.248 . 1]
-               [2.541 . 2]
-               [2.828 . 3]))
+               [2.248f . 1]
+               [2.541f . 2]
+               [2.828f . 3]))
   LPC_SYSCON->BODCTRL = (rlvl << 0) | (ilvl << 2) | (reset ? 1 << 4 : 0);
 }
 

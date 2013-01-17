@@ -167,7 +167,7 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
   int mul = out / in;
   if (mul * in != out) ERROR("PLL output frequency is not divisible by input frequency.");
   if (mul < 1 || mul > 32) ERROR("Required system PLL frequency multiplier value out of range [1-32].");
-  //if (out > 100e6) ERROR("PLL output frequency too high [out > 100 MHz].");
+  if (out > 100e6) ERROR("PLL output frequency too high [out > 100 MHz].");
   int div;
   if (out * 2 > 156e6) div = 2;
   else if (out * 4 > 156e6) div = 4;

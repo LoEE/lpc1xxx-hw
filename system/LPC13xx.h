@@ -155,11 +155,8 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
   *reg = mul << 0 | div << 5;
 }
 
-INLINE void syspll_setup (int on, enum clock_source src, int in, int out)
+INLINE void syspll_clock_source_setup (enum clock_source src)
 {
-  set_power (7, 0);
-  if (!on) return;
-  pll_setup_shared (in, out, &LPC_SYSCON->SYSPLLCTRL);
   int s = 0;
   switch (src) {
     case OSC_IRC: s = 0; break;
@@ -172,6 +169,14 @@ INLINE void syspll_setup (int on, enum clock_source src, int in, int out)
     LPC_SYSCON->SYSPLLCLKUEN = 0;
     LPC_SYSCON->SYSPLLCLKUEN = 1;
   }
+}
+
+INLINE void syspll_setup (int on, enum clock_source src, int in, int out)
+{
+  set_power (7, 0);
+  if (!on) return;
+  pll_setup_shared (in, out, &LPC_SYSCON->SYSPLLCTRL);
+  syspll_clock_source_setup(src);
   set_power (7, 1);
   while (!LPC_SYSCON->SYSPLLSTAT);
 }

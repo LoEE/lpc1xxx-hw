@@ -27,7 +27,7 @@ enum io_mode {
 };
 
 enum io_function {
-  PIO, nRESET, CLKOUT, CT32B0_MAT2, USB_FTOGGLE, SSEL, CT16B0_CAP0, USB_VBUS, SCL, SDA, nUSB_CONNECT, SCK, CTS, MISO, CT16B0_MAT0, MOSI, CT16B0_MAT1, SWO, SWCLK, CT16B0_MAT2, AD0, CT32B0_MAT3, AD1, CT32B1_CAP0, AD2, CT32B1_MAT0, AD3, CT32B1_MAT1, SWDIO, AD4, CT32B1_MAT2, AD5, CT32B1_MAT3, WAKEUP, nRTS, CT32B0_CAP0, RXD, CT32B0_MAT0, TXD, CT32B0_MAT1, CT16B1_CAP0, CT16B1_MAT0, AD6, CT16B1_MAT1, AD7, nDTR, nDSR, nDCD, nRI
+  PIO, nRESET, CLKOUT, CT32B0_MAT2, USB_FTOGGLE, SSEL0, CT16B0_CAP0, USB_VBUS, SCL, SDA, nUSB_CONNECT, SCK0, CTS, MISO0, CT16B0_MAT0, MOSI0, CT16B0_MAT1, SWO, SWCLK, CT16B0_MAT2, AD0, CT32B0_MAT3, AD1, CT32B1_CAP0, AD2, CT32B1_MAT0, AD3, CT32B1_MAT1, SWDIO, AD4, CT32B1_MAT2, AD5, CT32B1_MAT3, WAKEUP, nRTS, CT32B0_CAP0, RXD, CT32B0_MAT0, TXD, CT32B0_MAT1, CT16B1_CAP0, CT16B1_MAT0, AD6, CT16B1_MAT1, AD7, nDTR, SSEL1, nDSR, SCK1, nDCD, MISO1, nRI, MOSI1
 };
 
 enum pio_pin {
@@ -65,10 +65,10 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
     case P0_2:
       switch (func) {
         case PIO: f = 0; break;
-        case SSEL: f = 1; break;
+        case SSEL0: f = 1; break;
         case CT16B0_CAP0: f = 2; break;
         default:
-          ERROR("PIO0_2 can only be used as SSEL, CT16B0_CAP0 or PIO.");
+          ERROR("PIO0_2 can only be used as SSEL0, CT16B0_CAP0 or PIO.");
       }
       LPC_IOCON->PIO0_2 = f | other;
       break;
@@ -121,9 +121,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       switch (func) {
         case PIO: f = 0; break;
         case nUSB_CONNECT: f = 1; break;
-        case SCK: f = 2; LPC_IOCON->SCKLOC = 2; break;
+        case SCK0: f = 2; break;
         default:
-          ERROR("PIO0_6 can only be used as nUSB_CONNECT, SCK or PIO.");
+          ERROR("PIO0_6 can only be used as nUSB_CONNECT, SCK0 or PIO.");
       }
       LPC_IOCON->PIO0_6 = f | other;
       break;
@@ -139,21 +139,21 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
     case P0_8:
       switch (func) {
         case PIO: f = 0; break;
-        case MISO: f = 1; break;
+        case MISO0: f = 1; break;
         case CT16B0_MAT0: f = 2; break;
         default:
-          ERROR("PIO0_8 can only be used as MISO, CT16B0_MAT0 or PIO.");
+          ERROR("PIO0_8 can only be used as MISO0, CT16B0_MAT0 or PIO.");
       }
       LPC_IOCON->PIO0_8 = f | other;
       break;
     case P0_9:
       switch (func) {
         case PIO: f = 0; break;
-        case MOSI: f = 1; break;
+        case MOSI0: f = 1; break;
         case CT16B0_MAT1: f = 2; break;
         case SWO: f = 3; break;
         default:
-          ERROR("PIO0_9 can only be used as MOSI, CT16B0_MAT1, SWO or PIO.");
+          ERROR("PIO0_9 can only be used as MOSI0, CT16B0_MAT1, SWO or PIO.");
       }
       LPC_IOCON->PIO0_9 = f | other;
       break;
@@ -161,10 +161,10 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       switch (func) {
         case SWCLK: f = 0; break;
         case PIO: f = 1; break;
-        case SCK: f = 2; LPC_IOCON->SCKLOC = 0; break;
+        case SCK0: f = 2; break;
         case CT16B0_MAT2: f = 3; break;
         default:
-          ERROR("PIO0_10 can only be used as SWCLK, SCK, CT16B0_MAT2 or PIO.");
+          ERROR("PIO0_10 can only be used as SWCLK, SCK0, CT16B0_MAT2 or PIO.");
       }
       LPC_IOCON->JTAG_TCK_PIO0_10 = f | other;
       break;
@@ -301,8 +301,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       switch (func) {
         case PIO: f = 0; break;
         case nDTR: f = 1; break;
+        case SSEL1: f = 2; break;
         default:
-          ERROR("PIO2_0 can only be used as nDTR or PIO.");
+          ERROR("PIO2_0 can only be used as nDTR, SSEL1 or PIO.");
       }
       LPC_IOCON->PIO2_0 = f | other;
       break;
@@ -310,8 +311,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       switch (func) {
         case PIO: f = 0; break;
         case nDSR: f = 1; break;
+        case SCK1: f = 2; break;
         default:
-          ERROR("PIO2_1 can only be used as nDSR or PIO.");
+          ERROR("PIO2_1 can only be used as nDSR, SCK1 or PIO.");
       }
       LPC_IOCON->PIO2_1 = f | other;
       break;
@@ -319,8 +321,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       switch (func) {
         case PIO: f = 0; break;
         case nDCD: f = 1; break;
+        case MISO1: f = 2; break;
         default:
-          ERROR("PIO2_2 can only be used as nDCD or PIO.");
+          ERROR("PIO2_2 can only be used as nDCD, MISO1 or PIO.");
       }
       LPC_IOCON->PIO2_2 = f | other;
       break;
@@ -328,8 +331,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       switch (func) {
         case PIO: f = 0; break;
         case nRI: f = 1; break;
+        case MOSI1: f = 2; break;
         default:
-          ERROR("PIO2_3 can only be used as nRI or PIO.");
+          ERROR("PIO2_3 can only be used as nRI, MOSI1 or PIO.");
       }
       LPC_IOCON->PIO2_3 = f | other;
       break;
@@ -371,30 +375,46 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
     case P2_11:
       switch (func) {
         case PIO: f = 0; break;
-        case SCK: f = 1; LPC_IOCON->SCKLOC = 1; break;
+        case SCK0: f = 1; break;
         default:
-          ERROR("PIO2_11 can only be used as SCK or PIO.");
+          ERROR("PIO2_11 can only be used as SCK0 or PIO.");
       }
       LPC_IOCON->PIO2_11 = f | other;
       break;
     case P3_0:
-      if (func != PIO) ERROR("PIO3_0 can only be used as PIO.");
-      f = 0;
+      switch (func) {
+        case PIO: f = 0; break;
+        case nDTR: f = 1; break;
+        default:
+          ERROR("PIO3_0 can only be used as nDTR or PIO.");
+      }
       LPC_IOCON->PIO3_0 = f | other;
       break;
     case P3_1:
-      if (func != PIO) ERROR("PIO3_1 can only be used as PIO.");
-      f = 0;
+      switch (func) {
+        case PIO: f = 0; break;
+        case nDSR: f = 1; break;
+        default:
+          ERROR("PIO3_1 can only be used as nDSR or PIO.");
+      }
       LPC_IOCON->PIO3_1 = f | other;
       break;
     case P3_2:
-      if (func != PIO) ERROR("PIO3_2 can only be used as PIO.");
-      f = 0;
+      switch (func) {
+        case PIO: f = 0; break;
+        case nDCD: f = 1; break;
+        default:
+          ERROR("PIO3_2 can only be used as nDCD or PIO.");
+      }
       LPC_IOCON->PIO3_2 = f | other;
       break;
     case P3_3:
-      if (func != PIO) ERROR("PIO3_3 can only be used as PIO.");
-      f = 0;
+      switch (func) {
+        case PIO: f = 0; break;
+        case nRI: f = 1; break;
+        default:
+          ERROR("PIO3_3 can only be used as nRI or PIO.");
+      }
       LPC_IOCON->PIO3_3 = f | other;
       break;
     default:

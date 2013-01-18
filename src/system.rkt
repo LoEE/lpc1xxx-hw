@@ -300,12 +300,21 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
   LPC_SYSCON->UARTCLKDIV = div;
 }
 
-@(decl 'ssp_clock "int div")
+#define ssp_clock_setup ssp0_clock_setup
+@(decl 'ssp0_clock "int div")
 {
   @check-range[0 'div 255]{SSP clock divider}
   set_clock (11, div ? 1 : 0);
-  LPC_SYSCON->SSPCLKDIV = div;
+  LPC_SYSCON->SSP0CLKDIV = div;
   @(set/bit 'LPC_SYSCON->PRESETCTRL 0 'div)
+}
+
+@(decl 'ssp1_clock "int div")
+{
+  @check-range[0 'div 255]{SSP clock divider}
+  set_clock (18, div ? 1 : 0);
+  LPC_SYSCON->SSP1CLKDIV = div;
+  @(set/bit 'LPC_SYSCON->PRESETCTRL 2 'div)
 }
 
 @(decl 'adc_system "int on") { set_power (4, on); set_clock (13, on); }

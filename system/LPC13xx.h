@@ -295,12 +295,21 @@ INLINE void uart_clock_setup (int div)
   LPC_SYSCON->UARTCLKDIV = div;
 }
 
-INLINE void ssp_clock_setup (int div)
+#define ssp_clock_setup ssp0_clock_setup
+INLINE void ssp0_clock_setup (int div)
 {
   if (div < 0 || div > 255) ERROR("SSP clock divider value out of range [0-255].");
   set_clock (11, div ? 1 : 0);
-  LPC_SYSCON->SSPCLKDIV = div;
+  LPC_SYSCON->SSP0CLKDIV = div;
   LPC_SYSCON->PRESETCTRL = (LPC_SYSCON->PRESETCTRL & ~(1 << 0)) | (div ? 1 << 0 : 0);
+}
+
+INLINE void ssp1_clock_setup (int div)
+{
+  if (div < 0 || div > 255) ERROR("SSP clock divider value out of range [0-255].");
+  set_clock (18, div ? 1 : 0);
+  LPC_SYSCON->SSP1CLKDIV = div;
+  LPC_SYSCON->PRESETCTRL = (LPC_SYSCON->PRESETCTRL & ~(1 << 2)) | (div ? 1 << 2 : 0);
 }
 
 INLINE void adc_system_setup (int on) { set_power (4, on); set_clock (13, on); }

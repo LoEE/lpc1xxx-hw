@@ -31,7 +31,7 @@ enum io_function {
 };
 
 enum pio_pin {
-  P0_0, P0_1, P0_2, P0_3, P0_4, P0_5, P0_6, P0_7, P0_8, P0_9, P0_10, P0_11, P1_0, P1_1, P1_2, P1_3, P1_4, P1_5, P1_6, P1_7, P1_8, P1_9, P1_10, P1_11, P2_0, P2_1, P2_2, P2_3, P2_4, P2_4, P2_5, P2_5, P2_6, P2_7, P2_8, P2_9, P2_10, P2_11, P3_0, P3_1, P3_2, P3_3
+  P0_0, P0_1, P0_2, P0_3, P0_4, P0_5, P0_6, P0_7, P0_8, P0_9, P0_10, P0_11, P1_0, P1_1, P1_2, P1_3, P1_4, P1_5, P1_6, P1_7, P1_8, P1_9, P1_10, P1_11, P2_0, P2_1, P2_2, P2_3, P2_4, P2_5, P2_6, P2_7, P2_8, P2_9, P2_10, P2_11, P3_0, P3_1, P3_2, P3_3
 };
 
 INLINE
@@ -338,16 +338,6 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       f = 0;
       LPC_IOCON->PIO2_4 = f | other;
       break;
-    case P2_4:
-      if (func != PIO) ERROR("PIO2_4 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO2_4 = f | other;
-      break;
-    case P2_5:
-      if (func != PIO) ERROR("PIO2_5 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO2_5 = f | other;
-      break;
     case P2_5:
       if (func != PIO) ERROR("PIO2_5 can only be used as PIO.");
       f = 0;
@@ -445,8 +435,6 @@ void pin_write (enum pio_pin pin, int val)
     case P2_2: LPC_GPIO2->MASKED_ACCESS[1 << 2] = val ? 0xffff : 0x0000; break;
     case P2_3: LPC_GPIO2->MASKED_ACCESS[1 << 3] = val ? 0xffff : 0x0000; break;
     case P2_4: LPC_GPIO2->MASKED_ACCESS[1 << 4] = val ? 0xffff : 0x0000; break;
-    case P2_4: LPC_GPIO2->MASKED_ACCESS[1 << 4] = val ? 0xffff : 0x0000; break;
-    case P2_5: LPC_GPIO2->MASKED_ACCESS[1 << 5] = val ? 0xffff : 0x0000; break;
     case P2_5: LPC_GPIO2->MASKED_ACCESS[1 << 5] = val ? 0xffff : 0x0000; break;
     case P2_6: LPC_GPIO2->MASKED_ACCESS[1 << 6] = val ? 0xffff : 0x0000; break;
     case P2_7: LPC_GPIO2->MASKED_ACCESS[1 << 7] = val ? 0xffff : 0x0000; break;
@@ -496,8 +484,6 @@ int pin_read (enum pio_pin pin)
     case P2_2: return LPC_GPIO2->MASKED_ACCESS[1 << 2] ? 1 : 0;
     case P2_3: return LPC_GPIO2->MASKED_ACCESS[1 << 3] ? 1 : 0;
     case P2_4: return LPC_GPIO2->MASKED_ACCESS[1 << 4] ? 1 : 0;
-    case P2_4: return LPC_GPIO2->MASKED_ACCESS[1 << 4] ? 1 : 0;
-    case P2_5: return LPC_GPIO2->MASKED_ACCESS[1 << 5] ? 1 : 0;
     case P2_5: return LPC_GPIO2->MASKED_ACCESS[1 << 5] ? 1 : 0;
     case P2_6: return LPC_GPIO2->MASKED_ACCESS[1 << 6] ? 1 : 0;
     case P2_7: return LPC_GPIO2->MASKED_ACCESS[1 << 7] ? 1 : 0;
@@ -547,8 +533,6 @@ void pin_dir (enum pio_pin pin, enum pin_dir dir)
     case P2_2: LPC_GPIO2->DIR = (LPC_GPIO2->DIR & ~(1 << 2)) | (dir ? 1 << 2 : 0); break;
     case P2_3: LPC_GPIO2->DIR = (LPC_GPIO2->DIR & ~(1 << 3)) | (dir ? 1 << 3 : 0); break;
     case P2_4: LPC_GPIO2->DIR = (LPC_GPIO2->DIR & ~(1 << 4)) | (dir ? 1 << 4 : 0); break;
-    case P2_4: LPC_GPIO2->DIR = (LPC_GPIO2->DIR & ~(1 << 4)) | (dir ? 1 << 4 : 0); break;
-    case P2_5: LPC_GPIO2->DIR = (LPC_GPIO2->DIR & ~(1 << 5)) | (dir ? 1 << 5 : 0); break;
     case P2_5: LPC_GPIO2->DIR = (LPC_GPIO2->DIR & ~(1 << 5)) | (dir ? 1 << 5 : 0); break;
     case P2_6: LPC_GPIO2->DIR = (LPC_GPIO2->DIR & ~(1 << 6)) | (dir ? 1 << 6 : 0); break;
     case P2_7: LPC_GPIO2->DIR = (LPC_GPIO2->DIR & ~(1 << 7)) | (dir ? 1 << 7 : 0); break;

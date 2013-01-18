@@ -172,10 +172,16 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
   if (out * 2 > 156e6) div = 2;
   else if (out * 4 > 156e6) div = 4;
   else if (out * 8 > 156e6) div = 8;
+  else if (out * 16 > 156e6) div = 16;
   else ERROR("Output frequency too low for the CCO [156 < F_CCO < 320].");
   if (out * div > 320e6) ERROR("CCO frequency too high [156 < F_CC0 < 320].");
   mul--;
-  div = div / 2 - 1;
+  div = div / 2;
+  if (div == 1) div = 0;
+  else if (div == 2) div = 1;
+  else if (div == 4) div = 2;
+  else if (div == 8) div = 3;
+  else ERROR ("Invalid PLL post divider.");
   *reg = mul << 0 | div << 5;
 }
 

@@ -3,7 +3,7 @@
 
    For more details see:
        http://bitbucket.org/jpc/lpc1xxx-hw/
- 
+
    Copyright (c) 2008-2011 LoEE - Jakub Piotr Cłapa
    This program is released under the new BSD license.
 
@@ -15,8 +15,15 @@
 /*
  * API
  */
-#ifdef LPC12xx
-#define UART_TypeDef LPC_UART0_Type
+#if defined(LPC12xx)
+#define UART_Regs LPC_UART0_Type
+#define UART0 ((UART_Regs *)LPC_UART0)
+#define UART1 ((UART_Regs *)LPC_UART1)
+#elif defined(LPC13xx)
+#define UART_Regs LPC_UART_TypeDef
+#define UART0 ((UART_Regs *)LPC_UART)
+#else
+#error Unknown processor family.
 #endif
 
 #define UART_ERRORS enum {                                                         \
@@ -36,30 +43,30 @@
   FIFOLVL_MAX = 16,                                              /* misc      */ \
 }
 
-int uart_tx_finished (UART_TypeDef *UART);
-int uart_tx_empty (UART_TypeDef *UART);
-int uart_rx_ready (UART_TypeDef *UART);
+int uart_tx_finished (UART_Regs *UART);
+int uart_tx_empty (UART_Regs *UART);
+int uart_rx_ready (UART_Regs *UART);
 
-int uart_tx_bytes_avail (UART_TypeDef *UART);
+int uart_tx_bytes_avail (UART_Regs *UART);
 
-void uart_set9_nowait (UART_TypeDef *UART, const int c);
-void uart_set9 (UART_TypeDef *UART, const int c);
+void uart_set9_nowait (UART_Regs *UART, const int c);
+void uart_set9 (UART_Regs *UART, const int c);
 
-void uart_putc_nowait (UART_TypeDef *UART, unsigned char x);
-void uart_putc        (UART_TypeDef *UART, const char c);
-void uart_putc_hex    (UART_TypeDef *UART, const char c);
+void uart_putc_nowait (UART_Regs *UART, unsigned char x);
+void uart_putc        (UART_Regs *UART, const char c);
+void uart_putc_hex    (UART_Regs *UART, const char c);
 
-void uart_put      (UART_TypeDef *UART, const void *x, int len);
-void uart_put_hex  (UART_TypeDef *UART, const void *x, int len);
-void uart_rput_hex (UART_TypeDef *UART, const void *x, int len);
+void uart_put      (UART_Regs *UART, const void *x, int len);
+void uart_put_hex  (UART_Regs *UART, const void *x, int len);
+void uart_rput_hex (UART_Regs *UART, const void *x, int len);
 
-void uart_puts     (UART_TypeDef *UART, const char *x);
+void uart_puts     (UART_Regs *UART, const char *x);
 
-char uart_getc_nowait (UART_TypeDef *UART);
-char uart_getc        (UART_TypeDef *UART);
-int  uart_getc_status (UART_TypeDef *UART);
+char uart_getc_nowait (UART_Regs *UART);
+char uart_getc        (UART_Regs *UART);
+int  uart_getc_status (UART_Regs *UART);
 
-void uart_get  (UART_TypeDef *UART, void *x, int len);
+void uart_get  (UART_Regs *UART, void *x, int len);
 
 /*
  * Setup
@@ -75,7 +82,7 @@ enum uart_parity {
 };
 
 INLINE
-void uart_setup_raw (UART_TypeDef *UART, int divisor, int mulval, int divaddval,
+void uart_setup_raw (UART_Regs *UART, int divisor, int mulval, int divaddval,
                      int char_size, enum uart_parity parity, int stop_bits)
 {
   UART_BITS;
@@ -97,7 +104,7 @@ void uart_setup_raw (UART_TypeDef *UART, int divisor, int mulval, int divaddval,
 }
 
 INLINE
-void uart_setup (UART_TypeDef *UART, int divisor, int mulval, int divaddval,
+void uart_setup (UART_Regs *UART, int divisor, int mulval, int divaddval,
                  int char_size, enum uart_parity parity, int stop_bits)
 {
   if (divisor > 0xffff)                 { ERROR("Divisor value out of range [0-0xffff]."); }
@@ -116,7 +123,7 @@ void uart_setup (UART_TypeDef *UART, int divisor, int mulval, int divaddval,
 #endif
 
 INLINE
-void uart_baud_setup (UART_TypeDef *UART, int clk, int baud,
+void uart_baud_setup (UART_Regs *UART, int clk, int baud,
                       int char_size, enum uart_parity parity, int stop_bits)
 {
   extern double fmax (double, double);
@@ -177,7 +184,7 @@ void uart_baud_setup (UART_TypeDef *UART, int clk, int baud,
   uart_setup (UART, bdivider, bmulval, bdivaddval, char_size, parity, stop_bits);
 }
 
-int uart_dynamic_baud_setup (UART_TypeDef *UART, int clk, int baud,
+int uart_dynamic_baud_setup (UART_Regs *UART, int clk, int baud,
     int char_size, enum uart_parity parity, int stop_bits);
 
 #endif

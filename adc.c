@@ -12,43 +12,43 @@
 
 ADC_BITS;
 
-void adc_enable_ints (ADC_TypeDef *ADC, int channels)
+void adc_enable_ints (ADC_Regs *ADC, int channels)
 {
   ADC->INTEN = channels & 0xff;
 }
 
-void adc_start_burst (ADC_TypeDef *ADC, int channels)
+void adc_start_burst (ADC_Regs *ADC, int channels)
 {
   ADC->CR = (ADC->CR & ~CHMASK) | (channels) << CH | 1 << BURST;
 }
 
-void adc_start_single (ADC_TypeDef *ADC, int channel)
+void adc_start_single (ADC_Regs *ADC, int channel)
 {
   ADC->CR = (ADC->CR & ~CHMASK) | 1 << (channel + CH) | 1 << START;
 }
 
-void adc_stop (ADC_TypeDef *ADC)
+void adc_stop (ADC_Regs *ADC)
 {
   ADC->CR = ADC->CR & ~(1 << BURST) & ~(1 << START);
 }
 
-void adc_flush_all (ADC_TypeDef *ADC)
+void adc_flush_all (ADC_Regs *ADC)
 {
   for(int i = 0; i < CHMAX; i++)
     adc_read(ADC, i);
 }
 
-int adc_ready (ADC_TypeDef *ADC, int channel)
+int adc_ready (ADC_Regs *ADC, int channel)
 {
   return ADC->STAT & (1 << channel);
 }
 
-int adc_ready_channels (ADC_TypeDef *ADC)
+int adc_ready_channels (ADC_Regs *ADC)
 {
   return ADC->STAT & CHMASK;
 }
 
-struct adc_result adc_read (ADC_TypeDef *ADC, int channel)
+struct adc_result adc_read (ADC_Regs *ADC, int channel)
 {
   volatile const uint32_t *REG = &ADC->DR0 + channel;
   uint32_t stat = *REG;

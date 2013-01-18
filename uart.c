@@ -3,7 +3,7 @@
 
    For more details see:
        http://bitbucket.org/jpc/lpc1xxx-hw/
- 
+
    Copyright (c) 2008-2011 LoEE - Jakub Piotr Cłapa
    This program is released under the new BSD license.
 
@@ -25,7 +25,7 @@ UART_BITS;
     (unsigned) (__x__ < 0 ? - __x__ : __x__); \
   })
 
-int uart_dynamic_baud_setup (UART_TypeDef *UART, int clk, int baud,
+int uart_dynamic_baud_setup (UART_Regs *UART, int clk, int baud,
                       int char_size, enum uart_parity parity, int stop_bits)
 {
   struct setup {
@@ -52,67 +52,67 @@ int uart_dynamic_baud_setup (UART_TypeDef *UART, int clk, int baud,
   return best.realbaud;
 }
 
-int uart_tx_finished (UART_TypeDef *UART)
-{ 
+int uart_tx_finished (UART_Regs *UART)
+{
   return UART->LSR & TEMT;
 }
 
-int uart_tx_empty (UART_TypeDef *UART)
-{ 
+int uart_tx_empty (UART_Regs *UART)
+{
   return UART->LSR & THRE;
 }
 
-int uart_rx_ready (UART_TypeDef *UART)
-{ 
+int uart_rx_ready (UART_Regs *UART)
+{
   return (UART->IIR & 0xf) == 4;
 }
 
-void uart_putc_nowait (UART_TypeDef *UART, unsigned char x)
+void uart_putc_nowait (UART_Regs *UART, unsigned char x)
 {
   UART->THR = x;
 }
 
-char uart_getc_nowait (UART_TypeDef *UART)
+char uart_getc_nowait (UART_Regs *UART)
 {
   return UART->RBR;
 }
 
-NOINLINE void uart_putc (UART_TypeDef *UART, const char c)
+NOINLINE void uart_putc (UART_Regs *UART, const char c)
 {
   while (!uart_tx_empty (UART));
   uart_putc_nowait (UART, c);
 }
 
-static void uart_parity_setup (UART_TypeDef *UART, const int p)
+static void uart_parity_setup (UART_Regs *UART, const int p)
 {
   UART->LCR = (UART->LCR & ~(UART_PARITY_MASK<<PARITY)) | (p<<PARITY);
 }
 
-void uart_set9_nowait (UART_TypeDef *UART, const int c)
+void uart_set9_nowait (UART_Regs *UART, const int c)
 {
   uart_parity_setup (UART, c ? UART_PARITY_ONE : UART_PARITY_ZERO);
 }
 
-void uart_set9 (UART_TypeDef *UART, const int c)
+void uart_set9 (UART_Regs *UART, const int c)
 {
   while (!uart_tx_finished (UART));
   uart_set9_nowait (UART, c);
 }
 
-NOINLINE char uart_getc (UART_TypeDef *UART)
+NOINLINE char uart_getc (UART_Regs *UART)
 {
   while (!uart_rx_ready (UART));
   return uart_getc_nowait (UART);
 }
 
-int uart_getc_status (UART_TypeDef *UART)
+int uart_getc_status (UART_Regs *UART)
 {
   int c = (UART->LSR & (0xf << 1)) << 8;
   c |= uart_getc_nowait (UART);
   return c;
 }
 
-void uart_putc_hex (UART_TypeDef *UART, const char c)
+void uart_putc_hex (UART_Regs *UART, const char c)
 {
   static char hex_digits[] = "0123456789abcdef";
 
@@ -121,35 +121,35 @@ void uart_putc_hex (UART_TypeDef *UART, const char c)
   uart_putc_nowait (UART, hex_digits [c & 0xf]);
 }
 
-void uart_put (UART_TypeDef *UART, const void *x, int len)
+void uart_put (UART_Regs *UART, const void *x, int len)
 {
   const char *s = x;
   while (len--)
     uart_putc (UART, *s++);
 }
 
-void uart_get (UART_TypeDef *UART, void *x, int len)
+void uart_get (UART_Regs *UART, void *x, int len)
 {
   char *s = x;
   while (len--)
     *s++ = uart_getc (UART);
 }
 
-void uart_put_hex (UART_TypeDef *UART, const void *x, int len)
+void uart_put_hex (UART_Regs *UART, const void *x, int len)
 {
   const char *s = x;
   while (len--)
     uart_putc_hex (UART, *s++);
 }
 
-void uart_rput_hex (UART_TypeDef *UART, const void *x, int len)
+void uart_rput_hex (UART_Regs *UART, const void *x, int len)
 {
   const char *s = x + len;
   while (len--)
     uart_putc_hex (UART, *--s);
 }
 
-void uart_puts (UART_TypeDef *UART, const char *s)
+void uart_puts (UART_Regs *UART, const char *s)
 {
   while (*s != 0)
     uart_putc (UART, *s++);

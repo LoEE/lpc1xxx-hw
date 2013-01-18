@@ -52,5 +52,6 @@
 #include "uart.h"
 #include "time.h"
 #include "ssp.h"
+#include "adc.h"
 
 #endif // HW_H

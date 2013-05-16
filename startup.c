@@ -162,8 +162,14 @@ void Default_Handler (void) { while (1); }
 // Weakly bind most interrupt vectors to the dummy handler.
 #define HANDLER(name) \
   void __attribute__((weak,externally_visible)) name##_Handler(void);
+#ifndef WEAK_HANDLER_DEBUG
 #define WEAK_HANDLER(name) \
   void __attribute__((weak,alias("Default_Handler"),externally_visible)) name##_Handler(void);
+#else
+#define WEAK_HANDLER_STRINGIFY(s) # s
+#define WEAK_HANDLER(name) \
+  void __attribute__((weak,externally_visible)) name##_Handler(void) { WEAK_HANDLER_DEBUG(name); while(1); };
+#endif
 #define RESERVED
 VECTORS
 #undef HANDLER

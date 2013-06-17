@@ -40,8 +40,15 @@ void adc_setup_raw (ADC_Regs *ADC, int div, int resolution)
 INLINE
 void adc_setup (ADC_Regs *ADC, int system_clock, int resolution)
 {
+#if defined(LPC12xx)
+  if (resolution != 10) ERROR("Invalid resolution [resolution is fixed at 10 bits in LPC12xx].");
+  int div = (system_clock + 8.99e6) / 9e6;
+#elif defined(LPC13xx)
   if (resolution < 3 || resolution > 10) ERROR("Invalid resolution [3 <= resolution <= 10].");
   int div = (system_clock + 4.49e6) / 4.5e6;
+#else
+  #error "Unknown processor type."
+#endif
   if (div < 1 || div > 256) ERROR("Cannot find a valid clock divider [1 <= div <= 256].");
 
   adc_setup_raw(ADC, div, resolution);

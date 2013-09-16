@@ -64,6 +64,7 @@ void uart_putc_hex    (UART_Regs *UART, const char c);
 
 void uart_put      (UART_Regs *UART, const void *x, int len);
 void uart_put_hex  (UART_Regs *UART, const void *x, int len);
+void uart_rput     (UART_Regs *UART, const void *x, int len);
 void uart_rput_hex (UART_Regs *UART, const void *x, int len);
 
 void uart_puts     (UART_Regs *UART, const char *x);

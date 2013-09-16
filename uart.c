@@ -128,6 +128,13 @@ void uart_put (UART_Regs *UART, const void *x, int len)
     uart_putc (UART, *s++);
 }
 
+void uart_rput (UART_Regs *UART, const void *x, int len)
+{
+  const char *s = x + len;
+  while (len--)
+    uart_putc (UART, *--s);
+}
+
 void uart_get (UART_Regs *UART, void *x, int len)
 {
   char *s = x;

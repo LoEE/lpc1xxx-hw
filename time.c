@@ -31,12 +31,22 @@ void timer_stop (timer *ti)
 
 int timer_expired (timer *ti)
 {
-  return !timer_stopped (ti) && current_time() - ti->start >= ti->interval;
+  return !timer_stopped (ti) && timer_value(ti) >= ti->interval;
 }
 
 int timer_stopped (timer *ti)
 {
   return ti->interval == 0xffffffff;
+}
+
+uint32_t timer_value (timer *ti)
+{
+  return current_time() - ti->start;
+}
+
+int timer_remaining (timer *ti)
+{
+  return ti->interval - timer_value(ti);
 }
 
 void delay (uint32_t interval)

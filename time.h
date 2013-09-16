@@ -22,6 +22,9 @@ void timer_stop (timer *ti); // end = NEVER
 int timer_expired (timer *ti);
 int timer_stopped (timer *ti);
 
+uint32_t timer_value (timer *ti);
+int timer_remaining (timer *ti);
+
 void delay (uint32_t interval);
 uint32_t current_time (void);
 

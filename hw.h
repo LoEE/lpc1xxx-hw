@@ -31,6 +31,12 @@
 #  endif
 #  include "CMSIS/LPC122x.h"
 #  include "system/LPC122x.h"
+#elif defined(LPC176x)
+#  if !defined(LQFP100) && !defined(TFBGA100)
+#    error "No supported CPU package types defined."
+#  endif
+#  include "CMSIS/LPC17xx.h"
+#  include "system/LPC17xx.h"
 #endif
 
 #if defined(LPC131x) && defined(LQFP48)
@@ -45,6 +51,12 @@
 #  include "io/LPC122x-LQFP48.h"
 #elif defined(LPC122x) && defined(LQFP64)
 #  include "io/LPC122x-LQFP64.h"
+#elif defined(LPC175x) && defined(LQFP80)
+#  include "io/LPC175x-LQFP80.h"
+#elif defined(LPC1768) && defined(TFBGA100)
+#  include "io/LPC176x-TFBGA100.h"
+#elif defined(LPC176x) && defined(LQFP100)
+#  include "io/LPC176x-LQFP100.h"
 #else
 #  error "The given CPU type and package combination is invalid."
 #endif

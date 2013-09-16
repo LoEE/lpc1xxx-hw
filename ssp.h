@@ -8,6 +8,10 @@
 #define SSP_Regs LPC_SSP_TypeDef
 #define SSP0 ((SSP_Regs *)LPC_SSP0)
 #define SSP1 ((SSP_Regs *)LPC_SSP1)
+#elif defined(LPC17xx)
+#define SSP_Regs LPC_SSP_TypeDef
+#define SSP0 ((SSP_Regs *)LPC_SSP0)
+#define SSP1 ((SSP_Regs *)LPC_SSP1)
 #else
 #error Unknown processor family.
 #endif

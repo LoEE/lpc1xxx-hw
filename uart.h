@@ -22,6 +22,12 @@
 #elif defined(LPC13xx)
 #define UART_Regs LPC_UART_TypeDef
 #define UART0 ((UART_Regs *)LPC_UART)
+#elif defined(LPC17xx)
+#define UART_Regs LPC_UART_TypeDef
+#define UART0 ((UART_Regs *)LPC_UART0)
+#define UART1 ((UART_Regs *)LPC_UART1)
+#define UART2 ((UART_Regs *)LPC_UART2)
+#define UART3 ((UART_Regs *)LPC_UART3)
 #else
 #error Unknown processor family.
 #endif

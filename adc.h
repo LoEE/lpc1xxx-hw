@@ -17,6 +17,32 @@
 #elif defined(LPC13xx)
 #define ADC_Regs LPC_ADC_TypeDef
 #define ADC0 ((ADC_Regs *)LPC_ADC0)
+#elif defined(LPC17xx)
+typedef struct
+{
+  __IO uint32_t CR;
+  __IO uint32_t GDR;
+       uint32_t RESERVED0;
+  __IO uint32_t INTEN;
+  union {
+    __IO uint32_t DR[8];
+    struct {
+    __I  uint32_t DR0;
+    __I  uint32_t DR1;
+    __I  uint32_t DR2;
+    __I  uint32_t DR3;
+    __I  uint32_t DR4;
+    __I  uint32_t DR5;
+    __I  uint32_t DR6;
+    __I  uint32_t DR7;
+    };
+  };
+    __I  uint32_t STAT;
+    __IO uint32_t TRIM;
+} HW_ADC_TypeDef;
+
+#define ADC_Regs HW_ADC_TypeDef
+#define ADC0 ((ADC_Regs *)LPC_ADC)
 #else
 #error Unknown processor family.
 #endif
@@ -34,7 +60,11 @@ void adc_setup_raw (ADC_Regs *ADC, int div, int resolution)
 {
   ADC_BITS;
 
+#if defined(LPC17xx)
+  ADC->CR = (div - 1) << CLKDIV;
+#else
   ADC->CR = (div - 1) << CLKDIV | (10 - resolution) << CLKS;
+#endif
 }
 
 INLINE
@@ -46,6 +76,9 @@ void adc_setup (ADC_Regs *ADC, int system_clock, int resolution)
 #elif defined(LPC13xx)
   if (resolution < 3 || resolution > 10) ERROR("Invalid resolution [3 <= resolution <= 10].");
   int div = (system_clock + 4.49e6) / 4.5e6;
+#elif defined(LPC17xx)
+  if (resolution != 12) ERROR("Invalid resolution [resolution is fixed at 12 bits in LPC17xx].");
+  int div = (system_clock + 19.99e6) / 13e6;
 #else
   #error "Unknown processor type."
 #endif

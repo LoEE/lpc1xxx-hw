@@ -1,17 +1,18 @@
-/**************************************************************************//**
- * @file     LPC17xx.h
- * @brief    CMSIS Cortex-M3 Core Peripheral Access Layer Header File for
- *           NXP LPC17xx Device Series
- * @version: V1.09
- * @date:    25. July. 2011
+/******************************************************************************
+ * @file:    LPC17xx.h
+ * @purpose: CMSIS Cortex-M3 Core Peripheral Access Layer Header File for 
+ *           NXP LPC17xx Device Series 
+ * @version: V1.10
+ * @date:    24. September 2010
+ *----------------------------------------------------------------------------
  *
  * @note
- * Copyright (C) 2009 ARM Limited. All rights reserved.
+ * Copyright (C) 2010 ARM Limited. All rights reserved.
  *
  * @par
- * ARM Limited (ARM) is supplying this software for use with Cortex-M
- * processor based microcontrollers.  This file can be freely distributed
- * within development tools that are supporting such ARM based processors.
+ * ARM Limited (ARM) is supplying this software for use with Cortex-M3 
+ * processor based microcontrollers.  This file can be freely distributed 
+ * within development tools that are supporting such ARM based processors. 
  *
  * @par
  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
@@ -83,8 +84,8 @@ typedef enum IRQn
   MCPWM_IRQn                    = 30,       /*!< Motor Control PWM Interrupt                      */
   QEI_IRQn                      = 31,       /*!< Quadrature Encoder Interface Interrupt           */
   PLL1_IRQn                     = 32,       /*!< PLL1 Lock (USB PLL) Interrupt                    */
-  USBActivity_IRQn				= 33,		/*!< USB Activity Interrupt 						  */
-  CANActivity_IRQn				= 34		/*!< CAN Activity Interrupt 						  */
+  USBActivity_IRQn              = 33,       /*!< USB Activity Interrupt(For wakeup only)          */
+  CANActivity_IRQn              = 34        /*!< CAN Activity Interrupt(For wakeup only)          */
 } IRQn_Type;
 
 
@@ -116,76 +117,77 @@ typedef enum IRQn
 /** @brief System Control (SC) register structure definition */
 typedef struct
 {
-  __IO uint32_t FLASHCFG;               /* Flash Accelerator Module           */
+  __IO uint32_t FLASHCFG;                   /*!< Offset: 0x000 (R/W)  Flash Accelerator Configuration Register */
        uint32_t RESERVED0[31];
-  __IO uint32_t PLL0CON;                /* Clocking and Power Control         */
-  __IO uint32_t PLL0CFG;
-  __I  uint32_t PLL0STAT;
-  __O  uint32_t PLL0FEED;
+  __IO uint32_t PLL0CON;                    /*!< Offset: 0x080 (R/W)  PLL0 Control Register */
+  __IO uint32_t PLL0CFG;                    /*!< Offset: 0x084 (R/W)  PLL0 Configuration Register */
+  __I  uint32_t PLL0STAT;                   /*!< Offset: 0x088 (R/ )  PLL0 Status Register */
+  __O  uint32_t PLL0FEED;                   /*!< Offset: 0x08C ( /W)  PLL0 Feed Register */
        uint32_t RESERVED1[4];
-  __IO uint32_t PLL1CON;
-  __IO uint32_t PLL1CFG;
-  __I  uint32_t PLL1STAT;
-  __O  uint32_t PLL1FEED;
+  __IO uint32_t PLL1CON;                    /*!< Offset: 0x0A0 (R/W)  PLL1 Control Register */
+  __IO uint32_t PLL1CFG;                    /*!< Offset: 0x0A4 (R/W)  PLL1 Configuration Register */
+  __I  uint32_t PLL1STAT;                   /*!< Offset: 0x0A8 (R/ )  PLL1 Status Register */
+  __O  uint32_t PLL1FEED;                   /*!< Offset: 0x0AC ( /W)  PLL1 Feed Register */
        uint32_t RESERVED2[4];
-  __IO uint32_t PCON;
-  __IO uint32_t PCONP;
+  __IO uint32_t PCON;                       /*!< Offset: 0x0C0 (R/W)  Power Control Register */
+  __IO uint32_t PCONP;                      /*!< Offset: 0x0C4 (R/W)  Power Control for Peripherals Register */
        uint32_t RESERVED3[15];
-  __IO uint32_t CCLKCFG;
-  __IO uint32_t USBCLKCFG;
-  __IO uint32_t CLKSRCSEL;
-  __IO uint32_t	CANSLEEPCLR;
-  __IO uint32_t	CANWAKEFLAGS;
+  __IO uint32_t CCLKCFG;                    /*!< Offset: 0x104 (R/W)  CPU Clock Configure Register  */
+  __IO uint32_t USBCLKCFG;                  /*!< Offset: 0x108 (R/W)  USB Clock Configure Register */
+  __IO uint32_t CLKSRCSEL;                  /*!< Offset: 0x10C (R/W)  Clock Source Select Register */
+  __IO uint32_t CANSLEEPCLR;                /*!< Offset: 0x110 (R/W)  CAN Sleep Clear Register */
+  __IO uint32_t CANWAKEFLAGS;               /*!< Offset: 0x114 (R/W)  CAN Wake-up Flags Register */
        uint32_t RESERVED4[10];
-  __IO uint32_t EXTINT;                 /* External Interrupts                */
-       uint32_t RESERVED5;
-  __IO uint32_t EXTMODE;
-  __IO uint32_t EXTPOLAR;
+  __IO uint32_t EXTINT;                     /*!< Offset: 0x140 (R/W)  External Interrupt Flag Register */
+       uint32_t RESERVED5[1];
+  __IO uint32_t EXTMODE;                    /*!< Offset: 0x148 (R/W)  External Interrupt Mode Register */
+  __IO uint32_t EXTPOLAR;                   /*!< Offset: 0x14C (R/W)  External Interrupt Polarity Register */
        uint32_t RESERVED6[12];
-  __IO uint32_t RSID;                   /* Reset                              */
+  __IO uint32_t RSID;                       /*!< Offset: 0x180 (R/W)  Reset Source Identification Register */
        uint32_t RESERVED7[7];
-  __IO uint32_t SCS;                    /* Syscon Miscellaneous Registers     */
+  __IO uint32_t SCS;                        /*!< Offset: 0x1A0 (R/W)  System Controls and Status Register */
   __IO uint32_t IRCTRIM;                /* Clock Dividers                     */
-  __IO uint32_t PCLKSEL0;
-  __IO uint32_t PCLKSEL1;
+  __IO uint32_t PCLKSEL0;                   /*!< Offset: 0x1A8 (R/W)  Peripheral Clock Select 0 Register */
+  __IO uint32_t PCLKSEL1;                   /*!< Offset: 0x1AC (R/W)  Peripheral Clock Select 1 Register */
        uint32_t RESERVED8[4];
-  __IO uint32_t USBIntSt;               /* USB Device/OTG Interrupt Register  */
-  __IO uint32_t DMAREQSEL;
-  __IO uint32_t CLKOUTCFG;              /* Clock Output Configuration         */
+  __IO uint32_t USBIntSt;                   /*!< Offset: 0x1C0 (R/W)  USB Interrupt Status Register */
+  __IO uint32_t DMAREQSEL;                  /*!< Offset: 0x1C4 (R/W)  DMA Request Select Register */
+  __IO uint32_t CLKOUTCFG;                  /*!< Offset: 0x1C8 (R/W)  Clock Output Configuration Register */
+
  } LPC_SC_TypeDef;
 
 /*------------- Pin Connect Block (PINCON) -----------------------------------*/
 /** @brief Pin Connect Block (PINCON) register structure definition */
 typedef struct
 {
-  __IO uint32_t PINSEL0;
-  __IO uint32_t PINSEL1;
-  __IO uint32_t PINSEL2;
-  __IO uint32_t PINSEL3;
-  __IO uint32_t PINSEL4;
-  __IO uint32_t PINSEL5;
-  __IO uint32_t PINSEL6;
-  __IO uint32_t PINSEL7;
-  __IO uint32_t PINSEL8;
-  __IO uint32_t PINSEL9;
-  __IO uint32_t PINSEL10;
+  __IO uint32_t PINSEL0;				 /* !< Offset: 0x000 PIN Select0 (R/W) */
+  __IO uint32_t PINSEL1;				 /* !< Offset: 0x004 PIN Select1 (R/W) */
+  __IO uint32_t PINSEL2;				 /* !< Offset: 0x008 PIN Select2 (R/W) */
+  __IO uint32_t PINSEL3;				 /* !< Offset: 0x00C PIN Select3 (R/W) */
+  __IO uint32_t PINSEL4;				 /* !< Offset: 0x010 PIN Select4 (R/W) */
+  __IO uint32_t PINSEL5;				 /* !< Offset: 0x014 PIN Select5 (R/W) */
+  __IO uint32_t PINSEL6;				 /* !< Offset: 0x018 PIN Select6 (R/W) */
+  __IO uint32_t PINSEL7;				 /* !< Offset: 0x01C PIN Select7 (R/W) */
+  __IO uint32_t PINSEL8;				 /* !< Offset: 0x020 PIN Select8 (R/W) */
+  __IO uint32_t PINSEL9;				 /* !< Offset: 0x024 PIN Select9 (R/W) */
+  __IO uint32_t PINSEL10;				 /* !< Offset: 0x028 PIN Select20 (R/W) */
        uint32_t RESERVED0[5];
-  __IO uint32_t PINMODE0;
-  __IO uint32_t PINMODE1;
-  __IO uint32_t PINMODE2;
-  __IO uint32_t PINMODE3;
-  __IO uint32_t PINMODE4;
-  __IO uint32_t PINMODE5;
-  __IO uint32_t PINMODE6;
-  __IO uint32_t PINMODE7;
-  __IO uint32_t PINMODE8;
-  __IO uint32_t PINMODE9;
-  __IO uint32_t PINMODE_OD0;
-  __IO uint32_t PINMODE_OD1;
-  __IO uint32_t PINMODE_OD2;
-  __IO uint32_t PINMODE_OD3;
-  __IO uint32_t PINMODE_OD4;
-  __IO uint32_t I2CPADCFG;
+  __IO uint32_t PINMODE0;				 /* !< Offset: 0x040 PIN Mode0 (R/W) */
+  __IO uint32_t PINMODE1;				 /* !< Offset: 0x044 PIN Mode1 (R/W) */
+  __IO uint32_t PINMODE2;				 /* !< Offset: 0x048 PIN Mode2 (R/W) */
+  __IO uint32_t PINMODE3;				 /* !< Offset: 0x04C PIN Mode3 (R/W) */
+  __IO uint32_t PINMODE4;				 /* !< Offset: 0x050 PIN Mode4 (R/W) */
+  __IO uint32_t PINMODE5;				 /* !< Offset: 0x054 PIN Mode5 (R/W) */
+  __IO uint32_t PINMODE6;				 /* !< Offset: 0x058 PIN Mode6 (R/W) */
+  __IO uint32_t PINMODE7;				 /* !< Offset: 0x05C PIN Mode7 (R/W) */
+  __IO uint32_t PINMODE8;				 /* !< Offset: 0x060 PIN Mode8 (R/W) */
+  __IO uint32_t PINMODE9;				 /* !< Offset: 0x064 PIN Mode9 (R/W) */
+  __IO uint32_t PINMODE_OD0;			 /* !< Offset: 0x068 Open Drain PIN Mode0 (R/W) */
+  __IO uint32_t PINMODE_OD1;			 /* !< Offset: 0x06C Open Drain PIN Mode1 (R/W) */
+  __IO uint32_t PINMODE_OD2;			 /* !< Offset: 0x070 Open Drain PIN Mode2 (R/W) */
+  __IO uint32_t PINMODE_OD3;			 /* !< Offset: 0x074 Open Drain PIN Mode3 (R/W) */
+  __IO uint32_t PINMODE_OD4;			 /* !< Offset: 0x078 Open Drain PIN Mode4 (R/W) */
+  __IO uint32_t I2CPADCFG;				 /* !< Offset: 0x07C I2C Pad Configure (R/W) */
 } LPC_PINCON_TypeDef;
 
 /*------------- General Purpose Input/Output (GPIO) --------------------------*/
@@ -193,7 +195,7 @@ typedef struct
 typedef struct
 {
   union {
-    __IO uint32_t FIODIR;
+    __IO uint32_t FIODIR;				 /* !< Offset: 0x00 Port direction (R/W) */
     struct {
       __IO uint16_t FIODIRL;
       __IO uint16_t FIODIRH;
@@ -207,7 +209,7 @@ typedef struct
   };
   uint32_t RESERVED0[3];
   union {
-    __IO uint32_t FIOMASK;
+    __IO uint32_t FIOMASK;				 /* !< Offset: 0x10 Port mask (R/W) */
     struct {
       __IO uint16_t FIOMASKL;
       __IO uint16_t FIOMASKH;
@@ -220,7 +222,7 @@ typedef struct
     };
   };
   union {
-    __IO uint32_t FIOPIN;
+    __IO uint32_t FIOPIN;				 /* !< Offset: 0x14 Port value (R/W) */
     struct {
       __IO uint16_t FIOPINL;
       __IO uint16_t FIOPINH;
@@ -233,7 +235,7 @@ typedef struct
     };
   };
   union {
-    __IO uint32_t FIOSET;
+    __IO uint32_t FIOSET;				 /* !< Offset: 0x18 Port output set (R/W) */
     struct {
       __IO uint16_t FIOSETL;
       __IO uint16_t FIOSETH;
@@ -246,7 +248,7 @@ typedef struct
     };
   };
   union {
-    __O  uint32_t FIOCLR;
+    __O  uint32_t FIOCLR;				 /* !< Offset: 0x1C Port output clear (R/W) */
     struct {
       __O  uint16_t FIOCLRL;
       __O  uint16_t FIOCLRH;
@@ -263,70 +265,70 @@ typedef struct
 /** @brief General Purpose Input/Output interrupt (GPIOINT) register structure definition */
 typedef struct
 {
-  __I  uint32_t IntStatus;
-  __I  uint32_t IO0IntStatR;
-  __I  uint32_t IO0IntStatF;
-  __O  uint32_t IO0IntClr;
-  __IO uint32_t IO0IntEnR;
-  __IO uint32_t IO0IntEnF;
+  __I  uint32_t IntStatus;                  /*!< Offset: 0x000 (R/ )  GPIO overall Interrupt Status Register */
+  __I  uint32_t IO0IntStatR;                /*!< Offset: 0x004 (R/ )  GPIO Interrupt Status Register 0 for Rising edge */
+  __I  uint32_t IO0IntStatF;                /*!< Offset: 0x008 (R/ )  GPIO Interrupt Status Register 0 for Falling edge */
+  __O  uint32_t IO0IntClr;                  /*!< Offset: 0x00C (R/W)  GPIO Interrupt Clear  Register 0 */
+  __IO uint32_t IO0IntEnR;                  /*!< Offset: 0x010 ( /W)  GPIO Interrupt Enable Register 0 for Rising edge */
+  __IO uint32_t IO0IntEnF;                  /*!< Offset: 0x014 (R/W)  GPIO Interrupt Enable Register 0 for Falling edge */
        uint32_t RESERVED0[3];
-  __I  uint32_t IO2IntStatR;
-  __I  uint32_t IO2IntStatF;
-  __O  uint32_t IO2IntClr;
-  __IO uint32_t IO2IntEnR;
-  __IO uint32_t IO2IntEnF;
+  __I  uint32_t IO2IntStatR;                /*!< Offset: 0x000 (R/ )  GPIO Interrupt Status Register 2 for Rising edge */
+  __I  uint32_t IO2IntStatF;                /*!< Offset: 0x000 (R/ )  GPIO Interrupt Status Register 2 for Falling edge */
+  __O  uint32_t IO2IntClr;                  /*!< Offset: 0x000 ( /W)  GPIO Interrupt Clear  Register 2 */
+  __IO uint32_t IO2IntEnR;                  /*!< Offset: 0x000 (R/W)  GPIO Interrupt Enable Register 2 for Rising edge */
+  __IO uint32_t IO2IntEnF;                  /*!< Offset: 0x000 (R/W)  GPIO Interrupt Enable Register 2 for Falling edge */
 } LPC_GPIOINT_TypeDef;
 
 /*------------- Timer (TIM) --------------------------------------------------*/
 /** @brief Timer (TIM) register structure definition */
 typedef struct
 {
-  __IO uint32_t IR;
-  __IO uint32_t TCR;
-  __IO uint32_t TC;
-  __IO uint32_t PR;
-  __IO uint32_t PC;
-  __IO uint32_t MCR;
-  __IO uint32_t MR0;
-  __IO uint32_t MR1;
-  __IO uint32_t MR2;
-  __IO uint32_t MR3;
-  __IO uint32_t CCR;
-  __I  uint32_t CR0;
-  __I  uint32_t CR1;
+  __IO uint32_t IR;                         /*!< Offset: 0x000 (R/W)  Interrupt Register */
+  __IO uint32_t TCR;                        /*!< Offset: 0x004 (R/W)  Timer Control Register */
+  __IO uint32_t TC;                         /*!< Offset: 0x008 (R/W)  Timer Counter Register */
+  __IO uint32_t PR;                         /*!< Offset: 0x00C (R/W)  Prescale Register */
+  __IO uint32_t PC;                         /*!< Offset: 0x010 (R/W)  Prescale Counter Register */
+  __IO uint32_t MCR;                        /*!< Offset: 0x014 (R/W)  Match Control Register */
+  __IO uint32_t MR0;                        /*!< Offset: 0x018 (R/W)  Match Register 0 */
+  __IO uint32_t MR1;                        /*!< Offset: 0x01C (R/W)  Match Register 1 */
+  __IO uint32_t MR2;                        /*!< Offset: 0x020 (R/W)  Match Register 2 */
+  __IO uint32_t MR3;                        /*!< Offset: 0x024 (R/W)  Match Register 3 */
+  __IO uint32_t CCR;                        /*!< Offset: 0x028 (R/W)  Capture Control Register */
+  __I  uint32_t CR0;                        /*!< Offset: 0x02C (R/ )  Capture Register 0 */
+  __I  uint32_t CR1;                        /*!< Offset: 0x030 (R/ )  Capture Register */
        uint32_t RESERVED0[2];
-  __IO uint32_t EMR;
+  __IO uint32_t EMR;                        /*!< Offset: 0x03C (R/W)  External Match Register */
        uint32_t RESERVED1[12];
-  __IO uint32_t CTCR;
+  __IO uint32_t CTCR;                       /*!< Offset: 0x070 (R/W)  Count Control Register */
 } LPC_TIM_TypeDef;
 
 /*------------- Pulse-Width Modulation (PWM) ---------------------------------*/
 /** @brief Pulse-Width Modulation (PWM) register structure definition */
 typedef struct
 {
-  __IO uint32_t IR;
-  __IO uint32_t TCR;
-  __IO uint32_t TC;
-  __IO uint32_t PR;
-  __IO uint32_t PC;
-  __IO uint32_t MCR;
-  __IO uint32_t MR0;
-  __IO uint32_t MR1;
-  __IO uint32_t MR2;
-  __IO uint32_t MR3;
-  __IO uint32_t CCR;
-  __I  uint32_t CR0;
-  __I  uint32_t CR1;
-  __I  uint32_t CR2;
-  __I  uint32_t CR3;
+  __IO uint32_t IR;                         /*!< Offset: 0x000 (R/W)  Interrupt Register */
+  __IO uint32_t TCR;                        /*!< Offset: 0x004 (R/W)  Timer Control Register. Register */
+  __IO uint32_t TC;                         /*!< Offset: 0x008 (R/W)  Timer Counter Register */
+  __IO uint32_t PR;                         /*!< Offset: 0x00C (R/W)  Prescale Register */
+  __IO uint32_t PC;                         /*!< Offset: 0x010 (R/W)  Prescale Counter Register */
+  __IO uint32_t MCR;                        /*!< Offset: 0x014 (R/W)  Match Control Register */
+  __IO uint32_t MR0;                        /*!< Offset: 0x018 (R/W)  Match Register 0 */
+  __IO uint32_t MR1;                        /*!< Offset: 0x01C (R/W)  Match Register 1 */
+  __IO uint32_t MR2;                        /*!< Offset: 0x020 (R/W)  Match Register 2 */
+  __IO uint32_t MR3;                        /*!< Offset: 0x024 (R/W)  Match Register 3 */
+  __IO uint32_t CCR;                        /*!< Offset: 0x028 (R/W)  Capture Control Register */
+  __I  uint32_t CR0;                        /*!< Offset: 0x02C (R/ )  Capture Register 0 */
+  __I  uint32_t CR1;                        /*!< Offset: 0x030 (R/ )  Capture Register 1 */
+  __I  uint32_t CR2;                        /*!< Offset: 0x034 (R/ )  Capture Register 2 */
+  __I  uint32_t CR3;                        /*!< Offset: 0x038 (R/ )  Capture Register 3 */
        uint32_t RESERVED0;
-  __IO uint32_t MR4;
-  __IO uint32_t MR5;
-  __IO uint32_t MR6;
-  __IO uint32_t PCR;
-  __IO uint32_t LER;
+  __IO uint32_t MR4;                        /*!< Offset: 0x040 (R/W)  Match Register 4 */
+  __IO uint32_t MR5;                        /*!< Offset: 0x044 (R/W)  Match Register 5 */
+  __IO uint32_t MR6;                        /*!< Offset: 0x048 (R/W)  Match Register 6 */
+  __IO uint32_t PCR;                        /*!< Offset: 0x04C (R/W)  PWM Control Register */
+  __IO uint32_t LER;                        /*!< Offset: 0x050 (R/W)  Load Enable Register */
        uint32_t RESERVED1[7];
-  __IO uint32_t CTCR;
+  __IO uint32_t CTCR;                       /*!< Offset: 0x070 (R/W)  Count Control Register */
 } LPC_PWM_TypeDef;
 
 /*------------- Universal Asynchronous Receiver Transmitter (UART) -----------*/
@@ -334,178 +336,130 @@ typedef struct
 typedef struct
 {
   union {
-  __I  uint8_t  RBR;
-  __O  uint8_t  THR;
-  __IO uint8_t  DLL;
+  __I  uint32_t RBR;                   /*!< Offset: 0x000 Receiver Buffer  Register (R/ ) */
+  __O  uint32_t THR;                   /*!< Offset: 0x000 Transmit Holding Register ( /W) */
+  __IO uint32_t DLL;                   /*!< Offset: 0x000 Divisor Latch LSB (R/W) */
+  };
+  union {
+  __IO uint32_t DLM;                   /*!< Offset: 0x004 Divisor Latch MSB (R/W) */
+  __IO uint32_t IER;                   /*!< Offset: 0x004 Interrupt Enable Register (R/W) */
+  };
+  union {
+  __I  uint32_t IIR;                   /*!< Offset: 0x008 Interrupt ID Register (R/ ) */
+  __O  uint32_t FCR;                   /*!< Offset: 0x008 FIFO Control Register ( /W) */
+  };
+  __IO uint32_t LCR;                   /*!< Offset: 0x00C Line Control Register (R/W) */
        uint32_t RESERVED0;
-  };
-  union {
-  __IO uint8_t  DLM;
-  __IO uint32_t IER;
-  };
-  union {
-  __I  uint32_t IIR;
-  __O  uint8_t  FCR;
-  };
-  __IO uint8_t  LCR;
-       uint8_t  RESERVED1[7];
-  __I  uint8_t  LSR;
-       uint8_t  RESERVED2[7];
-  __IO uint8_t  SCR;
-       uint8_t  RESERVED3[3];
-  __IO uint32_t ACR;
-  __IO uint8_t  ICR;
-       uint8_t  RESERVED4[3];
-  __IO uint8_t  FDR;
-       uint8_t  RESERVED5[7];
-  __IO uint8_t  TER;
-       uint8_t  RESERVED6[39];
-  __I  uint8_t  FIFOLVL;
+  __I  uint32_t LSR;                   /*!< Offset: 0x014 Line Status Register (R/ ) */
+       uint32_t RESERVED1;
+  __IO uint32_t SCR;                   /*!< Offset: 0x01C Scratch Pad Register (R/W) */
+  __IO uint32_t ACR;                   /*!< Offset: 0x020 Auto-baud Control Register (R/W) */
+  __IO uint32_t ICR;                   /*!< Offset: 0x024 IrDA Control Register (R/W) */
+  __IO uint32_t FDR;                   /*!< Offset: 0x028 Fractional Divider Register (R/W) */
+       uint32_t RESERVED2;
+  __IO uint32_t TER;                   /*!< Offset: 0x030 Transmit Enable Register (R/W) */
 } LPC_UART_TypeDef;
 
 /** @brief  Universal Asynchronous Receiver Transmitter 0 (UART0) register structure definition */
 typedef struct
 {
   union {
-  __I  uint8_t  RBR;
-  __O  uint8_t  THR;
-  __IO uint8_t  DLL;
-       uint32_t RESERVED0;
+  __I  uint32_t  RBR;                   /*!< Offset: 0x000 Receiver Buffer  Register (R/ ) */
+  __O  uint32_t  THR;                   /*!< Offset: 0x000 Transmit Holding Register ( /W) */
+  __IO uint32_t  DLL;                   /*!< Offset: 0x000 Divisor Latch LSB (R/W) */
   };
   union {
-  __IO uint8_t  DLM;
-  __IO uint32_t IER;
+  __IO uint32_t  DLM;                   /*!< Offset: 0x004 Divisor Latch MSB (R/W) */
+  __IO uint32_t  IER;                   /*!< Offset: 0x000 Interrupt Enable Register (R/W) */
   };
   union {
-  __I  uint32_t IIR;
-  __O  uint8_t  FCR;
+  __I  uint32_t  IIR;                   /*!< Offset: 0x008 Interrupt ID Register (R/ ) */
+  __O  uint32_t  FCR;                   /*!< Offset: 0x008 FIFO Control Register ( /W) */
   };
-  __IO uint8_t  LCR;
-       uint8_t  RESERVED1[7];
-  __I  uint8_t  LSR;
-       uint8_t  RESERVED2[7];
-  __IO uint8_t  SCR;
-       uint8_t  RESERVED3[3];
-  __IO uint32_t ACR;
-  __IO uint8_t  ICR;
-       uint8_t  RESERVED4[3];
-  __IO uint8_t  FDR;
-       uint8_t  RESERVED5[7];
-  __IO uint8_t  TER;
-       uint8_t  RESERVED6[39];
-  __I  uint8_t  FIFOLVL;
-} LPC_UART0_TypeDef;
-
-/** @brief  Universal Asynchronous Receiver Transmitter 1 (UART1) register structure definition */
-typedef struct
-{
-  union {
-  __I  uint8_t  RBR;
-  __O  uint8_t  THR;
-  __IO uint8_t  DLL;
-       uint32_t RESERVED0;
-  };
-  union {
-  __IO uint8_t  DLM;
-  __IO uint32_t IER;
-  };
-  union {
-  __I  uint32_t IIR;
-  __O  uint8_t  FCR;
-  };
-  __IO uint8_t  LCR;
-       uint8_t  RESERVED1[3];
-  __IO uint8_t  MCR;
-       uint8_t  RESERVED2[3];
-  __I  uint8_t  LSR;
-       uint8_t  RESERVED3[3];
-  __I  uint8_t  MSR;
-       uint8_t  RESERVED4[3];
-  __IO uint8_t  SCR;
-       uint8_t  RESERVED5[3];
-  __IO uint32_t ACR;
-       uint32_t RESERVED6;
-  __IO uint32_t FDR;
-       uint32_t RESERVED7;
-  __IO uint8_t  TER;
-       uint8_t  RESERVED8[27];
-  __IO uint8_t  RS485CTRL;
-       uint8_t  RESERVED9[3];
-  __IO uint8_t  ADRMATCH;
-       uint8_t  RESERVED10[3];
-  __IO uint8_t  RS485DLY;
-       uint8_t  RESERVED11[3];
-  __I  uint8_t  FIFOLVL;
+  __IO uint32_t  LCR;                   /*!< Offset: 0x00C Line Control Register (R/W) */
+  __IO uint32_t  MCR;                   /*!< Offset: 0x010 Modem control Register (R/W) */
+  __I  uint32_t  LSR;                   /*!< Offset: 0x014 Line Status Register (R/ ) */
+  __I  uint32_t  MSR;                   /*!< Offset: 0x018 Modem status Register (R/ ) */
+  __IO uint32_t  SCR;                   /*!< Offset: 0x01C Scratch Pad Register (R/W) */
+  __IO uint32_t  ACR;                   /*!< Offset: 0x020 Auto-baud Control Register (R/W) */
+       uint32_t  RESERVED0;
+  __IO uint32_t  FDR;                   /*!< Offset: 0x028 Fractional Divider Register (R/W) */
+       uint32_t  RESERVED1;
+  __IO uint32_t  TER;                   /*!< Offset: 0x030 Transmit Enable Register (R/W) */
+       uint32_t  RESERVED2[6];
+  __IO uint32_t  RS485CTRL;             /*!< Offset: 0x04C RS-485/EIA-485 Control Register (R/W) */
+  __IO uint32_t  ADRMATCH;              /*!< Offset: 0x050 RS-485/EIA-485 address match Register (R/W) */
+  __IO uint32_t  RS485DLY;              /*!< Offset: 0x054 RS-485/EIA-485 direction control delay Register (R/W) */
 } LPC_UART1_TypeDef;
 
 /*------------- Serial Peripheral Interface (SPI) ----------------------------*/
 /** @brief  Serial Peripheral Interface (SPI) register structure definition */
 typedef struct
 {
-  __IO uint32_t SPCR;
-  __I  uint32_t SPSR;
-  __IO uint32_t SPDR;
-  __IO uint32_t SPCCR;
+  __IO uint32_t SPCR;                       /*!< Offset: 0x000 SPI Control Register (R/W) */
+  __I  uint32_t SPSR;                       /*!< Offset: 0x004 SPI Status Register (R/) */
+  __IO uint32_t SPDR;                       /*!< Offset: 0x008 SPI Data Register (R/W) */
+  __IO uint32_t SPCCR;                      /*!< Offset: 0x00C SPI Clock Counter Register (R/W) */
        uint32_t RESERVED0[3];
-  __IO uint32_t SPINT;
+  __IO uint32_t SPINT;                      /*!< Offset: 0x01C SPI Interrupt Flag Register (R/W) */
 } LPC_SPI_TypeDef;
 
 /*------------- Synchronous Serial Communication (SSP) -----------------------*/
 /** @brief  Synchronous Serial Communication (SSP) register structure definition */
 typedef struct
 {
-  __IO uint32_t CR0;
-  __IO uint32_t CR1;
-  __IO uint32_t DR;
-  __I  uint32_t SR;
-  __IO uint32_t CPSR;
-  __IO uint32_t IMSC;
-  __IO uint32_t RIS;
-  __IO uint32_t MIS;
-  __IO uint32_t ICR;
-  __IO uint32_t DMACR;
+  __IO uint32_t CR0;                        /*!< Offset: 0x000 (R/W)  Control Register 0 */
+  __IO uint32_t CR1;                        /*!< Offset: 0x004 (R/W)  Control Register 1 */
+  __IO uint32_t DR;                         /*!< Offset: 0x008 (R/W)  Data Register */
+  __I  uint32_t SR;                         /*!< Offset: 0x00C (R/ )  Status Register */
+  __IO uint32_t CPSR;                       /*!< Offset: 0x010 (R/W)  Clock Prescale Register */
+  __IO uint32_t IMSC;                       /*!< Offset: 0x014 (R/W)  Interrupt Mask Set and Clear Register */
+  __IO uint32_t RIS;                        /*!< Offset: 0x018 (R/W)  Raw Interrupt Status Register */
+  __IO uint32_t MIS;                        /*!< Offset: 0x01C (R/W)  Masked Interrupt Status Register */
+  __IO uint32_t ICR;                        /*!< Offset: 0x020 (R/W)  SSPICR Interrupt Clear Register */
+  __IO uint32_t DMACR;                      /*!< Offset: 0x024 (R/W)  DMA Control Register */
 } LPC_SSP_TypeDef;
 
 /*------------- Inter-Integrated Circuit (I2C) -------------------------------*/
 /** @brief  Inter-Integrated Circuit (I2C) register structure definition */
 typedef struct
 {
-  __IO uint32_t I2CONSET;
-  __I  uint32_t I2STAT;
-  __IO uint32_t I2DAT;
-  __IO uint32_t I2ADR0;
-  __IO uint32_t I2SCLH;
-  __IO uint32_t I2SCLL;
-  __O  uint32_t I2CONCLR;
-  __IO uint32_t MMCTRL;
-  __IO uint32_t I2ADR1;
-  __IO uint32_t I2ADR2;
-  __IO uint32_t I2ADR3;
-  __I  uint32_t I2DATA_BUFFER;
-  __IO uint32_t I2MASK0;
-  __IO uint32_t I2MASK1;
-  __IO uint32_t I2MASK2;
-  __IO uint32_t I2MASK3;
+  __IO uint32_t CONSET;                     /*!< Offset: 0x000 (R/W)  I2C Control Set Register */
+  __I  uint32_t STAT;                       /*!< Offset: 0x004 (R/ )  I2C Status Register */
+  __IO uint32_t DAT;                        /*!< Offset: 0x008 (R/W)  I2C Data Register */
+  __IO uint32_t ADR0;                       /*!< Offset: 0x00C (R/W)  I2C Slave Address Register 0 */
+  __IO uint32_t SCLH;                       /*!< Offset: 0x010 (R/W)  SCH Duty Cycle Register High Half Word */
+  __IO uint32_t SCLL;                       /*!< Offset: 0x014 (R/W)  SCL Duty Cycle Register Low Half Word */
+  __O  uint32_t CONCLR;                     /*!< Offset: 0x018 (R/W)  I2C Control Clear Register */
+  __IO uint32_t MMCTRL;                     /*!< Offset: 0x01C (R/W)  Monitor mode control register */
+  __IO uint32_t ADR1;                       /*!< Offset: 0x020 (R/W)  I2C Slave Address Register 1 */
+  __IO uint32_t ADR2;                       /*!< Offset: 0x024 (R/W)  I2C Slave Address Register 2 */
+  __IO uint32_t ADR3;                       /*!< Offset: 0x028 (R/W)  I2C Slave Address Register 3 */
+  __I  uint32_t DATA_BUFFER;                /*!< Offset: 0x02C (R/ )  Data buffer Register */
+  __IO uint32_t MASK0;                      /*!< Offset: 0x030 (R/W)  I2C Slave address mask register 0 */
+  __IO uint32_t MASK1;                      /*!< Offset: 0x034 (R/W)  I2C Slave address mask register 1 */
+  __IO uint32_t MASK2;                      /*!< Offset: 0x038 (R/W)  I2C Slave address mask register 2 */
+  __IO uint32_t MASK3;                      /*!< Offset: 0x03C (R/W)  I2C Slave address mask register 3 */
 } LPC_I2C_TypeDef;
 
 /*------------- Inter IC Sound (I2S) -----------------------------------------*/
 /** @brief  Inter IC Sound (I2S) register structure definition */
 typedef struct
 {
-  __IO uint32_t I2SDAO;
-  __IO uint32_t I2SDAI;
-  __O  uint32_t I2STXFIFO;
-  __I  uint32_t I2SRXFIFO;
-  __I  uint32_t I2SSTATE;
-  __IO uint32_t I2SDMA1;
-  __IO uint32_t I2SDMA2;
-  __IO uint32_t I2SIRQ;
-  __IO uint32_t I2STXRATE;
-  __IO uint32_t I2SRXRATE;
-  __IO uint32_t I2STXBITRATE;
-  __IO uint32_t I2SRXBITRATE;
-  __IO uint32_t I2STXMODE;
-  __IO uint32_t I2SRXMODE;
+  __IO uint32_t DAO;                        /*!< Offset: 0x000 (R/W)  Digital Audio Output Register */
+  __IO uint32_t DAI;                        /*!< Offset: 0x004 (R/W)  Digital Audio Input Register */
+  __O  uint32_t TXFIFO;                     /*!< Offset: 0x008 ( /W)  Transmit FIFO */
+  __I  uint32_t RXFIFO;                     /*!< Offset: 0x00C (R/ )  Receive FIFO */
+  __I  uint32_t STATE;                      /*!< Offset: 0x010 (R/W)  Status Feedback Register */
+  __IO uint32_t DMA1;                       /*!< Offset: 0x014 (R/W)  DMA Configuration Register 1 */
+  __IO uint32_t DMA2;                       /*!< Offset: 0x018 (R/W)  DMA Configuration Register 2 */
+  __IO uint32_t IRQ;                        /*!< Offset: 0x01C (R/W)  Interrupt Request Control Register */
+  __IO uint32_t TXRATE;                     /*!< Offset: 0x020 (R/W)  Transmit reference clock divider Register */
+  __IO uint32_t RXRATE;                     /*!< Offset: 0x024 (R/W)  Receive reference clock divider Register */
+  __IO uint32_t TXBITRATE;                  /*!< Offset: 0x028 (R/W)  Transmit bit rate divider Register */
+  __IO uint32_t RXBITRATE;                  /*!< Offset: 0x02C (R/W)  Receive bit rate divider Register */
+  __IO uint32_t TXMODE;                     /*!< Offset: 0x030 (R/W)  Transmit mode control Register */
+  __IO uint32_t RXMODE;                     /*!< Offset: 0x034 (R/W)  Receive mode control Register */
 } LPC_I2S_TypeDef;
 
 /*------------- Repetitive Interrupt Timer (RIT) -----------------------------*/
@@ -514,8 +468,7 @@ typedef struct
 {
   __IO uint32_t RICOMPVAL;
   __IO uint32_t RIMASK;
-  __IO uint8_t  RICTRL;
-       uint8_t  RESERVED0[3];
+  __IO uint32_t RICTRL;
   __IO uint32_t RICOUNTER;
 } LPC_RIT_TypeDef;
 
@@ -523,71 +476,48 @@ typedef struct
 /** @brief  Real-Time Clock (RTC) register structure definition */
 typedef struct
 {
-  __IO uint8_t  ILR;
-       uint8_t  RESERVED0[7];
-  __IO uint8_t  CCR;
-       uint8_t  RESERVED1[3];
-  __IO uint8_t  CIIR;
-       uint8_t  RESERVED2[3];
-  __IO uint8_t  AMR;
-       uint8_t  RESERVED3[3];
-  __I  uint32_t CTIME0;
-  __I  uint32_t CTIME1;
-  __I  uint32_t CTIME2;
-  __IO uint8_t  SEC;
-       uint8_t  RESERVED4[3];
-  __IO uint8_t  MIN;
-       uint8_t  RESERVED5[3];
-  __IO uint8_t  HOUR;
-       uint8_t  RESERVED6[3];
-  __IO uint8_t  DOM;
-       uint8_t  RESERVED7[3];
-  __IO uint8_t  DOW;
-       uint8_t  RESERVED8[3];
-  __IO uint16_t DOY;
-       uint16_t RESERVED9;
-  __IO uint8_t  MONTH;
-       uint8_t  RESERVED10[3];
-  __IO uint16_t YEAR;
-       uint16_t RESERVED11;
-  __IO uint32_t CALIBRATION;
-  __IO uint32_t GPREG0;
-  __IO uint32_t GPREG1;
-  __IO uint32_t GPREG2;
-  __IO uint32_t GPREG3;
-  __IO uint32_t GPREG4;
-  __IO uint8_t  RTC_AUXEN;
-       uint8_t  RESERVED12[3];
-  __IO uint8_t  RTC_AUX;
-       uint8_t  RESERVED13[3];
-  __IO uint8_t  ALSEC;
-       uint8_t  RESERVED14[3];
-  __IO uint8_t  ALMIN;
-       uint8_t  RESERVED15[3];
-  __IO uint8_t  ALHOUR;
-       uint8_t  RESERVED16[3];
-  __IO uint8_t  ALDOM;
-       uint8_t  RESERVED17[3];
-  __IO uint8_t  ALDOW;
-       uint8_t  RESERVED18[3];
-  __IO uint16_t ALDOY;
-       uint16_t RESERVED19;
-  __IO uint8_t  ALMON;
-       uint8_t  RESERVED20[3];
-  __IO uint16_t ALYEAR;
-       uint16_t RESERVED21;
+  __IO uint32_t ILR;                        /*!< Offset: 0x000 (R/W)  Interrupt Location Register */
+       uint32_t RESERVED0;				    
+  __IO uint32_t CCR;                        /*!< Offset: 0x008 (R/W)  Clock Control Register */
+  __IO uint32_t CIIR;                       /*!< Offset: 0x00C (R/W)  Counter Increment Interrupt Register */
+  __IO uint32_t AMR;                        /*!< Offset: 0x010 (R/W)  Alarm Mask Register */
+  __I  uint32_t CTIME0;                     /*!< Offset: 0x014 (R/ )  Consolidated Time Register 0 */
+  __I  uint32_t CTIME1;                     /*!< Offset: 0x018 (R/ )  Consolidated Time Register 1 */
+  __I  uint32_t CTIME2;                     /*!< Offset: 0x01C (R/ )  Consolidated Time Register 2 */
+  __IO uint32_t SEC;                        /*!< Offset: 0x020 (R/W)  Seconds Counter Register */
+  __IO uint32_t MIN;                        /*!< Offset: 0x024 (R/W)  Minutes Register */
+  __IO uint32_t HOUR;                       /*!< Offset: 0x028 (R/W)  Hours Register */
+  __IO uint32_t DOM;                        /*!< Offset: 0x02C (R/W)  Day of Month Register */
+  __IO uint32_t DOW;                        /*!< Offset: 0x030 (R/W)  Day of Week Register */
+  __IO uint32_t DOY;                        /*!< Offset: 0x034 (R/W)  Day of Year Register */
+  __IO uint32_t MONTH;                      /*!< Offset: 0x038 (R/W)  Months Register */
+  __IO uint32_t YEAR;                       /*!< Offset: 0x03C (R/W)  Years Register */
+  __IO uint32_t CALIBRATION;                /*!< Offset: 0x040 (R/W)  Calibration Value Register */
+  __IO uint32_t GPREG0;                     /*!< Offset: 0x044 (R/W)  General Purpose Register 0 */
+  __IO uint32_t GPREG1;                     /*!< Offset: 0x048 (R/W)  General Purpose Register 1 */
+  __IO uint32_t GPREG2;                     /*!< Offset: 0x04C (R/W)  General Purpose Register 2 */
+  __IO uint32_t GPREG3;                     /*!< Offset: 0x050 (R/W)  General Purpose Register 3 */
+  __IO uint32_t GPREG4;                     /*!< Offset: 0x054 (R/W)  General Purpose Register 4 */
+  __IO uint32_t RTC_AUXEN;                  /*!< Offset: 0x058 (R/W)  RTC Auxiliary Enable Register */
+  __IO uint32_t RTC_AUX;                    /*!< Offset: 0x05C (R/W)  RTC Auxiliary Control Register */
+  __IO uint32_t ALSEC;                      /*!< Offset: 0x060 (R/W)  Alarm value for Seconds */
+  __IO uint32_t ALMIN;                      /*!< Offset: 0x064 (R/W)  Alarm value for Minutes */
+  __IO uint32_t ALHOUR;                     /*!< Offset: 0x068 (R/W)  Alarm value for Hours */
+  __IO uint32_t ALDOM;                      /*!< Offset: 0x06C (R/W)  Alarm value for Day of Month */
+  __IO uint32_t ALDOW;                      /*!< Offset: 0x070 (R/W)  Alarm value for Day of Week */
+  __IO uint32_t ALDOY;                      /*!< Offset: 0x074 (R/W)  Alarm value for Day of Year */
+  __IO uint32_t ALMON;                      /*!< Offset: 0x078 (R/W)  Alarm value for Months */
+  __IO uint32_t ALYEAR;                     /*!< Offset: 0x07C (R/W)  Alarm value for Year */
 } LPC_RTC_TypeDef;
 
 /*------------- Watchdog Timer (WDT) -----------------------------------------*/
 /** @brief  Watchdog Timer (WDT) register structure definition */
 typedef struct
 {
-  __IO uint8_t  WDMOD;
-       uint8_t  RESERVED0[3];
-  __IO uint32_t WDTC;
-  __O  uint8_t  WDFEED;
-       uint8_t  RESERVED1[3];
-  __I  uint32_t WDTV;
+  __IO uint32_t MOD;                        /*!< Offset: 0x000 (R/W)  Watchdog mode Register */
+  __IO uint32_t TC;                         /*!< Offset: 0x004 (R/W)  Watchdog timer constant Register */
+  __O  uint32_t FEED;                       /*!< Offset: 0x008 ( /W)  Watchdog feed sequence Register */
+  __I  uint32_t TV;                         /*!< Offset: 0x00C (R/ )  Watchdog timer value Register */
   __IO uint32_t WDCLKSEL;
 } LPC_WDT_TypeDef;
 
@@ -595,288 +525,281 @@ typedef struct
 /** @brief  Analog-to-Digital Converter (ADC) register structure definition */
 typedef struct
 {
-  __IO uint32_t ADCR;
-  __IO uint32_t ADGDR;
+  __IO uint32_t CR;                         /*!< Offset: 0x000 (R/W)  A/D Control Register */
+  __IO uint32_t GDR;                        /*!< Offset: 0x004 (R/W)  A/D Global Data Register */
        uint32_t RESERVED0;
-  __IO uint32_t ADINTEN;
-  __I  uint32_t ADDR0;
-  __I  uint32_t ADDR1;
-  __I  uint32_t ADDR2;
-  __I  uint32_t ADDR3;
-  __I  uint32_t ADDR4;
-  __I  uint32_t ADDR5;
-  __I  uint32_t ADDR6;
-  __I  uint32_t ADDR7;
-  __I  uint32_t ADSTAT;
-  __IO uint32_t ADTRM;
+  __IO uint32_t INTEN;                      /*!< Offset: 0x00C (R/W)  A/D Interrupt Enable Register */
+  __I  uint32_t DR[8];                      /*!< Offset: 0x010 (R/ )  A/D Channel # Data Register */
+  __I  uint32_t STAT;                       /*!< Offset: 0x030 (R/ )  A/D Status Register */
+  __IO uint32_t ADTRM;                      /*!< Offset: 0x034 (R/W)  ADC trim Register */
 } LPC_ADC_TypeDef;
 
 /*------------- Digital-to-Analog Converter (DAC) ----------------------------*/
 /** @brief  Digital-to-Analog Converter (DAC) register structure definition */
 typedef struct
 {
-  __IO uint32_t DACR;
-  __IO uint32_t DACCTRL;
-  __IO uint16_t DACCNTVAL;
+  __IO uint32_t CR;                         /*!< Offset: 0x000 (R/W)  D/A Converter Register */
+  __IO uint32_t CTRL;                       /*!< Offset: 0x004 (R/W)  DAC Control register */
+  __IO uint32_t CNTVAL;                     /*!< Offset: 0x008 (R/W)  DAC Counter Value Register */
 } LPC_DAC_TypeDef;
 
 /*------------- Motor Control Pulse-Width Modulation (MCPWM) -----------------*/
 /** @brief  Motor Control Pulse-Width Modulation (MCPWM) register structure definition */
 typedef struct
 {
-  __I  uint32_t MCCON;
-  __O  uint32_t MCCON_SET;
-  __O  uint32_t MCCON_CLR;
-  __I  uint32_t MCCAPCON;
-  __O  uint32_t MCCAPCON_SET;
-  __O  uint32_t MCCAPCON_CLR;
-  __IO uint32_t MCTIM0;
-  __IO uint32_t MCTIM1;
-  __IO uint32_t MCTIM2;
-  __IO uint32_t MCPER0;
-  __IO uint32_t MCPER1;
-  __IO uint32_t MCPER2;
-  __IO uint32_t MCPW0;
-  __IO uint32_t MCPW1;
-  __IO uint32_t MCPW2;
-  __IO uint32_t MCDEADTIME;
-  __IO uint32_t MCCCP;
-  __IO uint32_t MCCR0;
-  __IO uint32_t MCCR1;
-  __IO uint32_t MCCR2;
-  __I  uint32_t MCINTEN;
-  __O  uint32_t MCINTEN_SET;
-  __O  uint32_t MCINTEN_CLR;
-  __I  uint32_t MCCNTCON;
-  __O  uint32_t MCCNTCON_SET;
-  __O  uint32_t MCCNTCON_CLR;
-  __I  uint32_t MCINTFLAG;
-  __O  uint32_t MCINTFLAG_SET;
-  __O  uint32_t MCINTFLAG_CLR;
-  __O  uint32_t MCCAP_CLR;
+  __I  uint32_t CON;                        /*!< Offset: 0x000 (R/ )  PWM Control read address Register */
+  __O  uint32_t CON_SET;                    /*!< Offset: 0x004 ( /W)  PWM Control set address Register */
+  __O  uint32_t CON_CLR;                    /*!< Offset: 0x008 ( /W)  PWM Control clear address Register */
+  __I  uint32_t CAPCON;                     /*!< Offset: 0x00C (R/ )  Capture Control read address Register */
+  __O  uint32_t CAPCON_SET;                 /*!< Offset: 0x010 ( /W)  Capture Control set address Register */
+  __O  uint32_t CAPCON_CLR;                 /*!< Offset: 0x014 ( /W)  Event Control clear address Register */
+  __IO uint32_t TC0;                        /*!< Offset: 0x018 (R/W)  Timer Counter Register, channel 0 */
+  __IO uint32_t TC1;                        /*!< Offset: 0x01C (R/W)  Timer Counter Register, channel 1 */
+  __IO uint32_t TC2;                        /*!< Offset: 0x020 (R/W)  Timer Counter Register, channel 2 */
+  __IO uint32_t LIM0;                       /*!< Offset: 0x024 (R/W)  Limit Register, channel 0 */
+  __IO uint32_t LIM1;                       /*!< Offset: 0x028 (R/W)  Limit Register, channel 1 */
+  __IO uint32_t LIM2;                       /*!< Offset: 0x02C (R/W)  Limit Register, channel 2 */
+  __IO uint32_t MAT0;                       /*!< Offset: 0x030 (R/W)  Match Register, channel 0 */
+  __IO uint32_t MAT1;                       /*!< Offset: 0x034 (R/W)  Match Register, channel 1 */
+  __IO uint32_t MAT2;                       /*!< Offset: 0x038 (R/W)  Match Register, channel 2 */
+  __IO uint32_t DT;                         /*!< Offset: 0x03C (R/W)  Dead time Register */
+  __IO uint32_t CP;                         /*!< Offset: 0x040 (R/W)  Commutation Pattern Register */
+  __IO uint32_t CAP0;                       /*!< Offset: 0x044 (R/W)  Capture Register, channel 0 */
+  __IO uint32_t CAP1;                       /*!< Offset: 0x048 (R/W)  Capture Register, channel 1 */
+  __IO uint32_t CAP2;                       /*!< Offset: 0x04C (R/W)  Capture Register, channel 2 */
+  __I  uint32_t INTEN;                      /*!< Offset: 0x050 (R/ )  Interrupt Enable read Register */
+  __O  uint32_t INTEN_SET;                  /*!< Offset: 0x054 ( /W)  Interrupt Enable set address Register */
+  __O  uint32_t INTEN_CLR;                  /*!< Offset: 0x058 ( /W)  Interrupt Enable clear address Register */
+  __I  uint32_t CNTCON;                     /*!< Offset: 0x05C (R/ )  Count Control read address Register */
+  __O  uint32_t CNTCON_SET;                 /*!< Offset: 0x060 ( /W)  Count Control set address Register */
+  __O  uint32_t CNTCON_CLR;                 /*!< Offset: 0x064 ( /W)  Count Control clear address Register */
+  __I  uint32_t INTF;                       /*!< Offset: 0x068 (R/ )  Interrupt flags read address Register */
+  __O  uint32_t INTF_SET;                   /*!< Offset: 0x06C ( /W)  Interrupt flags set address Register */
+  __O  uint32_t INTF_CLR;                   /*!< Offset: 0x070 ( /W)  Interrupt flags clear address Register */
+  __O  uint32_t CAP_CLR;                    /*!< Offset: 0x074 ( /W)  Capture clear address Register */
 } LPC_MCPWM_TypeDef;
 
 /*------------- Quadrature Encoder Interface (QEI) ---------------------------*/
 /** @brief  Quadrature Encoder Interface (QEI) register structure definition */
 typedef struct
 {
-  __O  uint32_t QEICON;
-  __I  uint32_t QEISTAT;
-  __IO uint32_t QEICONF;
-  __I  uint32_t QEIPOS;
-  __IO uint32_t QEIMAXPOS;
-  __IO uint32_t CMPOS0;
-  __IO uint32_t CMPOS1;
-  __IO uint32_t CMPOS2;
-  __I  uint32_t INXCNT;
-  __IO uint32_t INXCMP;
-  __IO uint32_t QEILOAD;
-  __I  uint32_t QEITIME;
-  __I  uint32_t QEIVEL;
-  __I  uint32_t QEICAP;
-  __IO uint32_t VELCOMP;
+  __O  uint32_t CON;                        /*!< Offset: 0x000 ( /W)  Control Register */
+  __I  uint32_t STAT;                       /*!< Offset: 0x004 (R/ )  Encoder Status Register */
+  __IO uint32_t CONF;                       /*!< Offset: 0x008 (R/W)  Configuration Register */
+  __I  uint32_t POS;                        /*!< Offset: 0x00C (R/ )  Position Register */
+  __IO uint32_t MAXPOS;                     /*!< Offset: 0x010 (R/W)  Maximum position Register */
+  __IO uint32_t CMPOS0;                     /*!< Offset: 0x014 (R/W)  Position compare Register 0 */
+  __IO uint32_t CMPOS1;                     /*!< Offset: 0x018 (R/W)  Position compare Register 1 */
+  __IO uint32_t CMPOS2;                     /*!< Offset: 0x01C (R/W)  Position compare Register 2 */
+  __I  uint32_t INXCNT;                     /*!< Offset: 0x020 (R/ )  Index count Register */
+  __IO uint32_t INXCMP0;                    /*!< Offset: 0x024 (R/W)  Index compare Register 0 */
+  __IO uint32_t LOAD;                       /*!< Offset: 0x028 (R/W)  Velocity timer reload Register */
+  __I  uint32_t TIME;                       /*!< Offset: 0x02C (R/ )  Velocity timer Register */
+  __I  uint32_t VEL;                        /*!< Offset: 0x030 (R/ )  Velocity counter Register */
+  __I  uint32_t CAP;                        /*!< Offset: 0x034 (R/ )  Velocity capture Register */
+  __IO uint32_t VELCOMP;                    /*!< Offset: 0x038 (R/W)  Velocity compare Register */
   __IO uint32_t FILTER;
        uint32_t RESERVED0[998];
-  __O  uint32_t QEIIEC;
-  __O  uint32_t QEIIES;
-  __I  uint32_t QEIINTSTAT;
-  __I  uint32_t QEIIE;
-  __O  uint32_t QEICLR;
-  __O  uint32_t QEISET;
+  __O  uint32_t IEC;                        /*!< Offset: 0xFD8 ( /W)  Interrupt enable clear Register */
+  __O  uint32_t IES;                        /*!< Offset: 0xFDC ( /W)  Interrupt enable set Register */
+  __I  uint32_t INTSTAT;                    /*!< Offset: 0xFE0 (R/ )  Interrupt status Register */
+  __I  uint32_t IE;                         /*!< Offset: 0xFE4 (R/ )  Interrupt enable Register */
+  __O  uint32_t CLR;                        /*!< Offset: 0xFE8 ( /W)  Interrupt status clear Register */
+  __O  uint32_t SET;                        /*!< Offset: 0xFEC ( /W)  Interrupt status set Register */
 } LPC_QEI_TypeDef;
 
 /*------------- Controller Area Network (CAN) --------------------------------*/
 /** @brief  Controller Area Network Acceptance Filter RAM (CANAF_RAM)structure definition */
 typedef struct
 {
-  __IO uint32_t mask[512];              /* ID Masks                           */
+  __IO uint32_t mask[512];                  /*!< Offset: 0x000 (R/W)  Acceptance Filter RAM */
 } LPC_CANAF_RAM_TypeDef;
 
 /** @brief  Controller Area Network Acceptance Filter(CANAF) register structure definition */
 typedef struct                          /* Acceptance Filter Registers        */
 {
-  __IO uint32_t AFMR;
-  __IO uint32_t SFF_sa;
-  __IO uint32_t SFF_GRP_sa;
-  __IO uint32_t EFF_sa;
-  __IO uint32_t EFF_GRP_sa;
-  __IO uint32_t ENDofTable;
-  __I  uint32_t LUTerrAd;
-  __I  uint32_t LUTerr;
-  __IO uint32_t FCANIE;
-  __IO uint32_t FCANIC0;
-  __IO uint32_t FCANIC1;
+  __IO uint32_t AFMR;                       /*!< Offset: 0x000 (R/W)  Acceptance Filter Register */
+  __IO uint32_t SFF_sa;                     /*!< Offset: 0x004 (R/W)  Standard Frame Individual Start Address Register */
+  __IO uint32_t SFF_GRP_sa;                 /*!< Offset: 0x008 (R/W)  Standard Frame Group Start Address Register */
+  __IO uint32_t EFF_sa;                     /*!< Offset: 0x00C (R/W)  Extended Frame Start Address Register */
+  __IO uint32_t EFF_GRP_sa;                 /*!< Offset: 0x010 (R/W)  Extended Frame Group Start Address Register */
+  __IO uint32_t ENDofTable;                 /*!< Offset: 0x014 (R/W)  End of AF Tables Register */
+  __I  uint32_t LUTerrAd;                   /*!< Offset: 0x018 (R/ )  LUT Error Address Register */
+  __I  uint32_t LUTerr;                     /*!< Offset: 0x01C (R/ )  LUT Error Register */
+  __IO uint32_t FCANIE;                     /*!< Offset: 0x020 (R/W)  Global FullCANInterrupt Enable Register */
+  __IO uint32_t FCANIC0;                    /*!< Offset: 0x024 (R/W)  FullCAN Interrupt and Capture Register 0 */
+  __IO uint32_t FCANIC1;                    /*!< Offset: 0x028 (R/W)  FullCAN Interrupt and Capture Register 1 */
 } LPC_CANAF_TypeDef;
 
 /** @brief  Controller Area Network Central (CANCR) register structure definition */
 typedef struct                          /* Central Registers                  */
 {
-  __I  uint32_t CANTxSR;
-  __I  uint32_t CANRxSR;
-  __I  uint32_t CANMSR;
+  __I  uint32_t TxSR;                       /*!< Offset: 0x000 (R/ )  CAN Central Transmit Status Register */
+  __I  uint32_t RxSR;                       /*!< Offset: 0x004 (R/ )  CAN Central Receive Status Register */
+  __I  uint32_t MSR;                        /*!< Offset: 0x008 (R/ )  CAN Central Miscellaneous Register */
 } LPC_CANCR_TypeDef;
 
 /** @brief  Controller Area Network Controller (CAN) register structure definition */
-typedef struct                          /* Controller Registers               */
+typedef struct                              /* Controller Registers               */
 {
-  __IO uint32_t MOD;
-  __O  uint32_t CMR;
-  __IO uint32_t GSR;
-  __I  uint32_t ICR;
-  __IO uint32_t IER;
-  __IO uint32_t BTR;
-  __IO uint32_t EWL;
-  __I  uint32_t SR;
-  __IO uint32_t RFS;
-  __IO uint32_t RID;
-  __IO uint32_t RDA;
-  __IO uint32_t RDB;
-  __IO uint32_t TFI1;
-  __IO uint32_t TID1;
-  __IO uint32_t TDA1;
-  __IO uint32_t TDB1;
-  __IO uint32_t TFI2;
-  __IO uint32_t TID2;
-  __IO uint32_t TDA2;
-  __IO uint32_t TDB2;
-  __IO uint32_t TFI3;
-  __IO uint32_t TID3;
-  __IO uint32_t TDA3;
-  __IO uint32_t TDB3;
+  __IO uint32_t MOD;                        /*!< Offset: 0x000 (R/W)  CAN Mode Register */
+  __O  uint32_t CMR;                        /*!< Offset: 0x004 ( /W)  CAN Command Register */
+  __IO uint32_t GSR;                        /*!< Offset: 0x008 (R/W)  CAN Global Status Register */
+  __I  uint32_t ICR;                        /*!< Offset: 0x00C (R/ )  CAN Interrupt and Capture Register */
+  __IO uint32_t IER;                        /*!< Offset: 0x010 (R/W)  CAN Interrupt Enable Register */
+  __IO uint32_t BTR;                        /*!< Offset: 0x014 (R/W)  CAN Bus Timing Register */
+  __IO uint32_t EWL;                        /*!< Offset: 0x018 (R/W)  CAN Error Warning Limit Register */
+  __I  uint32_t SR;                         /*!< Offset: 0x01C (R/ )  CAN Status Register */
+  __IO uint32_t RFS;                        /*!< Offset: 0x020 (R/W)  CAN Receive Frame Status Register */
+  __IO uint32_t RID;                        /*!< Offset: 0x024 (R/W)  CAN Receive Identifier Register */
+  __IO uint32_t RDA;                        /*!< Offset: 0x028 (R/W)  CAN Receive Data Register A */
+  __IO uint32_t RDB;                        /*!< Offset: 0x02C (R/W)  CAN Receive Data Register B */
+  __IO uint32_t TFI1;                       /*!< Offset: 0x030 (R/W)  CAN Transmit Frame Information Register 1 */
+  __IO uint32_t TID1;                       /*!< Offset: 0x034 (R/W)  CAN Transmit Identifier Register 1 */
+  __IO uint32_t TDA1;                       /*!< Offset: 0x038 (R/W)  CAN Transmit Data Register A 1 */
+  __IO uint32_t TDB1;                       /*!< Offset: 0x03C (R/W)  CAN Transmit Data Register B 1 */
+  __IO uint32_t TFI2;                       /*!< Offset: 0x040 (R/W)  CAN Transmit Frame Information Register 2 */
+  __IO uint32_t TID2;                       /*!< Offset: 0x044 (R/W)  CAN Transmit Identifier Register 2 */
+  __IO uint32_t TDA2;                       /*!< Offset: 0x048 (R/W)  CAN Transmit Data Register A 2 */
+  __IO uint32_t TDB2;                       /*!< Offset: 0x04C (R/W)  CAN Transmit Data Register B 2 */
+  __IO uint32_t TFI3;                       /*!< Offset: 0x050 (R/W)  CAN Transmit Frame Information Register 3 */
+  __IO uint32_t TID3;                       /*!< Offset: 0x054 (R/W)  CAN Transmit Identifier Register 3 */
+  __IO uint32_t TDA3;                       /*!< Offset: 0x058 (R/W)  CAN Transmit Data Register A 3 */
+  __IO uint32_t TDB3;                       /*!< Offset: 0x05C (R/W)  CAN Transmit Data Register B 3 */
 } LPC_CAN_TypeDef;
 
 /*------------- General Purpose Direct Memory Access (GPDMA) -----------------*/
 /** @brief  General Purpose Direct Memory Access (GPDMA) register structure definition */
-typedef struct                          /* Common Registers                   */
+typedef struct                              /* Common Registers                   */
 {
-  __I  uint32_t DMACIntStat;
-  __I  uint32_t DMACIntTCStat;
-  __O  uint32_t DMACIntTCClear;
-  __I  uint32_t DMACIntErrStat;
-  __O  uint32_t DMACIntErrClr;
-  __I  uint32_t DMACRawIntTCStat;
-  __I  uint32_t DMACRawIntErrStat;
-  __I  uint32_t DMACEnbldChns;
-  __IO uint32_t DMACSoftBReq;
-  __IO uint32_t DMACSoftSReq;
-  __IO uint32_t DMACSoftLBReq;
-  __IO uint32_t DMACSoftLSReq;
-  __IO uint32_t DMACConfig;
-  __IO uint32_t DMACSync;
+  __I  uint32_t IntStat;                    /*!< Offset: 0x000 (R/ )  DMA Interrupt Status Register */
+  __I  uint32_t IntTCStat;                  /*!< Offset: 0x004 (R/ )  DMA Interrupt Terminal Count Request Status Register */
+  __O  uint32_t IntTCClear;                 /*!< Offset: 0x008 ( /W)  DMA Interrupt Terminal Count Request Clear Register */
+  __I  uint32_t IntErrStat;                 /*!< Offset: 0x00C (R/ )  DMA Interrupt Error Status Register */
+  __O  uint32_t IntErrClr;                  /*!< Offset: 0x010 ( /W)  DMA Interrupt Error Clear Register */
+  __I  uint32_t RawIntTCStat;               /*!< Offset: 0x014 (R/ )  DMA Raw Interrupt Terminal Count Status Register */
+  __I  uint32_t RawIntErrStat;              /*!< Offset: 0x018 (R/ )  DMA Raw Error Interrupt Status Register */
+  __I  uint32_t EnbldChns;                  /*!< Offset: 0x01C (R/ )  DMA Enabled Channel Register */
+  __IO uint32_t SoftBReq;                   /*!< Offset: 0x020 (R/W)  DMA Software Burst Request Register */
+  __IO uint32_t SoftSReq;                   /*!< Offset: 0x024 (R/W)  DMA Software Single Request Register */
+  __IO uint32_t SoftLBReq;                  /*!< Offset: 0x028 (R/W)  DMA Software Last Burst Request Register */
+  __IO uint32_t SoftLSReq;                  /*!< Offset: 0x02C (R/W)  DMA Software Last Single Request Register */
+  __IO uint32_t Config;                     /*!< Offset: 0x030 (R/W)  DMA Configuration Register */
+  __IO uint32_t Sync;                       /*!< Offset: 0x034 (R/W)  DMA Synchronization Register */
 } LPC_GPDMA_TypeDef;
 
 /** @brief  General Purpose Direct Memory Access Channel (GPDMACH) register structure definition */
-typedef struct                          /* Channel Registers                  */
+typedef struct                              /* Channel Registers                  */
 {
-  __IO uint32_t DMACCSrcAddr;
-  __IO uint32_t DMACCDestAddr;
-  __IO uint32_t DMACCLLI;
-  __IO uint32_t DMACCControl;
-  __IO uint32_t DMACCConfig;
+  __IO uint32_t CSrcAddr;                   /*!< Offset: 0x000 (R/W)  DMA Channel # Source Address Register */
+  __IO uint32_t CDestAddr;                  /*!< Offset: 0x004 (R/W)  DMA Channel # Destination Address Register */
+  __IO uint32_t CLLI;                       /*!< Offset: 0x008 (R/W)  DMA Channel # Linked List Item Register */
+  __IO uint32_t CControl;                   /*!< Offset: 0x00C (R/W)  DMA Channel # Control Register */
+  __IO uint32_t CConfig;                    /*!< Offset: 0x010 (R/W)  DMA Channel # Configuration Register */
 } LPC_GPDMACH_TypeDef;
 
 /*------------- Universal Serial Bus (USB) -----------------------------------*/
 /** @brief  Universal Serial Bus (USB) register structure definition */
 typedef struct
 {
-  __I  uint32_t HcRevision;             /* USB Host Registers                 */
-  __IO uint32_t HcControl;
-  __IO uint32_t HcCommandStatus;
-  __IO uint32_t HcInterruptStatus;
-  __IO uint32_t HcInterruptEnable;
-  __IO uint32_t HcInterruptDisable;
-  __IO uint32_t HcHCCA;
-  __I  uint32_t HcPeriodCurrentED;
-  __IO uint32_t HcControlHeadED;
-  __IO uint32_t HcControlCurrentED;
-  __IO uint32_t HcBulkHeadED;
-  __IO uint32_t HcBulkCurrentED;
-  __I  uint32_t HcDoneHead;
-  __IO uint32_t HcFmInterval;
-  __I  uint32_t HcFmRemaining;
-  __I  uint32_t HcFmNumber;
-  __IO uint32_t HcPeriodicStart;
-  __IO uint32_t HcLSTreshold;
-  __IO uint32_t HcRhDescriptorA;
-  __IO uint32_t HcRhDescriptorB;
-  __IO uint32_t HcRhStatus;
-  __IO uint32_t HcRhPortStatus1;
-  __IO uint32_t HcRhPortStatus2;
+  __I  uint32_t Revision;                 /*!< Offset: 0x000 (R/ )  Revision Register */
+  __IO uint32_t Control;                  /*!< Offset: 0x004 (R/W)  Control Register */
+  __IO uint32_t CommandStatus;            /*!< Offset: 0x008 (R/W)  Command / Status Register */
+  __IO uint32_t InterruptStatus;          /*!< Offset: 0x00C (R/W)  Interrupt Status Register */
+  __IO uint32_t InterruptEnable;          /*!< Offset: 0x010 (R/W)  Interrupt Enable Register */
+  __IO uint32_t InterruptDisable;         /*!< Offset: 0x014 (R/W)  Interrupt Disable Register */
+  __IO uint32_t HCCA;                     /*!< Offset: 0x018 (R/W)  Host Controller communication Area Register */
+  __I  uint32_t PeriodCurrentED;          /*!< Offset: 0x01C (R/ )   Register */
+  __IO uint32_t ControlHeadED;            /*!< Offset: 0x020 (R/W)   Register */
+  __IO uint32_t ControlCurrentED;         /*!< Offset: 0x024 (R/W)   Register */
+  __IO uint32_t BulkHeadED;               /*!< Offset: 0x028 (R/W)   Register */
+  __IO uint32_t BulkCurrentED;            /*!< Offset: 0x02C (R/W)   Register */
+  __I  uint32_t DoneHead;                 /*!< Offset: 0x030 (R/ )   Register */
+  __IO uint32_t FmInterval;               /*!< Offset: 0x034 (R/W)   Register */
+  __I  uint32_t FmRemaining;              /*!< Offset: 0x038 (R/ )   Register */
+  __I  uint32_t FmNumber;                 /*!< Offset: 0x03C (R/ )   Register */
+  __IO uint32_t PeriodicStart;            /*!< Offset: 0x040 (R/W)   Register */
+  __IO uint32_t LSTreshold;               /*!< Offset: 0x044 (R/W)   Register */
+  __IO uint32_t RhDescriptorA;            /*!< Offset: 0x048 (R/W)   Register */
+  __IO uint32_t RhDescriptorB;            /*!< Offset: 0x04C (R/W)   Register */
+  __IO uint32_t RhStatus;                 /*!< Offset: 0x050 (R/W)   Register */
+  __IO uint32_t RhPortStatus1;            /*!< Offset: 0x054 (R/W)   Register */
+  __IO uint32_t RhPortStatus2;            /*!< Offset: 0x05C (R/W)   Register */
        uint32_t RESERVED0[40];
-  __I  uint32_t Module_ID;
-
-  __I  uint32_t OTGIntSt;               /* USB On-The-Go Registers            */
-  __IO uint32_t OTGIntEn;
-  __O  uint32_t OTGIntSet;
-  __O  uint32_t OTGIntClr;
-  __IO uint32_t OTGStCtrl;
-  __IO uint32_t OTGTmr;
+  __I  uint32_t Module_ID;                /*!< Offset: 0x0FC (R/ )  Module ID / Version Reverence ID Register */
+                                          /* USB On-The-Go Registers            */
+  __I  uint32_t IntSt;                    /*!< Offset: 0x100 (R/ )  OTG Interrupt Status Register */
+  __IO uint32_t IntEn;                    /*!< Offset: 0x104 (R/W)  OTG Interrupt Enable Register */
+  __O  uint32_t IntSet;                   /*!< Offset: 0x108 ( /W)  OTG Interrupt Set Register */
+  __O  uint32_t IntClr;                   /*!< Offset: 0x10C ( /W)  OTG Interrupt Clear Register */
+  __IO uint32_t StCtrl;                   /*!< Offset: 0x110 (R/W)  OTG Status and Control Register */
+  __IO uint32_t Tmr;                      /*!< Offset: 0x114 (R/W)  OTG Timer Register */
        uint32_t RESERVED1[58];
-
-  __I  uint32_t USBDevIntSt;            /* USB Device Interrupt Registers     */
-  __IO uint32_t USBDevIntEn;
-  __O  uint32_t USBDevIntClr;
-  __O  uint32_t USBDevIntSet;
-
-  __O  uint32_t USBCmdCode;             /* USB Device SIE Command Registers   */
-  __I  uint32_t USBCmdData;
-
-  __I  uint32_t USBRxData;              /* USB Device Transfer Registers      */
-  __O  uint32_t USBTxData;
-  __I  uint32_t USBRxPLen;
-  __O  uint32_t USBTxPLen;
-  __IO uint32_t USBCtrl;
-  __O  uint32_t USBDevIntPri;
-
-  __I  uint32_t USBEpIntSt;             /* USB Device Endpoint Interrupt Regs */
-  __IO uint32_t USBEpIntEn;
-  __O  uint32_t USBEpIntClr;
-  __O  uint32_t USBEpIntSet;
-  __O  uint32_t USBEpIntPri;
-
-  __IO uint32_t USBReEp;                /* USB Device Endpoint Realization Reg*/
-  __O  uint32_t USBEpInd;
-  __IO uint32_t USBMaxPSize;
-
-  __I  uint32_t USBDMARSt;              /* USB Device DMA Registers           */
-  __O  uint32_t USBDMARClr;
-  __O  uint32_t USBDMARSet;
+                                          /* USB Device Interrupt Registers     */
+  __I  uint32_t DevIntSt;                 /*!< Offset: 0x200 (R/ )  USB Device Interrupt Status Register */
+  __IO uint32_t DevIntEn;                 /*!< Offset: 0x204 (R/W)  USB Device Interrupt Enable Register */
+  __O  uint32_t DevIntClr;                /*!< Offset: 0x208 ( /W)  USB Device Interrupt Clear Register */
+  __O  uint32_t DevIntSet;                /*!< Offset: 0x20C ( /W)  USB Device Interrupt Set Register */
+                                          /* USB Device SIE Command Registers   */
+  __O  uint32_t CmdCode;                  /*!< Offset: 0x210 (R/W)  USB Command Code Register */
+  __I  uint32_t CmdData;                  /*!< Offset: 0x214 (R/W)  USB Command Data Register */
+                                          /* USB Device Transfer Registers      */
+  __I  uint32_t RxData;                   /*!< Offset: 0x218 (R/ )  USB Receive Data Register */
+  __O  uint32_t TxData;                   /*!< Offset: 0x21C ( /W)  USB Transmit Data Register */
+  __I  uint32_t RxPLen;                   /*!< Offset: 0x220 (R/ )  USB Receive Packet Length Register */
+  __O  uint32_t TxPLen;                   /*!< Offset: 0x224 ( /W)  USB Transmit Packet Length Register */
+  __IO uint32_t Ctrl;                     /*!< Offset: 0x228 (R/W)  USB Control Register */
+  __O  uint32_t DevIntPri;                /*!< Offset: 0x22C (R/W)  USB Device Interrupt Priority Register */
+                                          /* USB Device Endpoint Interrupt Regs */
+  __I  uint32_t EpIntSt;                  /*!< Offset: 0x230 (R/ )  USB Endpoint Interrupt Status Register */
+  __IO uint32_t EpIntEn;                  /*!< Offset: 0x234 (R/W)  USB Endpoint Interrupt Enable Register */
+  __O  uint32_t EpIntClr;                 /*!< Offset: 0x238 ( /W)  USB Endpoint Interrupt Clear Register */
+  __O  uint32_t EpIntSet;                 /*!< Offset: 0x23C ( /W)  USB Endpoint Interrupt Set Register */
+  __O  uint32_t EpIntPri;                 /*!< Offset: 0x240 ( /W)  USB Endpoint Interrupt Priority Register */
+                                          /* USB Device Endpoint Realization Reg*/
+  __IO uint32_t ReEp;                     /*!< Offset: 0x244 (R/W)  USB Realize Endpoint Register */
+  __O  uint32_t EpInd;                    /*!< Offset: 0x248 ( /W)  USB Endpoint Index Register */
+  __IO uint32_t MaxPSize;                 /*!< Offset: 0x24C (R/W)  USB MaxPacketSize Register */
+                                          /* USB Device DMA Registers           */
+  __I  uint32_t DMARSt;                   /*!< Offset: 0x250 (R/ )  USB DMA Request Status Register */
+  __O  uint32_t DMARClr;                  /*!< Offset: 0x254 ( /W)  USB DMA Request Clear Register */
+  __O  uint32_t DMARSet;                  /*!< Offset: 0x258 ( /W)  USB DMA Request Set Register */
        uint32_t RESERVED2[9];
-  __IO uint32_t USBUDCAH;
-  __I  uint32_t USBEpDMASt;
-  __O  uint32_t USBEpDMAEn;
-  __O  uint32_t USBEpDMADis;
-  __I  uint32_t USBDMAIntSt;
-  __IO uint32_t USBDMAIntEn;
+  __IO uint32_t UDCAH;                    /*!< Offset: 0x280 (R/W)  USB UDCA Head Register */
+  __I  uint32_t EpDMASt;                  /*!< Offset: 0x284 (R/ )  USB EP DMA Status Register */
+  __O  uint32_t EpDMAEn;                  /*!< Offset: 0x288 ( /W)  USB EP DMA Enable Register */
+  __O  uint32_t EpDMADis;                 /*!< Offset: 0x28C ( /W)  USB EP DMA Disable Register */
+  __I  uint32_t DMAIntSt;                 /*!< Offset: 0x290 (R/ )  USB DMA Interrupt Status Register */
+  __IO uint32_t DMAIntEn;                 /*!< Offset: 0x294 (R/W)  USB DMA Interrupt Enable Register */
        uint32_t RESERVED3[2];
-  __I  uint32_t USBEoTIntSt;
-  __O  uint32_t USBEoTIntClr;
-  __O  uint32_t USBEoTIntSet;
-  __I  uint32_t USBNDDRIntSt;
-  __O  uint32_t USBNDDRIntClr;
-  __O  uint32_t USBNDDRIntSet;
-  __I  uint32_t USBSysErrIntSt;
-  __O  uint32_t USBSysErrIntClr;
-  __O  uint32_t USBSysErrIntSet;
+  __I  uint32_t EoTIntSt;                 /*!< Offset: 0x2A0 (R/ )  USB End of Transfer Interrupt Status Register */
+  __O  uint32_t EoTIntClr;                /*!< Offset: 0x2A4 ( /W)  USB End of Transfer Interrupt Clear Register */
+  __O  uint32_t EoTIntSet;                /*!< Offset: 0x2A8 ( /W)  USB End of Transfer Interrupt Set Register */
+  __I  uint32_t NDDRIntSt;                /*!< Offset: 0x2AC (R/ )  USB New DD Request Interrupt Status Register */
+  __O  uint32_t NDDRIntClr;               /*!< Offset: 0x2B0 ( /W)  USB New DD Request Interrupt Clear Register */
+  __O  uint32_t NDDRIntSet;               /*!< Offset: 0x2B4 ( /W)  USB New DD Request Interrupt Set Register */
+  __I  uint32_t SysErrIntSt;              /*!< Offset: 0x2B8 (R/ )  USB System Error Interrupt Status Register */
+  __O  uint32_t SysErrIntClr;             /*!< Offset: 0x2BC ( /W)  USB System Error Interrupt Clear Register */
+  __O  uint32_t SysErrIntSet;             /*!< Offset: 0x2C0 ( /W)  USB System Error Interrupt Set Register */
        uint32_t RESERVED4[15];
-
+                                          /* USB OTG I2C Registers              */
   union {
-  __I  uint32_t I2C_RX;                 /* USB OTG I2C Registers              */
-  __O  uint32_t I2C_TX;
+  __I  uint32_t I2C_RX;                   /*!< Offset: 0x300 (R/ )  OTG I2C Receive Register */
+  __O  uint32_t I2C_TX;                   /*!< Offset: 0x300 ( /W)  OTG I2C Transmit Register */
   };
-  __I  uint32_t I2C_STS;
-  __IO uint32_t I2C_CTL;
-  __IO uint32_t I2C_CLKHI;
-  __O  uint32_t I2C_CLKLO;
+  __I  uint32_t I2C_STS;                  /*!< Offset: 0x304 (R/ )  OTG I2C Status Register */
+  __IO uint32_t I2C_CTL;                  /*!< Offset: 0x308 (R/W)  OTG I2C Control Register */
+  __IO uint32_t I2C_CLKHI;                /*!< Offset: 0x30C (R/W)  OTG I2C Clock High Register */
+  __O  uint32_t I2C_CLKLO;                /*!< Offset: 0x310 ( /W)  OTG I2C Clock Low Register */
        uint32_t RESERVED5[824];
-
+                                          /* USB Clock Control Registers        */
   union {
-  __IO uint32_t USBClkCtrl;             /* USB Clock Control Registers        */
-  __IO uint32_t OTGClkCtrl;
+  __IO uint32_t USBClkCtrl;               /*!< Offset: 0xFF4 (R/W)  OTG clock controller Register */
+  __IO uint32_t OTGClkCtrl;               /*!< Offset: 0xFF4 (R/W)  USB clock controller Register */
   };
   union {
-  __I  uint32_t USBClkSt;
-  __I  uint32_t OTGClkSt;
+  __I  uint32_t USBClkSt;                 /*!< Offset: 0xFF8 (R/ )  OTG clock status Register */
+  __I  uint32_t OTGClkSt;                 /*!< Offset: 0xFF8 (R/ )  USB clock status Register */
   };
 } LPC_USB_TypeDef;
 
@@ -884,62 +807,59 @@ typedef struct
 /** @brief  Ethernet Media Access Controller (EMAC) register structure definition */
 typedef struct
 {
-  __IO uint32_t MAC1;                   /* MAC Registers                      */
-  __IO uint32_t MAC2;
-  __IO uint32_t IPGT;
-  __IO uint32_t IPGR;
-  __IO uint32_t CLRT;
-  __IO uint32_t MAXF;
-  __IO uint32_t SUPP;
-  __IO uint32_t TEST;
-  __IO uint32_t MCFG;
-  __IO uint32_t MCMD;
-  __IO uint32_t MADR;
-  __O  uint32_t MWTD;
-  __I  uint32_t MRDD;
-  __I  uint32_t MIND;
+  __IO uint32_t MAC1;                       /*!< Offset: 0x000 (R/W)  MAC Configuration Register 1 */
+  __IO uint32_t MAC2;                       /*!< Offset: 0x004 (R/W)  MAC Configuration Register 2 */
+  __IO uint32_t IPGT;                       /*!< Offset: 0x008 (R/W)  Back-to-Back Inter-Packet-Gap Register */
+  __IO uint32_t IPGR;                       /*!< Offset: 0x00C (R/W)  Non Back-to-Back Inter-Packet-Gap Register */
+  __IO uint32_t CLRT;                       /*!< Offset: 0x010 (R/W)  Collision Window / Retry Register */
+  __IO uint32_t MAXF;                       /*!< Offset: 0x014 (R/W)  Maximum Frame Register */
+  __IO uint32_t SUPP;                       /*!< Offset: 0x018 (R/W)  PHY Support Register */
+  __IO uint32_t TEST;                       /*!< Offset: 0x01C (R/W)  Test Register */
+  __IO uint32_t MCFG;                       /*!< Offset: 0x020 (R/W)  MII Mgmt Configuration Register */
+  __IO uint32_t MCMD;                       /*!< Offset: 0x024 (R/W)  MII Mgmt Command Register */
+  __IO uint32_t MADR;                       /*!< Offset: 0x028 (R/W)  MII Mgmt Address Register */
+  __O  uint32_t MWTD;                       /*!< Offset: 0x02C ( /W)  MII Mgmt Write Data Register */
+  __I  uint32_t MRDD;                       /*!< Offset: 0x030 (R/ )  MII Mgmt Read Data Register */
+  __I  uint32_t MIND;                       /*!< Offset: 0x034 (R/ )  MII Mgmt Indicators Register */
        uint32_t RESERVED0[2];
-  __IO uint32_t SA0;
-  __IO uint32_t SA1;
-  __IO uint32_t SA2;
+  __IO uint32_t SA0;                        /*!< Offset: 0x040 (R/W)  Station Address 0 Register */
+  __IO uint32_t SA1;                        /*!< Offset: 0x044 (R/W)  Station Address 1 Register */
+  __IO uint32_t SA2;                        /*!< Offset: 0x048 (R/W)  Station Address 2 Register */
        uint32_t RESERVED1[45];
-  __IO uint32_t Command;                /* Control Registers                  */
-  __I  uint32_t Status;
-  __IO uint32_t RxDescriptor;
-  __IO uint32_t RxStatus;
-  __IO uint32_t RxDescriptorNumber;
-  __I  uint32_t RxProduceIndex;
-  __IO uint32_t RxConsumeIndex;
-  __IO uint32_t TxDescriptor;
-  __IO uint32_t TxStatus;
-  __IO uint32_t TxDescriptorNumber;
-  __IO uint32_t TxProduceIndex;
-  __I  uint32_t TxConsumeIndex;
+  __IO uint32_t Command;                    /*!< Offset: 0x100 (R/W)  Command Register */
+  __I  uint32_t Status;                     /*!< Offset: 0x104 (R/ )  Status Register */
+  __IO uint32_t RxDescriptor;               /*!< Offset: 0x108 (R/W)  Receive Descriptor Base Address Register */
+  __IO uint32_t RxStatus;                   /*!< Offset: 0x10C (R/W)  Receive Status Base Address Register */
+  __IO uint32_t RxDescriptorNumber;         /*!< Offset: 0x110 (R/W)  Receive Number of Descriptors Register */
+  __I  uint32_t RxProduceIndex;             /*!< Offset: 0x114 (R/ )  Receive Produce Index Register */
+  __IO uint32_t RxConsumeIndex;             /*!< Offset: 0x118 (R/W)  Receive Consume Index Register */
+  __IO uint32_t TxDescriptor;               /*!< Offset: 0x11C (R/W)  Transmit Descriptor Base Address Register */
+  __IO uint32_t TxStatus;                   /*!< Offset: 0x120 (R/W)  Transmit Status Base Address Register */
+  __IO uint32_t TxDescriptorNumber;         /*!< Offset: 0x124 (R/W)  Transmit Number of Descriptors Register */
+  __IO uint32_t TxProduceIndex;             /*!< Offset: 0x128 (R/W)  Transmit Produce Index Register */
+  __I  uint32_t TxConsumeIndex;             /*!< Offset: 0x12C (R/ )  Transmit Consume Index Register */
        uint32_t RESERVED2[10];
-  __I  uint32_t TSV0;
-  __I  uint32_t TSV1;
-  __I  uint32_t RSV;
+  __I  uint32_t TSV0;                       /*!< Offset: 0x158 (R/ )  Transmit Status Vector 0 Register */
+  __I  uint32_t TSV1;                       /*!< Offset: 0x15C (R/ )  Transmit Status Vector 1 Register */
+  __I  uint32_t RSV;                        /*!< Offset: 0x160 (R/ )  Receive Status Vector Register */
        uint32_t RESERVED3[3];
-  __IO uint32_t FlowControlCounter;
-  __I  uint32_t FlowControlStatus;
+  __IO uint32_t FlowControlCounter;         /*!< Offset: 0x170 (R/W)  Flow Control Counter Register */
+  __I  uint32_t FlowControlStatus;          /*!< Offset: 0x174 (R/ )  Flow Control Status egister */
        uint32_t RESERVED4[34];
-  __IO uint32_t RxFilterCtrl;           /* Rx Filter Registers                */
-  __IO uint32_t RxFilterWoLStatus;
-  __IO uint32_t RxFilterWoLClear;
+  __IO uint32_t RxFilterCtrl;               /*!< Offset: 0x200 (R/W)  Receive Filter Control Register */
+  __I  uint32_t RxFilterWoLStatus;          /*!< Offset: 0x204 (R/ )  Receive Filter WoL Status Register */
+  __O  uint32_t RxFilterWoLClear;           /*!< Offset: 0x208 ( /W)  Receive Filter WoL Clear Register */
        uint32_t RESERVED5;
-  __IO uint32_t HashFilterL;
-  __IO uint32_t HashFilterH;
+  __IO uint32_t HashFilterL;                /*!< Offset: 0x210 (R/W)  Hash Filter Table LSBs Register */
+  __IO uint32_t HashFilterH;                /*!< Offset: 0x214 (R/W)  Hash Filter Table MSBs Register */
        uint32_t RESERVED6[882];
-  __I  uint32_t IntStatus;              /* Module Control Registers           */
-  __IO uint32_t IntEnable;
-  __O  uint32_t IntClear;
-  __O  uint32_t IntSet;
+  __I  uint32_t IntStatus;                  /*!< Offset: 0xFE0 (R/ )  Interrupt Status Register */
+  __IO uint32_t IntEnable;                  /*!< Offset: 0xFE4 (R/W)  Interrupt Enable Register */
+  __O  uint32_t IntClear;                   /*!< Offset: 0xFE8 ( /W)  Interrupt Clear Register */
+  __O  uint32_t IntSet;                     /*!< Offset: 0xFEC ( /W)  Interrupt Set Register */
        uint32_t RESERVED7;
-  __IO uint32_t PowerDown;
-       uint32_t RESERVED8;
-  __IO uint32_t Module_ID;
+  __IO uint32_t PowerDown;                  /*!< Offset: 0xFF4 (R/W)  Power-Down Register */
 } LPC_EMAC_TypeDef;
-
 
 #if defined ( __CC_ARM   )
 #pragma no_anon_unions
@@ -1019,6 +939,7 @@ typedef struct
 #define LPC_GPIO2_BASE        (LPC_GPIO_BASE + 0x00040)
 #define LPC_GPIO3_BASE        (LPC_GPIO_BASE + 0x00060)
 #define LPC_GPIO4_BASE        (LPC_GPIO_BASE + 0x00080)
+
 
 /******************************************************************************/
 /*                         Peripheral declaration                             */

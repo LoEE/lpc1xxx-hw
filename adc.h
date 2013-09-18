@@ -18,30 +18,7 @@
 #define ADC_Regs LPC_ADC_TypeDef
 #define ADC0 ((ADC_Regs *)LPC_ADC0)
 #elif defined(LPC17xx)
-typedef struct
-{
-  __IO uint32_t CR;
-  __IO uint32_t GDR;
-       uint32_t RESERVED0;
-  __IO uint32_t INTEN;
-  union {
-    __IO uint32_t DR[8];
-    struct {
-    __I  uint32_t DR0;
-    __I  uint32_t DR1;
-    __I  uint32_t DR2;
-    __I  uint32_t DR3;
-    __I  uint32_t DR4;
-    __I  uint32_t DR5;
-    __I  uint32_t DR6;
-    __I  uint32_t DR7;
-    };
-  };
-    __I  uint32_t STAT;
-    __IO uint32_t TRIM;
-} HW_ADC_TypeDef;
-
-#define ADC_Regs HW_ADC_TypeDef
+#define ADC_Regs LPC_ADC_TypeDef
 #define ADC0 ((ADC_Regs *)LPC_ADC)
 #else
 #error Unknown processor family.

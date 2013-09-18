@@ -114,7 +114,7 @@ int uart_getc_status (UART_Regs *UART)
 
 void uart_putc_hex (UART_Regs *UART, const char c)
 {
-  static char hex_digits[] = "0123456789abcdef";
+  static const char hex_digits[] = "0123456789abcdef";
 
   while (!uart_tx_empty (UART));
   uart_putc_nowait (UART, hex_digits [c >> 4]);

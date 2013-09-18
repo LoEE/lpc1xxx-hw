@@ -24,7 +24,7 @@ enum io_mode {
 };
 
 enum io_function {
-  PIO, RD1, TXD3, SDA1, TD1, RXD3, SCL1, TXD0, AD0_7, RXD0, AD0_6, I2SRX_CLK, RD2, CAP2_0, I2SRX_WS, TD2, CAP2_1, I2SRX_SDA, SSEL1, MAT2_0, I2STX_CLK, SCK1, MAT2_1, I2STX_WS, MISO1, MAT2_2, I2STX_SDA, MOSI1, MAT2_3, TXD2, SDA2, MAT3_0, RXD2, SCL2, MAT3_1, TXD1, SCK0, SCK, RXD1, SSEL0, SSEL, CTS1, MISO0, MISO, DCD1, MOSI0, MOSI, DSR1, DTR1, RI1, RTS1, AD0_0, CAP3_0, AD0_1, CAP3_1, AD0_2, AD0_3, AOUT, SDA0, USB_SDA, SCL0, USB_SCL, USB_Dm, USB_Dp, ENET_TXD0, ENET_TXD1, ENET_TX_EN, ENET_CRS, ENET_RXD0, ENET_RXD1, ENET_RX_ER, ENET_REF_CLK, ENET_MDC, ENET_MDIO, USB_UP_LED, PWM1_1, CAP1_0, MCOA0, nUSB_PPWR, CAP1_1, MCI0, PWM1_2, nMCABORT, PWM1_3, MCOB0, USB_PWRD, MAT1_0, MCI1, PWM1_4, MCI2, PWM1_5, MCOA1, MAT1_1, MCOB1, PWM1_6, CAP0_0, CLKOUT, nUSB_OVRCR, CAP0_1, MCOA2, PCAP1_0, MAT0_0, MCOB2, PCAP1_1, MAT0_1, VBUS, AD0_4, AD0_5, TRACEDATA_3, TRACEDATA_2, TRACEDATA_1, TRACEDATA_0, TRACECLK, USB_CONNECT, nEINT0, NMI, nEINT1, nEINT2, nEINT3, STCLK, RX_MCLK, TX_MCLK
+  PIO, RD1, TXD3, SDA1, TD1, RXD3, SCL1, TXD0, AD0_7, RXD0, AD0_6, I2SRX_CLK, RD2, CAP2_0, I2SRX_WS, TD2, CAP2_1, I2SRX_SDA, SSEL1, MAT2_0, I2STX_CLK, SCK1, MAT2_1, I2STX_WS, MISO1, MAT2_2, I2STX_SDA, MOSI1, MAT2_3, TXD2, SDA2, MAT3_0, RXD2, SCL2, MAT3_1, TXD1, SCK0, SCK, RXD1, SSEL0, SSEL, CTS1, MISO0, MISO, DCD1, MOSI0, MOSI, DSR1, DTR1, RI1, RTS1, AD0_0, CAP3_0, AD0_1, CAP3_1, AD0_2, AD0_3, AOUT, SDA0, USB_SDA, SCL0, USB_SCL, USB_Dp, USB_Dm, ENET_TXD0, ENET_TXD1, ENET_TX_EN, ENET_CRS, ENET_RXD0, ENET_RXD1, ENET_RX_ER, ENET_REF_CLK, ENET_MDC, ENET_MDIO, USB_UP_LED, PWM1_1, CAP1_0, MCOA0, nUSB_PPWR, CAP1_1, MCI0, PWM1_2, nMCABORT, PWM1_3, MCOB0, USB_PWRD, MAT1_0, MCI1, PWM1_4, MCI2, PWM1_5, MCOA1, MAT1_1, MCOB1, PWM1_6, CAP0_0, CLKOUT, nUSB_OVRCR, CAP0_1, MCOA2, PCAP1_0, MAT0_0, MCOB2, PCAP1_1, MAT0_1, VBUS, AD0_4, AD0_5, TRACEDATA_3, TRACEDATA_2, TRACEDATA_1, TRACEDATA_0, TRACECLK, USB_CONNECT, nEINT0, NMI, nEINT1, nEINT2, nEINT3, STCLK, RX_MCLK, TX_MCLK
 };
 
 enum pio_pin {
@@ -559,11 +559,11 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
         case PIO:
           LPC_PINCON->PINSEL1 = (LPC_PINCON->PINSEL1 & ~(3 << 26)) | (0 << 26);
           break;
-        case USB_Dm:
+        case USB_Dp:
           LPC_PINCON->PINSEL1 = (LPC_PINCON->PINSEL1 & ~(3 << 26)) | (1 << 26);
           break;
         default:
-          ERROR("P0_29 can only be used as USB_Dm or PIO.");
+          ERROR("P0_29 can only be used as USB_Dp or PIO.");
       }
       if ((mode & 3) != PULL_NONE)
         ERROR("P0_29 does not have and pull-up and pull-down resistors.");
@@ -575,11 +575,11 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
         case PIO:
           LPC_PINCON->PINSEL1 = (LPC_PINCON->PINSEL1 & ~(3 << 28)) | (0 << 28);
           break;
-        case USB_Dp:
+        case USB_Dm:
           LPC_PINCON->PINSEL1 = (LPC_PINCON->PINSEL1 & ~(3 << 28)) | (1 << 28);
           break;
         default:
-          ERROR("P0_30 can only be used as USB_Dp or PIO.");
+          ERROR("P0_30 can only be used as USB_Dm or PIO.");
       }
       if ((mode & 3) != PULL_NONE)
         ERROR("P0_30 does not have and pull-up and pull-down resistors.");

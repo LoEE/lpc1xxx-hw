@@ -86,6 +86,18 @@ enum clock_source {
   LPC_SC->CCLKCFG = div - 1;
 }
 
+@(decl 'usb_clock_divider "int div")
+{
+  switch(div) {
+    case 6:
+    case 8:
+    case 10:
+      LPC_SC->USBCLKCFG = div - 1; break;
+    default:
+      ERROR("Invalid USB clock divider (not 6, 8 or 10)."); break;
+  }
+}
+
 INLINE void pll_setup_shared (int in, int out, int evenpost, volatile uint32_t *reg, volatile uint32_t *postdivreg)
 {
   int mul = 0, prediv = 0, postdiv = 0, ok = 0;

@@ -45,5 +45,5 @@ SECTIONS {
     _ebss = .;
   } > SRAM
 
-  _sstack = ORIGIN(SRAM) + LENGTH(SRAM) - 32; /* 32 bytes for IAP */
+  _sstack = ORIGIN(SRAM) + LENGTH(SRAM) - 32 /* for IAP */ - 32 /* for misc counters */;
 }

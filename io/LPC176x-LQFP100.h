@@ -2,7 +2,7 @@
    IO functions for NXP LPC176x devices in LQFP100 package.
 
    This is an automatically generated file. For more details see:
-       http://bitbucket.org/jpc/lpc1xxx-hw/
+       https://bitbucket.org/LoEE/lpc1xxx-hw/
 
    Copyright (c) 2010-2011 LoEE - Jakub Piotr Cłapa
    This program is released under the new BSD license.

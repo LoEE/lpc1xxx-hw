@@ -2,7 +2,7 @@
    ADC functions for NXP LPC1xxx processors.
 
    For more details see:
-       http://bitbucket.org/jpc/lpc1xxx-hw/
+       https://bitbucket.org/LoEE/lpc1xxx-hw/
 
    Copyright (c) 2011-2012 Marcin Górski - LoEE
    Copyright (c) 2012 LoEE - Jakub Piotr Cłapa

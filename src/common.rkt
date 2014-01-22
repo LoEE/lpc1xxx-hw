@@ -11,7 +11,7 @@
   (unless (directory-exists? dir)
     (make-directory dir)))
 
-(define url "http://bitbucket.org/jpc/lpc1xxx-hw/")
+(define url "https://bitbucket.org/LoEE/lpc1xxx-hw/")
 
 (define-syntax-rule (for/nl args ...) (add-newlines (for/list args ...)))
 (define-syntax-rule (for*/nl args ...) (add-newlines (for*/list args ...)))

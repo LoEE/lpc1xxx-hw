@@ -2,7 +2,7 @@
    UART functions for NXP LPC1xxx processors.
 
    For more details see:
-       http://bitbucket.org/jpc/lpc1xxx-hw/
+       https://bitbucket.org/LoEE/lpc1xxx-hw/
 
    Copyright (c) 2008-2011 LoEE - Jakub Piotr Cłapa
    This program is released under the new BSD license.

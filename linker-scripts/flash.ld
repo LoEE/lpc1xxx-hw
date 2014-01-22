@@ -8,7 +8,7 @@
    - add boot ROM memory regions
 
    This is an automatically generated file. For more details see:
-       http://bitbucket.org/jpc/lpc1xxx-hw/
+       https://bitbucket.org/LoEE/lpc1xxx-hw/
 
    Copyright (c) 2010-2011 LoEE - Jakub Piotr Cłapa
    This program is released under the new BSD license.
@@ -45,5 +45,5 @@ SECTIONS {
     _ebss = .;
   } > SRAM
 
-  _sstack = ORIGIN(SRAM) + LENGTH(SRAM) - 32 /* for IAP */ - 32 /* for misc counters */;
+  _sstack = ORIGIN(SRAM) + LENGTH(SRAM) - 32; /* 32 bytes for IAP */
 }

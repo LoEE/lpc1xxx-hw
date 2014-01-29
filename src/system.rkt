@@ -125,11 +125,11 @@ enum sysosc_mode {
 
 @(decl 'wdtosc "int clk" "int div") {
   set_power (6, clk ? 1 : 0);
-  int freq;
-  @check-range[2 'div 64]{Watchdog clock divider}
-  if (div % 2) ERROR("Watchdog clock divider must be even.");
-  div = div / 2 - 1;
   if (clk) {
+    int freq;
+    @check-range[2 'div 64]{Watchdog clock divider}
+    if (div % 2) ERROR("Watchdog clock divider must be even.");
+    div = div / 2 - 1;
     @(assoc/if 'clk 'freq "Invalid watchdog oscillator frequency."
                `([0.5 . 1]
                  [0.8 . 2]
@@ -146,8 +146,8 @@ enum sysosc_mode {
                  [3.1 . 13]
                  [3.2 . 14]
                  [3.4 . 15]))
+    LPC_SYSCON->WDTOSCCTRL = div << 0 | freq << 5;
   }
-  LPC_SYSCON->WDTOSCCTRL = div << 0 | freq << 5;
 }
 
 enum clock_source {
@@ -260,10 +260,11 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
 
 @(decl 'wdt "enum clock_source src" "int div")
 {
-  @check-range[0 'div 255]{Watchdog clock divider}
+  @check-range[0 'div (* 255 4)]{Watchdog clock divider}
+  if (div % 4) ERROR("Watchdog clock divider must be a multiple of 4.");
   set_clock (15, div ? 1 : 0);
   int s = 0;
-  LPC_SYSCON->WDTCLKDIV = div;
+  LPC_SYSCON->WDTCLKDIV = div / 4;
   @(clksrc-switch 'src 's '([OSC_IRC 0]
                             [CLK_MAIN 1]
                             [OSC_WDT 2]))

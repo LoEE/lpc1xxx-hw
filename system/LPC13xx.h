@@ -96,11 +96,11 @@ INLINE void sysosc_setup (enum sysosc_mode range)
 
 INLINE void wdtosc_setup (int clk, int div) {
   set_power (6, clk ? 1 : 0);
-  int freq;
-  if (div < 2 || div > 64) ERROR("Watchdog clock divider value out of range [2-64].");
-  if (div % 2) ERROR("Watchdog clock divider must be even.");
-  div = div / 2 - 1;
   if (clk) {
+    int freq;
+    if (div < 2 || div > 64) ERROR("Watchdog clock divider value out of range [2-64].");
+    if (div % 2) ERROR("Watchdog clock divider must be even.");
+    div = div / 2 - 1;
     if (clk == 0.5) freq = 1;
     else if (clk == 0.8) freq = 2;
     else if (clk == 1.1) freq = 3;
@@ -117,8 +117,8 @@ INLINE void wdtosc_setup (int clk, int div) {
     else if (clk == 3.2) freq = 14;
     else if (clk == 3.4) freq = 15;
     else ERROR ("Invalid watchdog oscillator frequency.");
+    LPC_SYSCON->WDTOSCCTRL = div << 0 | freq << 5;
   }
-  LPC_SYSCON->WDTOSCCTRL = div << 0 | freq << 5;
 }
 
 enum clock_source {
@@ -247,10 +247,11 @@ INLINE void clkout_setup (enum clock_source src, int div)
 
 INLINE void wdt_setup (enum clock_source src, int div)
 {
-  if (div < 0 || div > 255) ERROR("Watchdog clock divider value out of range [0-255].");
+  if (div < 0 || div > 1020) ERROR("Watchdog clock divider value out of range [0-1020].");
+  if (div % 4) ERROR("Watchdog clock divider must be a multiple of 4.");
   set_clock (15, div ? 1 : 0);
   int s = 0;
-  LPC_SYSCON->WDTCLKDIV = div;
+  LPC_SYSCON->WDTCLKDIV = div / 4;
   switch (src) {
     case OSC_IRC: s = 0; break;
     case CLK_MAIN: s = 1; break;

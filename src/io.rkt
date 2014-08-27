@@ -23,14 +23,15 @@ enum pin_dir {
 };
 
 enum io_mode {
-  I2C_STD = 0,
-  I2C_FAST = 0,
-  I2C_GPIO = 1,
-  I2C_FAST_PLUS = 2,
-  PULL_NONE = 0,
-  PULL_DOWN = 1,
-  PULL_UP = 2,
-  PULL_REPEATER = 3,
+  I2C_STD = 0 << 8,
+  I2C_FAST = 0 << 8,
+  I2C_GPIO = 1 << 8,
+  I2C_FAST_PLUS = 2 << 8,
+  PULL_NONE = 0 << 3,
+  PULL_DOWN = 1 << 3,
+  PULL_UP = 2 << 3,
+  PULL_REPEATER = 3 << 3,
+  IN_HYSTERESIS = 1 << 5,
 };
  
 enum io_function {
@@ -124,14 +125,14 @@ enum pio_pin {
         (when (usb-f? fun) @list{@disable-prefix{#ifdef CPU_HAS_USB}})
         (cond
           [(ormap adc-f? (pin-functions pin))
-           @list{case @(function-name->enum-name fun): f = @i;@(unless (adc-f? fun) " other |= 1 << 7;") break;}]
+           @list{case @(function-name->enum-name fun): f = @i;@(when (adc-f? fun) " other &= ~(1 << 7);") break;}]
           [(ormap i2c-f? (pin-functions pin))
-           @list{case @(function-name->enum-name fun): f = @i; other = mode << 8;
+           @list{case @(function-name->enum-name fun): f = @i; other = mode;
                    @(unless (i2c-f? fun)
                       @list{if (mode == I2C_FAST_PLUS)
                               ERROR("I2C_FAST_PLUS cannot be used with PIO function.");@"\n"})@;
-                   if (hyst)
-                     ERROR("Hysteresis is not available on I2C pins.");
+                   if (mode & 0x7f)
+                     ERROR("Pull resistors and hysteresis are not available on I2C pins.");
                    break;}]
           [(equal? fun "SCK")
            (define v (dict-ref '([PIO0_10 0]
@@ -143,10 +144,10 @@ enum pio_pin {
            @list{case @(function-name->enum-name fun): f = @i; break;}])
         (when (usb-f? fun) @list{@disable-prefix{#endif // CPU_HAS_USB}})))))
   @list{INLINE
-        void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int hyst)
+        void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
         {
           int f = 0;
-          int other = mode << 3 | hyst << 5 | 1 << 6;
+          int other = mode | 3 << 6;
           switch (pin) {
             @(for/nl ([p (in-list po)]
                       #:when (and (pin-name p)))

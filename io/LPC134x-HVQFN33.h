@@ -16,14 +16,15 @@ enum pin_dir {
 };
 
 enum io_mode {
-  I2C_STD = 0,
-  I2C_FAST = 0,
-  I2C_GPIO = 1,
-  I2C_FAST_PLUS = 2,
-  PULL_NONE = 0,
-  PULL_DOWN = 1,
-  PULL_UP = 2,
-  PULL_REPEATER = 3,
+  I2C_STD = 0 << 8,
+  I2C_FAST = 0 << 8,
+  I2C_GPIO = 1 << 8,
+  I2C_FAST_PLUS = 2 << 8,
+  PULL_NONE = 0 << 3,
+  PULL_DOWN = 1 << 3,
+  PULL_UP = 2 << 3,
+  PULL_REPEATER = 3 << 3,
+  IN_HYSTERESIS = 1 << 5,
 };
 
 enum io_function {
@@ -35,10 +36,10 @@ enum pio_pin {
 };
 
 INLINE
-void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int hyst)
+void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
 {
   int f = 0;
-  int other = mode << 3 | hyst << 5 | 1 << 6;
+  int other = mode | 3 << 6;
   switch (pin) {
     case P0_0:
       switch (func) {
@@ -85,15 +86,15 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       break;
     case P0_4:
       switch (func) {
-        case PIO: f = 0; other = mode << 8;
+        case PIO: f = 0; other = mode;
           if (mode == I2C_FAST_PLUS)
             ERROR("I2C_FAST_PLUS cannot be used with PIO function.");
-          if (hyst)
-            ERROR("Hysteresis is not available on I2C pins.");
+          if (mode & 0x7f)
+            ERROR("Pull resistors and hysteresis are not available on I2C pins.");
           break;
-        case SCL: f = 1; other = mode << 8;
-          if (hyst)
-            ERROR("Hysteresis is not available on I2C pins.");
+        case SCL: f = 1; other = mode;
+          if (mode & 0x7f)
+            ERROR("Pull resistors and hysteresis are not available on I2C pins.");
           break;
         default:
           ERROR("PIO0_4 can only be used as SCL or PIO.");
@@ -102,15 +103,15 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       break;
     case P0_5:
       switch (func) {
-        case PIO: f = 0; other = mode << 8;
+        case PIO: f = 0; other = mode;
           if (mode == I2C_FAST_PLUS)
             ERROR("I2C_FAST_PLUS cannot be used with PIO function.");
-          if (hyst)
-            ERROR("Hysteresis is not available on I2C pins.");
+          if (mode & 0x7f)
+            ERROR("Pull resistors and hysteresis are not available on I2C pins.");
           break;
-        case SDA: f = 1; other = mode << 8;
-          if (hyst)
-            ERROR("Hysteresis is not available on I2C pins.");
+        case SDA: f = 1; other = mode;
+          if (mode & 0x7f)
+            ERROR("Pull resistors and hysteresis are not available on I2C pins.");
           break;
         default:
           ERROR("PIO0_5 can only be used as SDA or PIO.");
@@ -170,9 +171,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       break;
     case P0_11:
       switch (func) {
-        case PIO: f = 1; other |= 1 << 7; break;
-        case AD0: f = 2; break;
-        case CT32B0_MAT3: f = 3; other |= 1 << 7; break;
+        case PIO: f = 1; break;
+        case AD0: f = 2; other &= ~(1 << 7); break;
+        case CT32B0_MAT3: f = 3; break;
         default:
           ERROR("PIO0_11 can only be used as AD0, CT32B0_MAT3 or PIO.");
       }
@@ -180,9 +181,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       break;
     case P1_0:
       switch (func) {
-        case PIO: f = 1; other |= 1 << 7; break;
-        case AD1: f = 2; break;
-        case CT32B1_CAP0: f = 3; other |= 1 << 7; break;
+        case PIO: f = 1; break;
+        case AD1: f = 2; other &= ~(1 << 7); break;
+        case CT32B1_CAP0: f = 3; break;
         default:
           ERROR("PIO1_0 can only be used as AD1, CT32B1_CAP0 or PIO.");
       }
@@ -190,9 +191,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       break;
     case P1_1:
       switch (func) {
-        case PIO: f = 1; other |= 1 << 7; break;
-        case AD2: f = 2; break;
-        case CT32B1_MAT0: f = 3; other |= 1 << 7; break;
+        case PIO: f = 1; break;
+        case AD2: f = 2; other &= ~(1 << 7); break;
+        case CT32B1_MAT0: f = 3; break;
         default:
           ERROR("PIO1_1 can only be used as AD2, CT32B1_MAT0 or PIO.");
       }
@@ -200,9 +201,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       break;
     case P1_2:
       switch (func) {
-        case PIO: f = 1; other |= 1 << 7; break;
-        case AD3: f = 2; break;
-        case CT32B1_MAT1: f = 3; other |= 1 << 7; break;
+        case PIO: f = 1; break;
+        case AD3: f = 2; other &= ~(1 << 7); break;
+        case CT32B1_MAT1: f = 3; break;
         default:
           ERROR("PIO1_2 can only be used as AD3, CT32B1_MAT1 or PIO.");
       }
@@ -210,10 +211,10 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       break;
     case P1_3:
       switch (func) {
-        case SWDIO: f = 0; other |= 1 << 7; break;
-        case PIO: f = 1; other |= 1 << 7; break;
-        case AD4: f = 2; break;
-        case CT32B1_MAT2: f = 3; other |= 1 << 7; break;
+        case SWDIO: f = 0; break;
+        case PIO: f = 1; break;
+        case AD4: f = 2; other &= ~(1 << 7); break;
+        case CT32B1_MAT2: f = 3; break;
         default:
           ERROR("PIO1_3 can only be used as SWDIO, AD4, CT32B1_MAT2 or PIO.");
       }
@@ -221,10 +222,10 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       break;
     case P1_4:
       switch (func) {
-        case PIO: f = 0; other |= 1 << 7; break;
-        case AD5: f = 1; break;
-        case CT32B1_MAT3: f = 2; other |= 1 << 7; break;
-        case WAKEUP: f = 3; other |= 1 << 7; break;
+        case PIO: f = 0; break;
+        case AD5: f = 1; other &= ~(1 << 7); break;
+        case CT32B1_MAT3: f = 2; break;
+        case WAKEUP: f = 3; break;
         default:
           ERROR("PIO1_4 can only be used as AD5, CT32B1_MAT3, WAKEUP or PIO.");
       }
@@ -280,9 +281,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       break;
     case P1_10:
       switch (func) {
-        case PIO: f = 0; other |= 1 << 7; break;
-        case AD6: f = 1; break;
-        case CT16B1_MAT1: f = 2; other |= 1 << 7; break;
+        case PIO: f = 0; break;
+        case AD6: f = 1; other &= ~(1 << 7); break;
+        case CT16B1_MAT1: f = 2; break;
         default:
           ERROR("PIO1_10 can only be used as AD6, CT16B1_MAT1 or PIO.");
       }
@@ -290,8 +291,8 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode, int 
       break;
     case P1_11:
       switch (func) {
-        case PIO: f = 0; other |= 1 << 7; break;
-        case AD7: f = 1; break;
+        case PIO: f = 0; break;
+        case AD7: f = 1; other &= ~(1 << 7); break;
         default:
           ERROR("PIO1_11 can only be used as AD7 or PIO.");
       }

@@ -50,7 +50,7 @@ int adc_ready_channels (ADC_Regs *ADC)
 
 struct adc_result adc_read (ADC_Regs *ADC, int channel)
 {
-  volatile const uint32_t *REG = &ADC->DR0 + channel;
+  volatile const uint32_t *REG = &ADC->DR[0] + channel;
   uint32_t stat = *REG;
   return (struct adc_result){
     .value = (stat & RESULTMASK) >> RESULT,

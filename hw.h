@@ -37,6 +37,12 @@
 #  endif
 #  include "CMSIS/LPC17xx.h"
 #  include "system/LPC17xx.h"
+#elif defined(LPC175x)
+#  if !defined(LQFP80)
+#    error "No supported CPU package types defined."
+#  endif
+#  include "CMSIS/LPC17xx.h"
+#  include "system/LPC17xx.h"
 #endif
 
 #if defined(LPC131x) && defined(LQFP48)

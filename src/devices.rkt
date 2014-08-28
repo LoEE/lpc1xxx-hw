@@ -63,6 +63,23 @@
     [(lpc13xx lpc12xx)
      (memory-map
       `[SRAM #x10000000 ,(device-total-ram device)])]
+    [(lpc15xx)
+     (memory-map
+      `[SRAM #x02000000 ,(device-total-ram device)])
+     ;; FIXME: SRAM1 and SRAM2 can be individually disabled
+     #;(case (/ (device-total-ram device) 1024)
+         [(36) (memory-map #:size-unit 'k
+                           `[SRAM  #x02000000 16]
+                           `[SRAM1 #x02004000 16]
+                           `[SRAM2 #x02008000 4])]
+         [(20) (memory-map #:size-unit 'k
+                           `[SRAM  #x02000000 8]
+                           `[SRAM1 #x02002000 8]
+                           `[SRAM2 #x02004000 4])]
+         [(12) (memory-map #:size-unit 'k
+                           `[SRAM  #x02000000 4]
+                           `[SRAM1 #x02001000 4]
+                           `[SRAM2 #x02002000 4])])]
     [else
      (unknown-device-family-error device)]))
 
@@ -117,4 +134,11 @@
   [#x3640C02B lpc12xx LPC1224_101  32 4]
   [#x3642C02B lpc12xx LPC1224_121  48 4]
   [#x3640C02B lpc12xx LPC1224_101  32 4]
+  ;; LPC15xx
+  [#x00001549 lpc15xx LPC1549 256 36]
+  [#x00001548 lpc15xx LPC1548 128 20]
+  [#x00001547 lpc15xx LPC1547 64  12]
+  [#x00001519 lpc15xx LPC1519 256 36]
+  [#x00001518 lpc15xx LPC1518 128 20]
+  [#x00001517 lpc15xx LPC1517 64  12]
   )

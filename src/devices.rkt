@@ -2,7 +2,7 @@
 (provide (struct-out device)
          (struct-out memory-block) memory-block-end memory-subblock
          device-ram-map device-ram-block
-         find-device-by-part-id find-device-by-model find-device-by-model-and-package
+         find-device-by-part-id find-device-by-model
          devices)
 
 ;;
@@ -31,7 +31,7 @@
 ;;
 ;; Device datatype and operations
 ;;
-(struct device (part-id family model package total-flash total-ram)
+(struct device (part-id family model total-flash total-ram)
         #:transparent)
 
 (define-syntax-rule (unknown-device-family-error device)
@@ -75,55 +75,46 @@
 (define (find-device-by-model model)
   (find devices model #:key device-model))
 
-(define (find-device-by-model-and-package model package)
-  (find devices (cons model package) #:key (λ (v) (cons (device-model v) (device-package v)))))
-
 ;;
-;; NXP Cortex-M3 device list
+;; NXP Cortex-M* device list
 ;;
 (define-syntax-rule (define-table (name constructor) [args ...] ...)
   (define name
     (list [constructor `args ...]
           ...)))
 
-(define (device* part-id family model package total-flash total-ram)
-  (device part-id family model package (* total-flash 1024) (* total-ram 1024)))
+(define (device* part-id family model total-flash total-ram)
+  (device part-id family model (* total-flash 1024) (* total-ram 1024)))
 
 (define-table (devices device*)
   ;; LPC13xx
-  [#x2C42502B lpc13xx LPC1311 HVQFN33    8  4]
-  [#x2C40102B lpc13xx LPC1313 HVQFN33   32  8]
-  [#x2C40102B lpc13xx LPC1313 LQFP48    32  8]
-  [#x3D01402B lpc13xx LPC1342 HVQFN33   16  4]
-  [#x3D00002B lpc13xx LPC1343 HVQFN33   32  8]
-  [#x3D00002B lpc13xx LPC1343 LQFP48    32  8]
+  [#x2C42502B lpc13xx LPC1311  8  4]
+  [#x2C40102B lpc13xx LPC1313 32  8]
+  [#x3D01402B lpc13xx LPC1342 16  4]
+  [#x3D00002B lpc13xx LPC1343 32  8]
   ;; LPC17xx
-  [#x26113F37 lpc17xx LPC1769 LQFP100  512 64]
-  [#x26013F37 lpc17xx LPC1768 LQFP100  512 64]
-  [#x26013F37 lpc17xx LPC1768 TFBGA100 512 64]
-  [#x26012837 lpc17xx LPC1767 LQFP100  512 64]
-  [#x26013F33 lpc17xx LPC1766 LQFP100  256 64]
-  [#x26013733 lpc17xx LPC1765 LQFP100  256 64]
-  [#x26011922 lpc17xx LPC1764 LQFP100  128 32]
-  [#x25113737 lpc17xx LPC1759 LQFP80   512 64]
-  [#x25013F37 lpc17xx LPC1758 LQFP80   512 64]
-  [#x25011723 lpc17xx LPC1756 LQFP80   256 32]
-  [#x25011722 lpc17xx LPC1754 LQFP80   128 32]
-  [#x25001121 lpc17xx LPC1752 LQFP80    64 16]
-  [#x25001118 lpc17xx LPC1751 LQFP80    32  8]
-  [#x25001110 lpc17xx LPC1751 LQFP80    32  8]
+  [#x26113F37 lpc17xx LPC1769 512 64]
+  [#x26013F37 lpc17xx LPC1768 512 64]
+  [#x26012837 lpc17xx LPC1767 512 64]
+  [#x26013F33 lpc17xx LPC1766 256 64]
+  [#x26013733 lpc17xx LPC1765 256 64]
+  [#x26011922 lpc17xx LPC1764 128 32]
+  [#x25113737 lpc17xx LPC1759 512 64]
+  [#x25013F37 lpc17xx LPC1758 512 64]
+  [#x25011723 lpc17xx LPC1756 256 32]
+  [#x25011722 lpc17xx LPC1754 128 32]
+  [#x25001121 lpc17xx LPC1752  64 16]
+  [#x25001118 lpc17xx LPC1751  32  8]
+  [#x25001110 lpc17xx LPC1751  32  8]
   ;; LPC12xx
-  [#x3670002B lpc12xx LPC12D27_301 LQFP100 128 8]
-  [#x3670002B lpc12xx LPC1227_301  LQFP64  128 8]
-  [#x3670002B lpc12xx LPC1227_301  LQFP48  128 8]
-  [#x3660002B lpc12xx LPC1226_301  LQFP64  96  8]
-  [#x3660002B lpc12xx LPC1226_301  LQFP48  96  8]
-  [#x3652002B lpc12xx LPC1225_321  LQFP64  80  8]
-  [#x3650002B lpc12xx LPC1225_301  LQFP64  64  8]
-  [#x3652002B lpc12xx LPC1225_321  LQFP48  80  8]
-  [#x3650002B lpc12xx LPC1225_301  LQFP48  64  8]
-  [#x3642C02B lpc12xx LPC1224_121  LQFP64  48  4]
-  [#x3640C02B lpc12xx LPC1224_101  LQFP64  32  4]
-  [#x3642C02B lpc12xx LPC1224_121  LQFP48  48  4]
-  [#x3640C02B lpc12xx LPC1224_101  LQFP48  32  4]
+  [#x3670002B lpc12xx LPC1227_301 128 8]
+  [#x3660002B lpc12xx LPC1226_301  96 8]
+  [#x3652002B lpc12xx LPC1225_321  80 8]
+  [#x3650002B lpc12xx LPC1225_301  64 8]
+  [#x3652002B lpc12xx LPC1225_321  80 8]
+  [#x3650002B lpc12xx LPC1225_301  64 8]
+  [#x3642C02B lpc12xx LPC1224_121  48 4]
+  [#x3640C02B lpc12xx LPC1224_101  32 4]
+  [#x3642C02B lpc12xx LPC1224_121  48 4]
+  [#x3640C02B lpc12xx LPC1224_101  32 4]
   )

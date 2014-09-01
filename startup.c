@@ -150,6 +150,8 @@
 #define VECTORS CM3_VECTORS LPC17xx_VECTORS
 #elif defined (LPC13xx)
 #define VECTORS CM3_VECTORS LPC13xx_VECTORS
+#elif defined (LPC15xx)
+#define VECTORS CM3_VECTORS
 #elif defined (LPC122x)
 #define VECTORS CM0_VECTORS LPC122x_VECTORS
 #else

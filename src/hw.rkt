@@ -37,6 +37,13 @@
 #elif defined(LPC1759) || defined(LPC1758) || defined(LPC1756) || defined(LPC1754) || defined(LPC1752) || defined(LPC1751)
 #  define LPC17xx
 #  define LPC175x
+#elif defined(LPC1549) || defined(LPC1548) || defined(LPC1547)
+#  define LPC15xx
+#  define LPC154x
+#  define CPU_HAS_USB
+#elif defined(LPC1519) || defined(LPC1518) || defined(LPC1517)
+#  define LPC15xx
+#  define LPC151x
 #else
 #  error "No supported CPU type defined."
 #endif
@@ -79,6 +86,11 @@
 #  endif
 #  include "CMSIS/LPC17xx.h"
 #  include "system/LPC17xx.h"
+#elif defined(LPC15xx)
+#  if !defined(LQFP48) && !defined(LQFP64) && !defined(LQFP100)
+#    error "No supported CPU package types defined."
+#  endif
+#  include "CMSIS/LPC15xx.h"
 #endif
 
 #if@;
@@ -95,6 +107,13 @@
      @list{
  defined(@family) && defined(@package)
 #  include "io/@|family|-@|package|.h"})))
+#elif@;
+@(disable-prefix (add-newlines #:sep "\n#elif"
+   (for*/list ([family '(LPC151x LPC154x)]
+               [package '(LQFP48 LQFP64 LQFP100)])
+     @list{
+ defined(@family) && defined(@package)
+#  include "io/@|family|-@|package|.h"})))
 #elif defined(LPC175x) && defined(LQFP80)
 #  include "io/LPC175x-LQFP80.h"
 #elif defined(LPC1768) && defined(TFBGA100)
@@ -105,10 +124,13 @@
 #  error "The given CPU type and package combination is invalid."
 #endif
 
-#include "uart.h"
 #include "time.h"
+
+#if !defined(LPC15xx)
+#include "uart.h"
 #include "ssp.h"
 #include "adc.h"
+#endif
 }})
 
 (main)

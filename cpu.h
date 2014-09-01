@@ -30,6 +30,13 @@
 #elif defined(LPC1759) || defined(LPC1758) || defined(LPC1756) || defined(LPC1754) || defined(LPC1752) || defined(LPC1751)
 #  define LPC17xx
 #  define LPC175x
+#elif defined(LPC1549) || defined(LPC1548) || defined(LPC1547)
+#  define LPC15xx
+#  define LPC154x
+#  define CPU_HAS_USB
+#elif defined(LPC1519) || defined(LPC1518) || defined(LPC1517)
+#  define LPC15xx
+#  define LPC151x
 #else
 #  error "No supported CPU type defined."
 #endif

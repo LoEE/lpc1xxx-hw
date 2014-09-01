@@ -43,6 +43,11 @@
 #  endif
 #  include "CMSIS/LPC17xx.h"
 #  include "system/LPC17xx.h"
+#elif defined(LPC15xx)
+#  if !defined(LQFP48) && !defined(LQFP64) && !defined(LQFP100)
+#    error "No supported CPU package types defined."
+#  endif
+#  include "CMSIS/LPC15xx.h"
 #endif
 
 #if defined(LPC131x) && defined(LQFP48)
@@ -57,6 +62,18 @@
 #  include "io/LPC122x-LQFP48.h"
 #elif defined(LPC122x) && defined(LQFP64)
 #  include "io/LPC122x-LQFP64.h"
+#elif defined(LPC151x) && defined(LQFP48)
+#  include "io/LPC151x-LQFP48.h"
+#elif defined(LPC151x) && defined(LQFP64)
+#  include "io/LPC151x-LQFP64.h"
+#elif defined(LPC151x) && defined(LQFP100)
+#  include "io/LPC151x-LQFP100.h"
+#elif defined(LPC154x) && defined(LQFP48)
+#  include "io/LPC154x-LQFP48.h"
+#elif defined(LPC154x) && defined(LQFP64)
+#  include "io/LPC154x-LQFP64.h"
+#elif defined(LPC154x) && defined(LQFP100)
+#  include "io/LPC154x-LQFP100.h"
 #elif defined(LPC175x) && defined(LQFP80)
 #  include "io/LPC175x-LQFP80.h"
 #elif defined(LPC1768) && defined(TFBGA100)
@@ -67,9 +84,12 @@
 #  error "The given CPU type and package combination is invalid."
 #endif
 
-#include "uart.h"
 #include "time.h"
+
+#if !defined(LPC15xx)
+#include "uart.h"
 #include "ssp.h"
 #include "adc.h"
+#endif
 
 #endif // HW_H

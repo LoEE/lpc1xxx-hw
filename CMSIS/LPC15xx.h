@@ -1055,8 +1055,13 @@ typedef struct {                                    /*!< SWM Structure          
     };
   };
   __I  uint32_t  RESERVED0[96];
-  __IO uint32_t  PINENABLE0;                        /*!< Pin enable register 0. Enables fixed-pin functions                    */
-  __IO uint32_t  PINENABLE1;                        /*!< Pin enable register 0. Enables fixed-pin functions                    */
+  union {
+    __IO uint32_t  PINENABLE[2];
+    struct {
+      __IO uint32_t  PINENABLE0;                        /*!< Pin enable register 0. Enables fixed-pin functions                    */
+      __IO uint32_t  PINENABLE1;                        /*!< Pin enable register 0. Enables fixed-pin functions                    */
+    };
+  };
 } LPC_SWM_Type;
 
 

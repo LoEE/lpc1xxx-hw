@@ -6,6 +6,7 @@ all:
 	mkdir -p ../io
 	racket io.rkt
 	racket io-lpc12xx.rkt
+	racket io-lpc15xx.rkt
 	racket io-lpc17xx.rkt
 	rm -rf ../system
 	mkdir -p ../system

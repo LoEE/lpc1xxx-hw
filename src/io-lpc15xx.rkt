@@ -1,0 +1,305 @@
+#lang at-exp racket
+(require scribble/text
+         "common.rkt"
+         "devices.rkt")
+
+(define output-dir "../io")
+
+(define (main)
+  (parameterize ([current-directory output-dir])
+    (for* ([family '(LPC151x LPC154x)]
+           [package '(LQFP48 LQFP64 LQFP100)])
+      (with-output-to-file (format "~a-~a.h" family package) #:exists 'replace
+        (λ () (output (generate-io-pin family package)))))))
+
+(define (generate-io-pin family package)
+  (define po (dict-ref pinouts (list family package)))
+  @list{
+@header[url]{IO functions for NXP @family devices in @package package.}
+@cpp-wrap['IO_PIN]{
+enum pin_dir {
+  PIN_IN = 0,
+  PIN_OUT = 1,
+};
+
+enum io_mode {
+  I2C_STD = 0 << 8,
+  I2C_FAST = 0 << 8,
+  I2C_GPIO = 1 << 8,
+  I2C_FAST_PLUS = 2 << 8,
+  PULL_NONE = 0 << 3,
+  PULL_DOWN = 1 << 3,
+  PULL_UP = 2 << 3,
+  PULL_REPEATER = 3 << 3,
+  IN_HYSTERESIS = 1 << 5,
+};
+ 
+enum io_function {
+  @(add-newlines (pinout->enum-names po) #:sep ", ")
+};
+ 
+enum pio_pin {
+  @(add-newlines (map pin-enum-name po) #:sep ", ")
+};
+
+@(pin-setup po)
+ 
+@(pin-write po)
+
+@(pin-read po)
+
+@(pin-dir po)
+}})
+
+(struct pin (name functions) #:transparent)
+
+(define pio-rx #rx"^PIO([0-9])_([0-9]+)$")
+
+(define (pin-port p)
+  (and (symbol? (pin-name p))
+       (second (regexp-match pio-rx (symbol->string (pin-name p))))))
+
+(define (pin-no p)
+  (and (symbol? (pin-name p))
+       (third (regexp-match pio-rx (symbol->string (pin-name p))))))
+
+(define (pin-enum-name p)
+  (format "P~a_~a" (pin-port p) (pin-no p)))
+
+(define (pin-iocon-name pin)
+  (format "LPC_IOCON->~a" (pin-name pin)))
+
+(define (pin-has-functions? p)
+  (pair? (cdr (pin-functions p))))
+
+(define (parse-pinout . text)
+  (for/list ([line (in-list (split-lines text))]
+             #:when (pair? line))
+    (decode-pin (regexp-split #rx"/" (car line)))))
+
+(define (decode-pin functions)
+  (match functions
+    [(list-rest (? pio-f? pio) other)
+     (let* ([pio (string->symbol pio)]
+            [functions (list* pio other)])
+       (pin pio functions))]
+    [(list-rest main (? pio-f? pio) other)
+     (let* ([pio (string->symbol pio)]
+            [functions (list* main pio other)])
+       (pin pio functions))]
+    [other
+     (pin #f other)]))
+
+(define (function-name->enum-name f)
+  (cond
+    [(symbol? f)                   "PIO"]
+    [(string=? f "R")              #f]
+    [(char=? (string-ref f 0) #\!) (string-append "n" (substring f 1))]
+    [else                          f]))
+
+(define (pin-enum-names p)
+    (if (pin-name p)
+        (map function-name->enum-name (pin-functions p))
+        '()))
+
+(define (pinout->enum-names po)
+  (remove-duplicates (append* (list (function-name->enum-name "PIO")) (map pin-enum-names po))))
+
+(define (pio-f? f) (and (string? f) (regexp-match pio-rx f) f))
+(define (adc-f? f) (and (string? f) (regexp-match #rx"^AD[0-9]$" f) f))
+(define (i2c-f? f) (and (string? f) (regexp-match #rx"^SDA|SCL$" f) f))
+(define (usb-f? f) (and (string? f) (regexp-match #rx"^n?USB_" f) f))
+
+(define (pin-setup po)
+  (define (do-pin i pin fun)
+    (unless (equal? fun "R")
+      (add-newlines
+       (list
+        (when (usb-f? fun) @list{@disable-prefix{#ifdef CPU_HAS_USB}})
+        (cond
+          [(ormap adc-f? (pin-functions pin))
+           @list{case @(function-name->enum-name fun): f = @i;@(when (adc-f? fun) " other &= ~(1 << 7);") break;}]
+          [(ormap i2c-f? (pin-functions pin))
+           @list{case @(function-name->enum-name fun): f = @i; other = mode;
+                   @(unless (i2c-f? fun)
+                      @list{if (mode == I2C_FAST_PLUS)
+                              ERROR("I2C_FAST_PLUS cannot be used with PIO function.");@"\n"})@;
+                   if (mode & 0x7f)
+                     ERROR("Pull resistors and hysteresis are not available on I2C pins.");
+                   break;}]
+          [(equal? fun "SCK")
+           (define v (dict-ref '([PIO0_10 0]
+                                 [PIO2_11 1]
+                                 [PIO0_6  2])
+                               (pin-name pin)))
+           @list{case @(function-name->enum-name fun): f = @i; LPC_IOCON->SCKLOC = @v; break;}]
+          [else
+           @list{case @(function-name->enum-name fun): f = @i; break;}])
+        (when (usb-f? fun) @list{@disable-prefix{#endif // CPU_HAS_USB}})))))
+  @list{INLINE
+        void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
+        {
+          int f = 0;
+          int other = mode | 3 << 6;
+          switch (pin) {
+            @(for/nl ([p (in-list po)]
+                      #:when (and (pin-name p)))
+               @list{case @(pin-enum-name p):
+                       @(if (pin-has-functions? p)
+                            @list{switch (func) {
+                                    @(for/nl ([i (in-naturals)] [f (in-list (pin-functions p))])
+                                       (do-pin i p f))
+                                    default:
+                                      ERROR("@(pin-name p) can only be used as @(add-newlines
+                                                                                 (remove "PIO" (pin-enum-names p))
+                                                                                 #:sep ", ") or PIO.");
+                                  }}
+                            @list{if (func != PIO) ERROR("@(pin-name p) can only be used as PIO.");
+                                  f = 0;})
+                       @list{@(pin-iocon-name p) = f | other;}
+                       break;})
+            default:
+              ERROR("Invalid IO pin.");
+          }
+        }})
+
+(define (pin-write po)
+  @list{INLINE
+        void pin_write (enum pio_pin pin, int val)
+        {
+          switch (pin) {
+            @(for/nl ([p (in-list po)] #:when (pin-name p))
+               @list{case @(pin-enum-name p): LPC_GPIO_PORT->B[@(pin-enum-name p)] = val ? 1 : 0; break;})
+            default:
+              ERROR("Invalid IO pin.");
+          }
+        }})
+
+(define (pin-read po)
+  @list{INLINE
+        int pin_read (enum pio_pin pin)
+        {
+          switch (pin) {
+            @(for/nl ([p (in-list po)] #:when (pin-name p))
+               @list{case @(pin-enum-name p): return LPC_GPIO_PORT->B[@(pin-enum-name p)];})
+            default:
+              ERROR("Invalid IO pin.");
+          }
+        }})
+
+(define (pin-dir po)
+  @list{INLINE
+        void pin_dir (enum pio_pin pin, enum pin_dir dir)
+        {
+          switch (pin) {
+            @(for/nl ([p (in-list po)] #:when (pin-name p))
+               @list{case @(pin-enum-name p): LPC_GPIO_PORT->DIR[@(pin-port p)] = @;
+                      (LPC_GPIO_PORT->DIR[@(pin-port p)] & ~(1 << @(pin-no p))) | (dir ? 1 << @(pin-no p) : 0); break;})
+            default:
+              ERROR("Invalid IO pin.");
+          }
+        }})
+
+
+(define LPC15xx-LQFP48
+  @parse-pinout{
+PIO0_0/ADC0_10/SCT0_OUT3
+PIO0_1/ADC0_7/SCT0_OUT4
+PIO0_2/ADC0_6/SCT1_OUT3
+PIO0_3/ADC0_5/SCT1_OUT4
+PIO0_4/ADC0_4
+PIO0_5/ADC0_3
+PIO0_6/ADC0_2/SCT2_OUT3
+PIO0_7/ADC0_1
+
+PIO0_8/ADC0_0/TDO
+PIO0_9/ADC1_1/TDI
+PIO0_10/ADC1_2
+PIO0_11/ADC1_3
+PIO0_12/DAC_OUT
+PIO0_13/ADC1_6
+PIO0_14/ADC1_7/SCT1_OUT5
+PIO0_15/ADC1_8
+PIO0_16/ADC1_9
+PIO0_17/WAKEUP/!TRST
+
+PIO0_18/SCT0_OUT5
+SWCLK/PIO0_19/TCK
+SWDIO/PIO0_20/SCT1_OUT6/TMS
+!RESET/PIO0_21
+PIO0_22/I2C0_SCL
+PIO0_23/I2C0_SDA
+PIO0_24/SCT0_OUT6
+PIO0_25/ACMP0_I4
+PIO0_26/ACMP0_I3/SCT3_OUT3
+PIO0_27/ACMP_I1
+
+PIO0_28/ACMP1_I3
+PIO0_29/ACMP2_I3/SCT2_OUT4})
+
+(define +LPC15xx-LQFP64
+  @parse-pinout{
+PIO0_30/ADC0_11
+PIO0_31/ADC0_9
+PIO1_0/ADC0_8
+PIO1_1/ADC1_0
+PIO1_2/ADC1_4
+PIO1_3/ADC1_5
+PIO1_4/ADC1_10
+PIO1_5/ADC1_11
+PIO1_6/ACMP_I2
+PIO1_7/ACMP3_I4
+PIO1_8/ACMP3_I3/SCT3_OUT4
+PIO1_9/ACMP2_I4
+PIO1_10/ACMP1_I4
+PIO1_11})
+
+(define +LPC15xx-LQFP100
+  @parse-pinout{
+PIO1_12
+PIO1_13
+
+PIO1_14/SCT0_OUT7
+PIO1_15
+PIO1_16
+PIO1_17/SCT1_OUT7
+PIO1_18
+PIO1_19
+PIO1_20/SCT2_OUT5
+PIO1_21
+PIO1_22
+PIO1_23
+PIO1_24/SCT3_OUT5
+PIO1_25
+PIO1_26
+PIO1_27
+PIO1_28
+PIO1_29
+PIO1_30
+PIO1_31
+PIO2_0
+PIO2_1
+PIO2_2
+PIO2_3
+PIO2_4
+PIO2_5
+PIO2_6
+PIO2_7
+PIO2_8
+
+PIO2_9
+PIO2_10
+PIO2_11})
+
+(define LPC15xx-noUSB @parse-pinout{PIO2_12
+                                    PIO2_13})
+
+(define pinouts
+  `([(LPC151x LQFP48)  . ,(append LPC15xx-LQFP48 LPC15xx-noUSB)]
+    [(LPC151x LQFP64)  . ,(append LPC15xx-LQFP48 +LPC15xx-LQFP64 LPC15xx-noUSB)]
+    [(LPC151x LQFP100) . ,(append LPC15xx-LQFP48 +LPC15xx-LQFP64 +LPC15xx-LQFP100 LPC15xx-noUSB)]
+    [(LPC154x LQFP48)  . ,(append LPC15xx-LQFP48)]
+    [(LPC154x LQFP64)  . ,(append LPC15xx-LQFP48 +LPC15xx-LQFP64)]
+    [(LPC154x LQFP100) . ,(append LPC15xx-LQFP48 +LPC15xx-LQFP64 +LPC15xx-LQFP100)]))
+
+(main)

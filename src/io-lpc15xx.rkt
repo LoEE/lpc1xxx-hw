@@ -23,27 +23,43 @@ enum pin_dir {
 };
 
 enum io_mode {
-  I2C_STD = 0 << 8,
-  I2C_FAST = 0 << 8,
-  I2C_GPIO = 1 << 8,
-  I2C_FAST_PLUS = 2 << 8,
   PULL_NONE = 0 << 3,
   PULL_DOWN = 1 << 3,
   PULL_UP = 2 << 3,
   PULL_REPEATER = 3 << 3,
+  
   IN_HYSTERESIS = 1 << 5,
+  IN_INVERT = 1 << 6,
+  
+  OUT_OPENDRAIN = 1 << 10,
+
+  I2C_STD = 0 << 8,
+  I2C_FAST = 0 << 8,
+  I2C_GPIO = 1 << 8,
+  I2C_FAST_PLUS = 2 << 8,
+};
+ 
+enum io_filter {
+  IN_DEGLITCH = 1 << 8,
 };
  
 enum io_function {
-  @(add-newlines (pinout->enum-names po) #:sep ", ")
+  @(add-newlines (pinout->enum-names po) #:sep ", "), PIO = 0xf,
+  @(add-newlines (map car LPC15xx-movable-functions) #:sep ", ")
 };
  
 enum pio_pin {
-  @(add-newlines (map pin-enum-name po) #:sep ", ")
-};
+  @(add-newlines (map pin-enum-name po) #:sep ", "),
+}; 
 
 @(pin-setup po)
- 
+
+INLINE
+void pin_setup_filter(enum pio_pin pin, int samples, int clocks, enum io_filter flags) {
+  enum { FILTER_MASK = IN_DEGLITCH | 0xF800 };
+  // FIXME: not implemented
+}
+
 @(pin-write po)
 
 @(pin-read po)
@@ -69,7 +85,7 @@ enum pio_pin {
 (define (pin-iocon-name pin)
   (format "LPC_IOCON->~a" (pin-name pin)))
 
-(define (pin-has-functions? p)
+(define (pin-has-fixfuns? p)
   (pair? (cdr (pin-functions p))))
 
 (define (parse-pinout . text)
@@ -103,64 +119,52 @@ enum pio_pin {
         '()))
 
 (define (pinout->enum-names po)
-  (remove-duplicates (append* (list (function-name->enum-name "PIO")) (map pin-enum-names po))))
+  (remove "PIO" (remove-duplicates (append* (map pin-enum-names po)))))
 
 (define (pio-f? f) (and (string? f) (regexp-match pio-rx f) f))
 (define (adc-f? f) (and (string? f) (regexp-match #rx"^AD[0-9]$" f) f))
-(define (i2c-f? f) (and (string? f) (regexp-match #rx"^SDA|SCL$" f) f))
-(define (usb-f? f) (and (string? f) (regexp-match #rx"^n?USB_" f) f))
+(define (i2c-f? f) (and (string? f) (regexp-match #rx"^I2C" f) f))
 
 (define (pin-setup po)
-  (define (do-pin i pin fun)
-    (unless (equal? fun "R")
-      (add-newlines
-       (list
-        (when (usb-f? fun) @list{@disable-prefix{#ifdef CPU_HAS_USB}})
-        (cond
-          [(ormap adc-f? (pin-functions pin))
-           @list{case @(function-name->enum-name fun): f = @i;@(when (adc-f? fun) " other &= ~(1 << 7);") break;}]
-          [(ormap i2c-f? (pin-functions pin))
-           @list{case @(function-name->enum-name fun): f = @i; other = mode;
-                   @(unless (i2c-f? fun)
-                      @list{if (mode == I2C_FAST_PLUS)
-                              ERROR("I2C_FAST_PLUS cannot be used with PIO function.");@"\n"})@;
-                   if (mode & 0x7f)
-                     ERROR("Pull resistors and hysteresis are not available on I2C pins.");
-                   break;}]
-          [(equal? fun "SCK")
-           (define v (dict-ref '([PIO0_10 0]
-                                 [PIO2_11 1]
-                                 [PIO0_6  2])
-                               (pin-name pin)))
-           @list{case @(function-name->enum-name fun): f = @i; LPC_IOCON->SCKLOC = @v; break;}]
-          [else
-           @list{case @(function-name->enum-name fun): f = @i; break;}])
-        (when (usb-f? fun) @list{@disable-prefix{#endif // CPU_HAS_USB}})))))
+  (define (setup-fixfun p f)
+    @(for/nl ([f2 (in-list (pin-functions p))] #:when (not (symbol? f2)))
+       (define fixfun (assq (string->symbol f2) LPC15xx-fixed-functions))
+       (when fixfun
+         (eprintf "~s ~s~n" f2 fixfun)
+         @list{fixfun(@(cdr fixfun), @(if (eq? f f2) 1 0)); // @f2})))
   @list{INLINE
         void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
         {
-          int f = 0;
-          int other = mode | 3 << 6;
+          mode |= 1 << 7; // reserved
+          void set_pinenable(int pin, int on) {
+            int reg = pin / 32, shift = pin % 32, mask = 1 << shift;
+            LPC_SWM->PINENABLE[reg] = (LPC_SWM->PINENABLE[reg] & ~mask) | (on ? 0 : 1 << shift);
+          }
+          void set_function(enum io_function func, enum pio_pin pin)
+          {
+            int reg = func / 4, shift = (func % 4) * 8, mask = 0xff << shift;
+            LPC_SWM->PINASSIGN[reg] = (LPC_SWM->PINASSIGN[reg] & ~mask) | (pin << shift);
+          }
           switch (pin) {
             @(for/nl ([p (in-list po)]
-                      #:when (and (pin-name p)))
+                      #:when (pin-name p)
+                      #:when (pin-has-fixfuns? p))
                @list{case @(pin-enum-name p):
-                       @(if (pin-has-functions? p)
-                            @list{switch (func) {
-                                    @(for/nl ([i (in-naturals)] [f (in-list (pin-functions p))])
-                                       (do-pin i p f))
-                                    default:
-                                      ERROR("@(pin-name p) can only be used as @(add-newlines
-                                                                                 (remove "PIO" (pin-enum-names p))
-                                                                                 #:sep ", ") or PIO.");
-                                  }}
-                            @list{if (func != PIO) ERROR("@(pin-name p) can only be used as PIO.");
-                                  f = 0;})
-                       @list{@(pin-iocon-name p) = f | other;}
+                       @(for/list ([f (in-list (pin-functions p))]
+                                   #:when (not (symbol? f)))
+                          (define fixfun (assq (string->symbol f) LPC15xx-fixed-functions))
+                          (when fixfun
+                            @list{set_pinenable(@(cdr fixfun), func == @(function-name->enum-name f));@"\n"}))@;
+                       @(when (ormap i2c-f? (pin-functions p))
+                         @list{if (mode & 0x3f)
+                                 ERROR("Pull resistors and hysteresis are not available on I2C pins.");@"\n"})@;
+                       @(pin-iocon-name p) = mode;
                        break;})
             default:
               ERROR("Invalid IO pin.");
-          }
+          }          
+          if (func > PIO)
+            set_function(func - (PIO + 1), pin);
         }})
 
 (define (pin-write po)
@@ -293,6 +297,49 @@ PIO2_11})
 
 (define LPC15xx-noUSB @parse-pinout{PIO2_12
                                     PIO2_13})
+
+(define-syntax-rule (enum names ...)
+  (for/list ([i (in-naturals)]
+             [name (in-list '(names ...))])
+    (cons name i)))
+
+(define LPC15xx-movable-functions
+  (enum U0_TXD U0_RXD U0_RTS U0_CTS U0_SCLK
+        U1_TXD U1_RXD U1_RTS U1_CTS U1_SCLK
+        U2_TXD U2_RXD U2_SCLK
+        SPI0_SCK SPI0_MOSI SPI0_MISO SPI0_SSEL0 SPI0_SSEL1 SPI0_SSEL2 SPI0_SSEL3
+        SPI1_SCK SPI1_MOSI SPI1_MISO SPI1_SSEL0 SPI1_SSEL1
+        CAN0_TD CAN0_RD CAN0_RESERVED
+        USB_VBUS
+        SCT0_OUT0 SCT0_OUT1 SCT0_OUT2
+        SCT1_OUT0 SCT1_OUT1 SCT1_OUT2
+        SCT2_OUT0 SCT2_OUT1 SCT2_OUT2
+        SCT3_OUT0 SCT3_OUT1 SCT3_OUT2
+        SCT_ABORT0 SCT_ABORT1
+        ADC0_PINTRIG0 ADC0_PINTRIG1
+        ADC1_PINTRIG0 ADC1_PINTRIG1
+        DAC_PINTRIG DAC_SHUTOFF
+        ACMP0_O ACMP1_O ACMP2_O ACMP3_O
+        CLKOUT ROSC ROSC_RESET
+        USB_FTOGGLE
+        QEI_PHA QEI_PHB QEI_IDX
+        GPIO_INT_BMAT SWO))
+
+(define LPC15xx-movable-function-max (length LPC15xx-movable-functions))
+
+(define LPC15xx-fixed-functions
+  (enum ADC0_0 ADC0_1 ADC0_2 ADC0_3 ADC0_4 ADC0_5 ADC0_6 ADC0_7 ADC0_8 ADC0_9 ADC0_10 ADC0_11
+        ADC1_0 ADC1_1 ADC1_2 ADC1_3 ADC1_4 ADC1_5 ADC1_6 ADC1_7 ADC1_8 ADC1_9 ADC1_10 ADC1_11
+        DAC_OUT
+        ACMP_I1 ACMP_I2 ACMP0_I3 ACMP0_I4 ACMP1_I3 ACMP1_I4 ACMP2_I3 ACMP2_I4 ACMP3_I3 ACMP3_I4
+        I2C0_SDA I2C0_SCL
+        SCT0_OUT3 SCT0_OUT4 SCT0_OUT5 SCT0_OUT6 SCT0_OUT7
+        SCT1_OUT3 SCT1_OUT4 SCT1_OUT5 SCT1_OUT6 SCT1_OUT7
+        SCT2_OUT3 SCT2_OUT4 SCT2_OUT5
+        SCT3_OUT3 SCT3_OUT4 SCT3_OUT5
+        RESETN SWCLK SWDIO))
+
+(define LPC15xx-fixed-function-max (length LPC15xx-fixed-functions))
 
 (define pinouts
   `([(LPC151x LQFP48)  . ,(append LPC15xx-LQFP48 LPC15xx-noUSB)]

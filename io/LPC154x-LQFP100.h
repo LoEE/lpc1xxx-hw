@@ -16,625 +16,260 @@ enum pin_dir {
 };
 
 enum io_mode {
-  I2C_STD = 0 << 8,
-  I2C_FAST = 0 << 8,
-  I2C_GPIO = 1 << 8,
-  I2C_FAST_PLUS = 2 << 8,
   PULL_NONE = 0 << 3,
   PULL_DOWN = 1 << 3,
   PULL_UP = 2 << 3,
   PULL_REPEATER = 3 << 3,
+
   IN_HYSTERESIS = 1 << 5,
+  IN_INVERT = 1 << 6,
+
+  OUT_OPENDRAIN = 1 << 10,
+
+  I2C_STD = 0 << 8,
+  I2C_FAST = 0 << 8,
+  I2C_GPIO = 1 << 8,
+  I2C_FAST_PLUS = 2 << 8,
+};
+
+enum io_filter {
+  IN_DEGLITCH = 1 << 8,
 };
 
 enum io_function {
-  PIO, ADC0_10, SCT0_OUT3, ADC0_7, SCT0_OUT4, ADC0_6, SCT1_OUT3, ADC0_5, SCT1_OUT4, ADC0_4, ADC0_3, ADC0_2, SCT2_OUT3, ADC0_1, ADC0_0, TDO, ADC1_1, TDI, ADC1_2, ADC1_3, DAC_OUT, ADC1_6, ADC1_7, SCT1_OUT5, ADC1_8, ADC1_9, WAKEUP, nTRST, SCT0_OUT5, SWCLK, TCK, SWDIO, SCT1_OUT6, TMS, nRESET, I2C0_SCL, I2C0_SDA, SCT0_OUT6, ACMP0_I4, ACMP0_I3, SCT3_OUT3, ACMP_I1, ACMP1_I3, ACMP2_I3, SCT2_OUT4, ADC0_11, ADC0_9, ADC0_8, ADC1_0, ADC1_4, ADC1_5, ADC1_10, ADC1_11, ACMP_I2, ACMP3_I4, ACMP3_I3, SCT3_OUT4, ACMP2_I4, ACMP1_I4, SCT0_OUT7, SCT1_OUT7, SCT2_OUT5, SCT3_OUT5
+  ADC0_10, SCT0_OUT3, ADC0_7, SCT0_OUT4, ADC0_6, SCT1_OUT3, ADC0_5, SCT1_OUT4, ADC0_4, ADC0_3, ADC0_2, SCT2_OUT3, ADC0_1, ADC0_0, TDO, ADC1_1, TDI, ADC1_2, ADC1_3, DAC_OUT, ADC1_6, ADC1_7, SCT1_OUT5, ADC1_8, ADC1_9, WAKEUP, nTRST, SCT0_OUT5, SWCLK, TCK, SWDIO, SCT1_OUT6, TMS, nRESET, I2C0_SCL, I2C0_SDA, SCT0_OUT6, ACMP0_I4, ACMP0_I3, SCT3_OUT3, ACMP_I1, ACMP1_I3, ACMP2_I3, SCT2_OUT4, ADC0_11, ADC0_9, ADC0_8, ADC1_0, ADC1_4, ADC1_5, ADC1_10, ADC1_11, ACMP_I2, ACMP3_I4, ACMP3_I3, SCT3_OUT4, ACMP2_I4, ACMP1_I4, SCT0_OUT7, SCT1_OUT7, SCT2_OUT5, SCT3_OUT5, PIO = 0xf,
+  U0_TXD, U0_RXD, U0_RTS, U0_CTS, U0_SCLK, U1_TXD, U1_RXD, U1_RTS, U1_CTS, U1_SCLK, U2_TXD, U2_RXD, U2_SCLK, SPI0_SCK, SPI0_MOSI, SPI0_MISO, SPI0_SSEL0, SPI0_SSEL1, SPI0_SSEL2, SPI0_SSEL3, SPI1_SCK, SPI1_MOSI, SPI1_MISO, SPI1_SSEL0, SPI1_SSEL1, CAN0_TD, CAN0_RD, CAN0_RESERVED, USB_VBUS, SCT0_OUT0, SCT0_OUT1, SCT0_OUT2, SCT1_OUT0, SCT1_OUT1, SCT1_OUT2, SCT2_OUT0, SCT2_OUT1, SCT2_OUT2, SCT3_OUT0, SCT3_OUT1, SCT3_OUT2, SCT_ABORT0, SCT_ABORT1, ADC0_PINTRIG0, ADC0_PINTRIG1, ADC1_PINTRIG0, ADC1_PINTRIG1, DAC_PINTRIG, DAC_SHUTOFF, ACMP0_O, ACMP1_O, ACMP2_O, ACMP3_O, CLKOUT, ROSC, ROSC_RESET, USB_FTOGGLE, QEI_PHA, QEI_PHB, QEI_IDX, GPIO_INT_BMAT, SWO
 };
 
 enum pio_pin {
-  P0_0, P0_1, P0_2, P0_3, P0_4, P0_5, P0_6, P0_7, P0_8, P0_9, P0_10, P0_11, P0_12, P0_13, P0_14, P0_15, P0_16, P0_17, P0_18, P0_19, P0_20, P0_21, P0_22, P0_23, P0_24, P0_25, P0_26, P0_27, P0_28, P0_29, P0_30, P0_31, P1_0, P1_1, P1_2, P1_3, P1_4, P1_5, P1_6, P1_7, P1_8, P1_9, P1_10, P1_11, P1_12, P1_13, P1_14, P1_15, P1_16, P1_17, P1_18, P1_19, P1_20, P1_21, P1_22, P1_23, P1_24, P1_25, P1_26, P1_27, P1_28, P1_29, P1_30, P1_31, P2_0, P2_1, P2_2, P2_3, P2_4, P2_5, P2_6, P2_7, P2_8, P2_9, P2_10, P2_11
+  P0_0, P0_1, P0_2, P0_3, P0_4, P0_5, P0_6, P0_7, P0_8, P0_9, P0_10, P0_11, P0_12, P0_13, P0_14, P0_15, P0_16, P0_17, P0_18, P0_19, P0_20, P0_21, P0_22, P0_23, P0_24, P0_25, P0_26, P0_27, P0_28, P0_29, P0_30, P0_31, P1_0, P1_1, P1_2, P1_3, P1_4, P1_5, P1_6, P1_7, P1_8, P1_9, P1_10, P1_11, P1_12, P1_13, P1_14, P1_15, P1_16, P1_17, P1_18, P1_19, P1_20, P1_21, P1_22, P1_23, P1_24, P1_25, P1_26, P1_27, P1_28, P1_29, P1_30, P1_31, P2_0, P2_1, P2_2, P2_3, P2_4, P2_5, P2_6, P2_7, P2_8, P2_9, P2_10, P2_11,
 };
 
 INLINE
 void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
 {
-  int f = 0;
-  int other = mode | 3 << 6;
+  mode |= 1 << 7; // reserved
+  void set_pinenable(int pin, int on) {
+    int reg = pin / 32, shift = pin % 32, mask = 1 << shift;
+    LPC_SWM->PINENABLE[reg] = (LPC_SWM->PINENABLE[reg] & ~mask) | (on ? 0 : 1 << shift);
+  }
+  void set_function(enum io_function func, enum pio_pin pin)
+  {
+    int reg = func / 4, shift = (func % 4) * 8, mask = 0xff << shift;
+    LPC_SWM->PINASSIGN[reg] = (LPC_SWM->PINASSIGN[reg] & ~mask) | (pin << shift);
+  }
   switch (pin) {
     case P0_0:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC0_10: f = 1; break;
-        case SCT0_OUT3: f = 2; break;
-        default:
-          ERROR("PIO0_0 can only be used as ADC0_10, SCT0_OUT3 or PIO.");
-      }
-      LPC_IOCON->PIO0_0 = f | other;
+      set_pinenable(10, func == ADC0_10);
+      set_pinenable(37, func == SCT0_OUT3);
+      LPC_IOCON->PIO0_0 = mode;
       break;
     case P0_1:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC0_7: f = 1; break;
-        case SCT0_OUT4: f = 2; break;
-        default:
-          ERROR("PIO0_1 can only be used as ADC0_7, SCT0_OUT4 or PIO.");
-      }
-      LPC_IOCON->PIO0_1 = f | other;
+      set_pinenable(7, func == ADC0_7);
+      set_pinenable(38, func == SCT0_OUT4);
+      LPC_IOCON->PIO0_1 = mode;
       break;
     case P0_2:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC0_6: f = 1; break;
-        case SCT1_OUT3: f = 2; break;
-        default:
-          ERROR("PIO0_2 can only be used as ADC0_6, SCT1_OUT3 or PIO.");
-      }
-      LPC_IOCON->PIO0_2 = f | other;
+      set_pinenable(6, func == ADC0_6);
+      set_pinenable(42, func == SCT1_OUT3);
+      LPC_IOCON->PIO0_2 = mode;
       break;
     case P0_3:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC0_5: f = 1; break;
-        case SCT1_OUT4: f = 2; break;
-        default:
-          ERROR("PIO0_3 can only be used as ADC0_5, SCT1_OUT4 or PIO.");
-      }
-      LPC_IOCON->PIO0_3 = f | other;
+      set_pinenable(5, func == ADC0_5);
+      set_pinenable(43, func == SCT1_OUT4);
+      LPC_IOCON->PIO0_3 = mode;
       break;
     case P0_4:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC0_4: f = 1; break;
-        default:
-          ERROR("PIO0_4 can only be used as ADC0_4 or PIO.");
-      }
-      LPC_IOCON->PIO0_4 = f | other;
+      set_pinenable(4, func == ADC0_4);
+      LPC_IOCON->PIO0_4 = mode;
       break;
     case P0_5:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC0_3: f = 1; break;
-        default:
-          ERROR("PIO0_5 can only be used as ADC0_3 or PIO.");
-      }
-      LPC_IOCON->PIO0_5 = f | other;
+      set_pinenable(3, func == ADC0_3);
+      LPC_IOCON->PIO0_5 = mode;
       break;
     case P0_6:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC0_2: f = 1; break;
-        case SCT2_OUT3: f = 2; break;
-        default:
-          ERROR("PIO0_6 can only be used as ADC0_2, SCT2_OUT3 or PIO.");
-      }
-      LPC_IOCON->PIO0_6 = f | other;
+      set_pinenable(2, func == ADC0_2);
+      set_pinenable(47, func == SCT2_OUT3);
+      LPC_IOCON->PIO0_6 = mode;
       break;
     case P0_7:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC0_1: f = 1; break;
-        default:
-          ERROR("PIO0_7 can only be used as ADC0_1 or PIO.");
-      }
-      LPC_IOCON->PIO0_7 = f | other;
+      set_pinenable(1, func == ADC0_1);
+      LPC_IOCON->PIO0_7 = mode;
       break;
     case P0_8:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC0_0: f = 1; break;
-        case TDO: f = 2; break;
-        default:
-          ERROR("PIO0_8 can only be used as ADC0_0, TDO or PIO.");
-      }
-      LPC_IOCON->PIO0_8 = f | other;
+      set_pinenable(0, func == ADC0_0);
+      LPC_IOCON->PIO0_8 = mode;
       break;
     case P0_9:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC1_1: f = 1; break;
-        case TDI: f = 2; break;
-        default:
-          ERROR("PIO0_9 can only be used as ADC1_1, TDI or PIO.");
-      }
-      LPC_IOCON->PIO0_9 = f | other;
+      set_pinenable(13, func == ADC1_1);
+      LPC_IOCON->PIO0_9 = mode;
       break;
     case P0_10:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC1_2: f = 1; break;
-        default:
-          ERROR("PIO0_10 can only be used as ADC1_2 or PIO.");
-      }
-      LPC_IOCON->PIO0_10 = f | other;
+      set_pinenable(14, func == ADC1_2);
+      LPC_IOCON->PIO0_10 = mode;
       break;
     case P0_11:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC1_3: f = 1; break;
-        default:
-          ERROR("PIO0_11 can only be used as ADC1_3 or PIO.");
-      }
-      LPC_IOCON->PIO0_11 = f | other;
+      set_pinenable(15, func == ADC1_3);
+      LPC_IOCON->PIO0_11 = mode;
       break;
     case P0_12:
-      switch (func) {
-        case PIO: f = 0; break;
-        case DAC_OUT: f = 1; break;
-        default:
-          ERROR("PIO0_12 can only be used as DAC_OUT or PIO.");
-      }
-      LPC_IOCON->PIO0_12 = f | other;
+      set_pinenable(24, func == DAC_OUT);
+      LPC_IOCON->PIO0_12 = mode;
       break;
     case P0_13:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC1_6: f = 1; break;
-        default:
-          ERROR("PIO0_13 can only be used as ADC1_6 or PIO.");
-      }
-      LPC_IOCON->PIO0_13 = f | other;
+      set_pinenable(18, func == ADC1_6);
+      LPC_IOCON->PIO0_13 = mode;
       break;
     case P0_14:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC1_7: f = 1; break;
-        case SCT1_OUT5: f = 2; break;
-        default:
-          ERROR("PIO0_14 can only be used as ADC1_7, SCT1_OUT5 or PIO.");
-      }
-      LPC_IOCON->PIO0_14 = f | other;
+      set_pinenable(19, func == ADC1_7);
+      set_pinenable(44, func == SCT1_OUT5);
+      LPC_IOCON->PIO0_14 = mode;
       break;
     case P0_15:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC1_8: f = 1; break;
-        default:
-          ERROR("PIO0_15 can only be used as ADC1_8 or PIO.");
-      }
-      LPC_IOCON->PIO0_15 = f | other;
+      set_pinenable(20, func == ADC1_8);
+      LPC_IOCON->PIO0_15 = mode;
       break;
     case P0_16:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC1_9: f = 1; break;
-        default:
-          ERROR("PIO0_16 can only be used as ADC1_9 or PIO.");
-      }
-      LPC_IOCON->PIO0_16 = f | other;
+      set_pinenable(21, func == ADC1_9);
+      LPC_IOCON->PIO0_16 = mode;
       break;
     case P0_17:
-      switch (func) {
-        case PIO: f = 0; break;
-        case WAKEUP: f = 1; break;
-        case nTRST: f = 2; break;
-        default:
-          ERROR("PIO0_17 can only be used as WAKEUP, nTRST or PIO.");
-      }
-      LPC_IOCON->PIO0_17 = f | other;
+      LPC_IOCON->PIO0_17 = mode;
       break;
     case P0_18:
-      switch (func) {
-        case PIO: f = 0; break;
-        case SCT0_OUT5: f = 1; break;
-        default:
-          ERROR("PIO0_18 can only be used as SCT0_OUT5 or PIO.");
-      }
-      LPC_IOCON->PIO0_18 = f | other;
+      set_pinenable(39, func == SCT0_OUT5);
+      LPC_IOCON->PIO0_18 = mode;
       break;
     case P0_19:
-      switch (func) {
-        case SWCLK: f = 0; break;
-        case PIO: f = 1; break;
-        case TCK: f = 2; break;
-        default:
-          ERROR("PIO0_19 can only be used as SWCLK, TCK or PIO.");
-      }
-      LPC_IOCON->PIO0_19 = f | other;
+      set_pinenable(54, func == SWCLK);
+      LPC_IOCON->PIO0_19 = mode;
       break;
     case P0_20:
-      switch (func) {
-        case SWDIO: f = 0; break;
-        case PIO: f = 1; break;
-        case SCT1_OUT6: f = 2; break;
-        case TMS: f = 3; break;
-        default:
-          ERROR("PIO0_20 can only be used as SWDIO, SCT1_OUT6, TMS or PIO.");
-      }
-      LPC_IOCON->PIO0_20 = f | other;
+      set_pinenable(55, func == SWDIO);
+      set_pinenable(45, func == SCT1_OUT6);
+      LPC_IOCON->PIO0_20 = mode;
       break;
     case P0_21:
-      switch (func) {
-        case nRESET: f = 0; break;
-        case PIO: f = 1; break;
-        default:
-          ERROR("PIO0_21 can only be used as nRESET or PIO.");
-      }
-      LPC_IOCON->PIO0_21 = f | other;
+      LPC_IOCON->PIO0_21 = mode;
       break;
     case P0_22:
-      switch (func) {
-        case PIO: f = 0; other = mode;
-          if (mode == I2C_FAST_PLUS)
-            ERROR("I2C_FAST_PLUS cannot be used with PIO function.");
-          if (mode & 0x7f)
-            ERROR("Pull resistors and hysteresis are not available on I2C pins.");
-          break;
-        case I2C0_SCL: f = 1; other = mode;
-          if (mode & 0x7f)
-            ERROR("Pull resistors and hysteresis are not available on I2C pins.");
-          break;
-        default:
-          ERROR("PIO0_22 can only be used as I2C0_SCL or PIO.");
-      }
-      LPC_IOCON->PIO0_22 = f | other;
+      set_pinenable(36, func == I2C0_SCL);
+      if (mode & 0x3f)
+        ERROR("Pull resistors and hysteresis are not available on I2C pins.");
+      LPC_IOCON->PIO0_22 = mode;
       break;
     case P0_23:
-      switch (func) {
-        case PIO: f = 0; break;
-        case I2C0_SDA: f = 1; break;
-        default:
-          ERROR("PIO0_23 can only be used as I2C0_SDA or PIO.");
-      }
-      LPC_IOCON->PIO0_23 = f | other;
+      set_pinenable(35, func == I2C0_SDA);
+      if (mode & 0x3f)
+        ERROR("Pull resistors and hysteresis are not available on I2C pins.");
+      LPC_IOCON->PIO0_23 = mode;
       break;
     case P0_24:
-      switch (func) {
-        case PIO: f = 0; break;
-        case SCT0_OUT6: f = 1; break;
-        default:
-          ERROR("PIO0_24 can only be used as SCT0_OUT6 or PIO.");
-      }
-      LPC_IOCON->PIO0_24 = f | other;
+      set_pinenable(40, func == SCT0_OUT6);
+      LPC_IOCON->PIO0_24 = mode;
       break;
     case P0_25:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ACMP0_I4: f = 1; break;
-        default:
-          ERROR("PIO0_25 can only be used as ACMP0_I4 or PIO.");
-      }
-      LPC_IOCON->PIO0_25 = f | other;
+      set_pinenable(28, func == ACMP0_I4);
+      LPC_IOCON->PIO0_25 = mode;
       break;
     case P0_26:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ACMP0_I3: f = 1; break;
-        case SCT3_OUT3: f = 2; break;
-        default:
-          ERROR("PIO0_26 can only be used as ACMP0_I3, SCT3_OUT3 or PIO.");
-      }
-      LPC_IOCON->PIO0_26 = f | other;
+      set_pinenable(27, func == ACMP0_I3);
+      set_pinenable(50, func == SCT3_OUT3);
+      LPC_IOCON->PIO0_26 = mode;
       break;
     case P0_27:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ACMP_I1: f = 1; break;
-        default:
-          ERROR("PIO0_27 can only be used as ACMP_I1 or PIO.");
-      }
-      LPC_IOCON->PIO0_27 = f | other;
+      set_pinenable(25, func == ACMP_I1);
+      LPC_IOCON->PIO0_27 = mode;
       break;
     case P0_28:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ACMP1_I3: f = 1; break;
-        default:
-          ERROR("PIO0_28 can only be used as ACMP1_I3 or PIO.");
-      }
-      LPC_IOCON->PIO0_28 = f | other;
+      set_pinenable(29, func == ACMP1_I3);
+      LPC_IOCON->PIO0_28 = mode;
       break;
     case P0_29:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ACMP2_I3: f = 1; break;
-        case SCT2_OUT4: f = 2; break;
-        default:
-          ERROR("PIO0_29 can only be used as ACMP2_I3, SCT2_OUT4 or PIO.");
-      }
-      LPC_IOCON->PIO0_29 = f | other;
+      set_pinenable(31, func == ACMP2_I3);
+      set_pinenable(48, func == SCT2_OUT4);
+      LPC_IOCON->PIO0_29 = mode;
       break;
     case P0_30:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC0_11: f = 1; break;
-        default:
-          ERROR("PIO0_30 can only be used as ADC0_11 or PIO.");
-      }
-      LPC_IOCON->PIO0_30 = f | other;
+      set_pinenable(11, func == ADC0_11);
+      LPC_IOCON->PIO0_30 = mode;
       break;
     case P0_31:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC0_9: f = 1; break;
-        default:
-          ERROR("PIO0_31 can only be used as ADC0_9 or PIO.");
-      }
-      LPC_IOCON->PIO0_31 = f | other;
+      set_pinenable(9, func == ADC0_9);
+      LPC_IOCON->PIO0_31 = mode;
       break;
     case P1_0:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC0_8: f = 1; break;
-        default:
-          ERROR("PIO1_0 can only be used as ADC0_8 or PIO.");
-      }
-      LPC_IOCON->PIO1_0 = f | other;
+      set_pinenable(8, func == ADC0_8);
+      LPC_IOCON->PIO1_0 = mode;
       break;
     case P1_1:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC1_0: f = 1; break;
-        default:
-          ERROR("PIO1_1 can only be used as ADC1_0 or PIO.");
-      }
-      LPC_IOCON->PIO1_1 = f | other;
+      set_pinenable(12, func == ADC1_0);
+      LPC_IOCON->PIO1_1 = mode;
       break;
     case P1_2:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC1_4: f = 1; break;
-        default:
-          ERROR("PIO1_2 can only be used as ADC1_4 or PIO.");
-      }
-      LPC_IOCON->PIO1_2 = f | other;
+      set_pinenable(16, func == ADC1_4);
+      LPC_IOCON->PIO1_2 = mode;
       break;
     case P1_3:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC1_5: f = 1; break;
-        default:
-          ERROR("PIO1_3 can only be used as ADC1_5 or PIO.");
-      }
-      LPC_IOCON->PIO1_3 = f | other;
+      set_pinenable(17, func == ADC1_5);
+      LPC_IOCON->PIO1_3 = mode;
       break;
     case P1_4:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC1_10: f = 1; break;
-        default:
-          ERROR("PIO1_4 can only be used as ADC1_10 or PIO.");
-      }
-      LPC_IOCON->PIO1_4 = f | other;
+      set_pinenable(22, func == ADC1_10);
+      LPC_IOCON->PIO1_4 = mode;
       break;
     case P1_5:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ADC1_11: f = 1; break;
-        default:
-          ERROR("PIO1_5 can only be used as ADC1_11 or PIO.");
-      }
-      LPC_IOCON->PIO1_5 = f | other;
+      set_pinenable(23, func == ADC1_11);
+      LPC_IOCON->PIO1_5 = mode;
       break;
     case P1_6:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ACMP_I2: f = 1; break;
-        default:
-          ERROR("PIO1_6 can only be used as ACMP_I2 or PIO.");
-      }
-      LPC_IOCON->PIO1_6 = f | other;
+      set_pinenable(26, func == ACMP_I2);
+      LPC_IOCON->PIO1_6 = mode;
       break;
     case P1_7:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ACMP3_I4: f = 1; break;
-        default:
-          ERROR("PIO1_7 can only be used as ACMP3_I4 or PIO.");
-      }
-      LPC_IOCON->PIO1_7 = f | other;
+      set_pinenable(34, func == ACMP3_I4);
+      LPC_IOCON->PIO1_7 = mode;
       break;
     case P1_8:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ACMP3_I3: f = 1; break;
-        case SCT3_OUT4: f = 2; break;
-        default:
-          ERROR("PIO1_8 can only be used as ACMP3_I3, SCT3_OUT4 or PIO.");
-      }
-      LPC_IOCON->PIO1_8 = f | other;
+      set_pinenable(33, func == ACMP3_I3);
+      set_pinenable(51, func == SCT3_OUT4);
+      LPC_IOCON->PIO1_8 = mode;
       break;
     case P1_9:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ACMP2_I4: f = 1; break;
-        default:
-          ERROR("PIO1_9 can only be used as ACMP2_I4 or PIO.");
-      }
-      LPC_IOCON->PIO1_9 = f | other;
+      set_pinenable(32, func == ACMP2_I4);
+      LPC_IOCON->PIO1_9 = mode;
       break;
     case P1_10:
-      switch (func) {
-        case PIO: f = 0; break;
-        case ACMP1_I4: f = 1; break;
-        default:
-          ERROR("PIO1_10 can only be used as ACMP1_I4 or PIO.");
-      }
-      LPC_IOCON->PIO1_10 = f | other;
-      break;
-    case P1_11:
-      if (func != PIO) ERROR("PIO1_11 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_11 = f | other;
-      break;
-    case P1_12:
-      if (func != PIO) ERROR("PIO1_12 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_12 = f | other;
-      break;
-    case P1_13:
-      if (func != PIO) ERROR("PIO1_13 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_13 = f | other;
+      set_pinenable(30, func == ACMP1_I4);
+      LPC_IOCON->PIO1_10 = mode;
       break;
     case P1_14:
-      switch (func) {
-        case PIO: f = 0; break;
-        case SCT0_OUT7: f = 1; break;
-        default:
-          ERROR("PIO1_14 can only be used as SCT0_OUT7 or PIO.");
-      }
-      LPC_IOCON->PIO1_14 = f | other;
-      break;
-    case P1_15:
-      if (func != PIO) ERROR("PIO1_15 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_15 = f | other;
-      break;
-    case P1_16:
-      if (func != PIO) ERROR("PIO1_16 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_16 = f | other;
+      set_pinenable(41, func == SCT0_OUT7);
+      LPC_IOCON->PIO1_14 = mode;
       break;
     case P1_17:
-      switch (func) {
-        case PIO: f = 0; break;
-        case SCT1_OUT7: f = 1; break;
-        default:
-          ERROR("PIO1_17 can only be used as SCT1_OUT7 or PIO.");
-      }
-      LPC_IOCON->PIO1_17 = f | other;
-      break;
-    case P1_18:
-      if (func != PIO) ERROR("PIO1_18 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_18 = f | other;
-      break;
-    case P1_19:
-      if (func != PIO) ERROR("PIO1_19 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_19 = f | other;
+      set_pinenable(46, func == SCT1_OUT7);
+      LPC_IOCON->PIO1_17 = mode;
       break;
     case P1_20:
-      switch (func) {
-        case PIO: f = 0; break;
-        case SCT2_OUT5: f = 1; break;
-        default:
-          ERROR("PIO1_20 can only be used as SCT2_OUT5 or PIO.");
-      }
-      LPC_IOCON->PIO1_20 = f | other;
-      break;
-    case P1_21:
-      if (func != PIO) ERROR("PIO1_21 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_21 = f | other;
-      break;
-    case P1_22:
-      if (func != PIO) ERROR("PIO1_22 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_22 = f | other;
-      break;
-    case P1_23:
-      if (func != PIO) ERROR("PIO1_23 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_23 = f | other;
+      set_pinenable(49, func == SCT2_OUT5);
+      LPC_IOCON->PIO1_20 = mode;
       break;
     case P1_24:
-      switch (func) {
-        case PIO: f = 0; break;
-        case SCT3_OUT5: f = 1; break;
-        default:
-          ERROR("PIO1_24 can only be used as SCT3_OUT5 or PIO.");
-      }
-      LPC_IOCON->PIO1_24 = f | other;
-      break;
-    case P1_25:
-      if (func != PIO) ERROR("PIO1_25 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_25 = f | other;
-      break;
-    case P1_26:
-      if (func != PIO) ERROR("PIO1_26 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_26 = f | other;
-      break;
-    case P1_27:
-      if (func != PIO) ERROR("PIO1_27 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_27 = f | other;
-      break;
-    case P1_28:
-      if (func != PIO) ERROR("PIO1_28 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_28 = f | other;
-      break;
-    case P1_29:
-      if (func != PIO) ERROR("PIO1_29 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_29 = f | other;
-      break;
-    case P1_30:
-      if (func != PIO) ERROR("PIO1_30 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_30 = f | other;
-      break;
-    case P1_31:
-      if (func != PIO) ERROR("PIO1_31 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO1_31 = f | other;
-      break;
-    case P2_0:
-      if (func != PIO) ERROR("PIO2_0 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO2_0 = f | other;
-      break;
-    case P2_1:
-      if (func != PIO) ERROR("PIO2_1 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO2_1 = f | other;
-      break;
-    case P2_2:
-      if (func != PIO) ERROR("PIO2_2 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO2_2 = f | other;
-      break;
-    case P2_3:
-      if (func != PIO) ERROR("PIO2_3 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO2_3 = f | other;
-      break;
-    case P2_4:
-      if (func != PIO) ERROR("PIO2_4 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO2_4 = f | other;
-      break;
-    case P2_5:
-      if (func != PIO) ERROR("PIO2_5 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO2_5 = f | other;
-      break;
-    case P2_6:
-      if (func != PIO) ERROR("PIO2_6 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO2_6 = f | other;
-      break;
-    case P2_7:
-      if (func != PIO) ERROR("PIO2_7 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO2_7 = f | other;
-      break;
-    case P2_8:
-      if (func != PIO) ERROR("PIO2_8 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO2_8 = f | other;
-      break;
-    case P2_9:
-      if (func != PIO) ERROR("PIO2_9 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO2_9 = f | other;
-      break;
-    case P2_10:
-      if (func != PIO) ERROR("PIO2_10 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO2_10 = f | other;
-      break;
-    case P2_11:
-      if (func != PIO) ERROR("PIO2_11 can only be used as PIO.");
-      f = 0;
-      LPC_IOCON->PIO2_11 = f | other;
+      set_pinenable(52, func == SCT3_OUT5);
+      LPC_IOCON->PIO1_24 = mode;
       break;
     default:
       ERROR("Invalid IO pin.");
   }
+  if (func > PIO)
+    set_function(func - (PIO + 1), pin);
+}
+
+INLINE
+void pin_setup_filter(enum pio_pin pin, int samples, int clocks, enum io_filter flags) {
+  enum { FILTER_MASK = IN_DEGLITCH | 0xF800 };
+  // FIXME: not implemented
 }
 
 INLINE

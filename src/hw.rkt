@@ -91,6 +91,7 @@
 #    error "No supported CPU package types defined."
 #  endif
 #  include "CMSIS/LPC15xx.h"
+#  include "system/LPC15xx.h"
 #endif
 
 #if@;

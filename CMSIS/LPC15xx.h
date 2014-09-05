@@ -1273,7 +1273,9 @@ typedef struct {                                    /*!< SYSCON Structure       
   __IO uint32_t  ADCASYNCCLKDIV;                    /*!< Asynchronous ADC clock divider                                        */
   __I  uint32_t  RESERVED8;
   __IO uint32_t  CLKOUTDIV;                         /*!< CLKOUT clock divider                                                  */
-  __I  uint32_t  RESERVED9[11];
+  __I  uint32_t  RESERVED9[9];
+  __IO uint32_t  FREQMECTRL;                        /*!< Frequency measure function control register                           */
+  __IO uint32_t  FLASHCFG;                          /*!< Flash configuration register                                          */
   __IO uint32_t  FRGCTRL;                           /*!< USART fractional baud rate generator control                          */
   __IO uint32_t  USBCLKCTRL;                        /*!< USB clock control                                                     */
   __IO uint32_t  USBCLKST;                          /*!< USB clock status                                                      */

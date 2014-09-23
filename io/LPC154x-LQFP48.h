@@ -37,12 +37,12 @@ enum io_filter {
 };
 
 enum io_function {
-  ADC0_10, SCT0_OUT3, ADC0_7, SCT0_OUT4, ADC0_6, SCT1_OUT3, ADC0_5, SCT1_OUT4, ADC0_4, ADC0_3, ADC0_2, SCT2_OUT3, ADC0_1, ADC0_0, TDO, ADC1_1, TDI, ADC1_2, ADC1_3, DAC_OUT, ADC1_6, ADC1_7, SCT1_OUT5, ADC1_8, ADC1_9, WAKEUP, nTRST, SCT0_OUT5, SWCLK, TCK, SWDIO, SCT1_OUT6, TMS, nRESET, I2C0_SCL, I2C0_SDA, SCT0_OUT6, ACMP0_I4, ACMP0_I3, SCT3_OUT3, ACMP_I1, ACMP1_I3, ACMP2_I3, SCT2_OUT4, PIO = 0xf,
-  U0_TXD, U0_RXD, U0_RTS, U0_CTS, U0_SCLK, U1_TXD, U1_RXD, U1_RTS, U1_CTS, U1_SCLK, U2_TXD, U2_RXD, U2_SCLK, SPI0_SCK, SPI0_MOSI, SPI0_MISO, SPI0_SSEL0, SPI0_SSEL1, SPI0_SSEL2, SPI0_SSEL3, SPI1_SCK, SPI1_MOSI, SPI1_MISO, SPI1_SSEL0, SPI1_SSEL1, CAN0_TD, CAN0_RD, CAN0_RESERVED, USB_VBUS, SCT0_OUT0, SCT0_OUT1, SCT0_OUT2, SCT1_OUT0, SCT1_OUT1, SCT1_OUT2, SCT2_OUT0, SCT2_OUT1, SCT2_OUT2, SCT3_OUT0, SCT3_OUT1, SCT3_OUT2, SCT_ABORT0, SCT_ABORT1, ADC0_PINTRIG0, ADC0_PINTRIG1, ADC1_PINTRIG0, ADC1_PINTRIG1, DAC_PINTRIG, DAC_SHUTOFF, ACMP0_O, ACMP1_O, ACMP2_O, ACMP3_O, CLKOUT, ROSC, ROSC_RESET, USB_FTOGGLE, QEI_PHA, QEI_PHB, QEI_IDX, GPIO_INT_BMAT, SWO
+  ADC0_10, SCT0_OUT3, ADC0_7, SCT0_OUT4, ADC0_6, SCT1_OUT3, ADC0_5, SCT1_OUT4, ADC0_4, ADC0_3, ADC0_2, SCT2_OUT3, ADC0_1, ADC0_0, TDO, ADC1_1, TDI, ADC1_2, ADC1_3, DAC_OUT, ADC1_6, ADC1_7, SCT1_OUT5, ADC1_8, ADC1_9, WAKEUP, nTRST, SCT0_OUT5, SWCLK, TCK, SWDIO, SCT1_OUT6, TMS, nRESET, I2C0_SCL, I2C0_SDA, SCT0_OUT6, ACMP0_I4, ACMP0_I3, SCT3_OUT3, ACMP_I1, ACMP1_I3, ACMP2_I3, SCT2_OUT4, MOVABLE = 0xff,
+  U0_TXD, U0_RXD, U0_RTS, U0_CTS, U0_SCLK, U1_TXD, U1_RXD, U1_RTS, U1_CTS, U1_SCLK, U2_TXD, U2_RXD, U2_SCLK, SPI0_SCK, SPI0_MOSI, SPI0_MISO, SPI0_SSEL0, SPI0_SSEL1, SPI0_SSEL2, SPI0_SSEL3, SPI1_SCK, SPI1_MOSI, SPI1_MISO, SPI1_SSEL0, SPI1_SSEL1, CAN0_TD, CAN0_RD, CAN0_RESERVED, USB_VBUS, SCT0_OUT0, SCT0_OUT1, SCT0_OUT2, SCT1_OUT0, SCT1_OUT1, SCT1_OUT2, SCT2_OUT0, SCT2_OUT1, SCT2_OUT2, SCT3_OUT0, SCT3_OUT1, SCT3_OUT2, SCT_ABORT0, SCT_ABORT1, ADC0_PINTRIG0, ADC0_PINTRIG1, ADC1_PINTRIG0, ADC1_PINTRIG1, DAC_PINTRIG, DAC_SHUTOFF, ACMP0_O, ACMP1_O, ACMP2_O, ACMP3_O, CLKOUT, ROSC, ROSC_RESET, USB_FTOGGLE, QEI_PHA, QEI_PHB, QEI_IDX, GPIO_INT_BMAT, SWO, LPC15xx_MAX_FUNCTION
 };
 
 enum pio_pin {
-  P0_0, P0_1, P0_2, P0_3, P0_4, P0_5, P0_6, P0_7, P0_8, P0_9, P0_10, P0_11, P0_12, P0_13, P0_14, P0_15, P0_16, P0_17, P0_18, P0_19, P0_20, P0_21, P0_22, P0_23, P0_24, P0_25, P0_26, P0_27, P0_28, P0_29,
+  P0_0, P0_1, P0_2, P0_3, P0_4, P0_5, P0_6, P0_7, P0_8, P0_9, P0_10, P0_11, P0_12, P0_13, P0_14, P0_15, P0_16, P0_17, P0_18, P0_19, P0_20, P0_21, P0_22, P0_23, P0_24, P0_25, P0_26, P0_27, P0_28, P0_29, NOT_CONNECTED, LPC15xx_MAX_PIN
 };
 
 INLINE
@@ -52,11 +52,6 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
   void set_pinenable(int pin, int on) {
     int reg = pin / 32, shift = pin % 32, mask = 1 << shift;
     LPC_SWM->PINENABLE[reg] = (LPC_SWM->PINENABLE[reg] & ~mask) | (on ? 0 : 1 << shift);
-  }
-  void set_function(enum io_function func, enum pio_pin pin)
-  {
-    int reg = func / 4, shift = (func % 4) * 8, mask = 0xff << shift;
-    LPC_SWM->PINASSIGN[reg] = (LPC_SWM->PINASSIGN[reg] & ~mask) | (pin << shift);
   }
   switch (pin) {
     case P0_0:
@@ -193,8 +188,19 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
     default:
       ERROR("Invalid IO pin.");
   }
-  if (func > PIO)
-    set_function(func - (PIO + 1), pin);
+  if (func > MOVABLE)
+    ERROR("Movable functions are set using pin_setup_function.");
+}
+
+INLINE
+void pin_setup_function(enum io_function func, enum pio_pin pin)
+{
+  if(func <= MOVABLE) ERROR("pin_setup_function only deals with movable functions.");
+  if(pin >= LPC15xx_MAX_PIN) ERROR("Invalid IO pin.");
+  if(pin == NOT_CONNECTED) pin = 0xff;
+  func -= MOVABLE + 1;
+  int reg = func / 4, shift = (func % 4) * 8, mask = 0xff << shift;
+  LPC_SWM->PINASSIGN[reg] = (LPC_SWM->PINASSIGN[reg] & ~mask) | (pin << shift);
 }
 
 INLINE

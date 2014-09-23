@@ -44,15 +44,26 @@ enum io_filter {
 };
  
 enum io_function {
-  @(add-newlines (pinout->enum-names po) #:sep ", "), PIO = 0xf,
-  @(add-newlines (map car LPC15xx-movable-functions) #:sep ", ")
+  @(add-newlines (pinout->enum-names po) #:sep ", "), MOVABLE = 0xff,
+  @(add-newlines (map car LPC15xx-movable-functions) #:sep ", "), LPC15xx_MAX_FUNCTION
 };
- 
+
 enum pio_pin {
-  @(add-newlines (map pin-enum-name po) #:sep ", "),
+  @(add-newlines (map pin-enum-name po) #:sep ", "), NOT_CONNECTED, LPC15xx_MAX_PIN
 }; 
 
 @(pin-setup po)
+
+INLINE
+void pin_setup_function(enum io_function func, enum pio_pin pin)
+{
+  if(func <= MOVABLE) ERROR("pin_setup_function only deals with movable functions.");
+  if(pin >= LPC15xx_MAX_PIN) ERROR("Invalid IO pin.");
+  if(pin == NOT_CONNECTED) pin = 0xff;
+  func -= MOVABLE + 1;
+  int reg = func / 4, shift = (func % 4) * 8, mask = 0xff << shift;
+  LPC_SWM->PINASSIGN[reg] = (LPC_SWM->PINASSIGN[reg] & ~mask) | (pin << shift);
+}
 
 INLINE
 void pin_setup_filter(enum pio_pin pin, int samples, int clocks, enum io_filter flags) {
@@ -140,11 +151,6 @@ void pin_setup_filter(enum pio_pin pin, int samples, int clocks, enum io_filter 
             int reg = pin / 32, shift = pin % 32, mask = 1 << shift;
             LPC_SWM->PINENABLE[reg] = (LPC_SWM->PINENABLE[reg] & ~mask) | (on ? 0 : 1 << shift);
           }
-          void set_function(enum io_function func, enum pio_pin pin)
-          {
-            int reg = func / 4, shift = (func % 4) * 8, mask = 0xff << shift;
-            LPC_SWM->PINASSIGN[reg] = (LPC_SWM->PINASSIGN[reg] & ~mask) | (pin << shift);
-          }
           switch (pin) {
             @(for/nl ([p (in-list po)]
                       #:when (pin-name p)
@@ -163,8 +169,8 @@ void pin_setup_filter(enum pio_pin pin, int samples, int clocks, enum io_filter 
             default:
               ERROR("Invalid IO pin.");
           }          
-          if (func > PIO)
-            set_function(func - (PIO + 1), pin);
+          if (func > MOVABLE)
+            ERROR("Movable functions are set using pin_setup_function.");
         }})
 
 (define (pin-write po)

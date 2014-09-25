@@ -125,12 +125,6 @@ INLINE void system_periph_reset (int bit, int reset)
 
 @(decl 'qei_clock "int on") { system_set_clock (121, on); }
 
-@(decl 'usb_system "int div") {
-  system_set_clock (123, div != 0);
-  system_set_power(9, div != 0);
-  LPC_SYSCON->USBCLKDIV = div;
-}
-
 @(decl 'uart_clock "int div") { LPC_SYSCON->UARTCLKDIV = div; }
 @(decl 'glitch_filter_clock "int div") { LPC_SYSCON->IOCONCLKDIV = div; }
 @(decl 'adc_clock "int div") { LPC_SYSCON->ADCASYNCCLKDIV = div; }
@@ -331,6 +325,23 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
     }
   }
   LPC_SYSCON->SYSAHBCLKDIV = div;
+}
+
+@(decl 'usb_system "enum clock_source src" "int div") {
+  system_set_power(9, div != 0);
+  system_set_clock (123, 0);
+  if (!div) return;
+  int s = 0;
+  @(clksrc-switch 'src 's '([OSC_IRC 0]
+                            [OSC_SYS 1]
+                            [PLL_USB 2]
+                            [CLK_MAIN 3]))
+  if (s != -1) {
+    LPC_SYSCON->USBCLKDIV = 255;
+    LPC_SYSCON->USBCLKSEL = s;
+  }
+  system_set_clock (123, div != 0);
+  LPC_SYSCON->USBCLKDIV = div;
 }
 
 #if 0

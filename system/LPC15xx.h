@@ -96,12 +96,6 @@ INLINE void uart2_setup (int on) { system_set_clock (119, on); }
 
 INLINE void qei_clock_setup (int on) { system_set_clock (121, on); }
 
-INLINE void usb_system_setup (int div) {
-  system_set_clock (123, div != 0);
-  system_set_power(9, div != 0);
-  LPC_SYSCON->USBCLKDIV = div;
-}
-
 INLINE void uart_clock_setup (int div) { LPC_SYSCON->UARTCLKDIV = div; }
 INLINE void glitch_filter_clock_setup (int div) { LPC_SYSCON->IOCONCLKDIV = div; }
 INLINE void adc_clock_setup (int div) { LPC_SYSCON->ADCASYNCCLKDIV = div; }
@@ -322,6 +316,27 @@ INLINE void system_clock_setup (enum clock_source src, int div)
     }
   }
   LPC_SYSCON->SYSAHBCLKDIV = div;
+}
+
+INLINE void usb_system_setup (enum clock_source src, int div) {
+  system_set_power(9, div != 0);
+  system_set_clock (123, 0);
+  if (!div) return;
+  int s = 0;
+  switch (src) {
+    case OSC_IRC: s = 0; break;
+    case OSC_SYS: s = 1; break;
+    case PLL_USB: s = 2; break;
+    case CLK_MAIN: s = 3; break;
+    case KEEP_SRC: s = -1; break;
+    default: ERROR("Invalid clock source.");
+  }
+  if (s != -1) {
+    LPC_SYSCON->USBCLKDIV = 255;
+    LPC_SYSCON->USBCLKSEL = s;
+  }
+  system_set_clock (123, div != 0);
+  LPC_SYSCON->USBCLKDIV = div;
 }
 
 #if 0

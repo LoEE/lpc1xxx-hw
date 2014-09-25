@@ -166,13 +166,13 @@ enum {
 INLINE void sysosc_setup (int freq)
 {
   if (freq == 0) {
-    system_set_power (5, 0);
+    system_set_power (21, 0);
   } else {
-    system_set_power (5, 1);
+    system_set_power (21, 1);
     if (freq == OSC_BYPASS) {
       LPC_SYSCON->SYSOSCCTRL = (1 << 0);
     } else if (freq < 1e6) {
-      ERROR("System oscillator frequency too high [> 25 MHz].");
+      ERROR("System oscillator frequency too low [< 1 MHz].");
     } else if (freq < 17e6) {
       LPC_SYSCON->SYSOSCCTRL = (0 << 1);
     } else if (freq <= 25e6) {
@@ -224,6 +224,106 @@ INLINE void clkout_setup (enum clock_source src, int div)
   LPC_SYSCON->CLKOUTDIV = div;
 }
 
+INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
+{
+  int mul = out / in;
+  if (mul * in != out) ERROR("PLL output frequency is not divisible by input frequency.");
+  if (mul < 1 || mul > 64) ERROR("Required system PLL frequency multiplier value out of range [1-64].");
+  if (out > 100e6) ERROR("PLL output frequency too high [out > 100 MHz].");
+  int div;
+  if (out * 2 > 156e6) div = 2;
+  else if (out * 4 > 156e6) div = 4;
+  else if (out * 8 > 156e6) div = 8;
+  else if (out * 16 > 156e6) div = 16;
+  else ERROR("Output frequency too low for the CCO [156 < F_CCO < 320].");
+  if (out * div > 320e6) ERROR("CCO frequency too high [156 < F_CC0 < 320].");
+  mul--;
+  div = div / 2;
+  if (div == 1) div = 0;
+  else if (div == 2) div = 1;
+  else if (div == 4) div = 2;
+  else if (div == 8) div = 3;
+  else ERROR ("Invalid PLL post divider.");
+  *reg = mul << 0 | div << 6;
+}
+
+INLINE void syspll_setup (int on, enum clock_source src, int in, int out)
+{
+  system_set_power (22, 0);
+  if (!on) return;
+  pll_setup_shared (in, out, &LPC_SYSCON->SYSPLLCTRL);
+  int s = 0;
+  switch (src) {
+    case OSC_IRC: s = 0; break;
+    case OSC_SYS: s = 1; break;
+    case KEEP_SRC: s = -1; break;
+    default: ERROR("Invalid clock source.");
+  }
+  if (s != -1) LPC_SYSCON->SYSPLLCLKSEL = s;
+  system_set_power (22, 1);
+  while (!LPC_SYSCON->SYSPLLSTAT);
+}
+
+INLINE void usbpll_setup (int on, enum clock_source src, int in, int out)
+{
+  system_set_power (23, 0);
+  if (!on) return;
+  pll_setup_shared (in, out, &LPC_SYSCON->USBPLLCTRL);
+  int s = 0;
+  switch (src) {
+    case OSC_IRC: s = 0; break;
+    case OSC_SYS: s = 1; break;
+    case KEEP_SRC: s = -1; break;
+    default: ERROR("Invalid clock source.");
+  }
+  if (s != -1) LPC_SYSCON->USBPLLCLKSEL = s;
+  system_set_power (23, 1);
+  while (!LPC_SYSCON->USBPLLSTAT);
+}
+
+INLINE void sctpll_setup (int on, enum clock_source src, int in, int out)
+{
+  system_set_power (24, 0);
+  if (!on) return;
+  pll_setup_shared (in, out, &LPC_SYSCON->SCTPLLCTRL);
+  int s = 0;
+  switch (src) {
+    case OSC_IRC: s = 0; break;
+    case OSC_SYS: s = 1; break;
+    case KEEP_SRC: s = -1; break;
+    default: ERROR("Invalid clock source.");
+  }
+  if (s != -1) LPC_SYSCON->SCTPLLCLKSEL = s;
+  system_set_power (24, 1);
+  while (!LPC_SYSCON->SCTPLLSTAT);
+}
+
+INLINE void system_clock_setup (enum clock_source src, int div)
+{
+  if (div < 0 || div > 255) ERROR("Main clock divider. value out of range [0-255].");
+  int s = 0;
+  switch (src) {
+    case OSC_IRC: s = 0; break;
+    case OSC_SYS: s = 1; break;
+    case OSC_WDT: s = 2; break;
+    case PLL_SYS_IN: s = 0x11; break;
+    case PLL_SYS: s = 0x12; break;
+    case OSC_RTC: s = 0x13; break;
+    case KEEP_SRC: s = -1; break;
+    default: ERROR("Invalid clock source.");
+  }
+  if (s != -1) {
+    LPC_SYSCON->SYSAHBCLKDIV = 255;
+    if (s < 0x10) {
+      LPC_SYSCON->MAINCLKSELA = s;
+      LPC_SYSCON->MAINCLKSELB = 0;
+    } else {
+      LPC_SYSCON->MAINCLKSELB = s - 0x10;
+    }
+  }
+  LPC_SYSCON->SYSAHBCLKDIV = div;
+}
+
 #if 0
 INLINE void wdtosc_setup (int clk, int div) {
   system_set_power (6, clk ? 1 : 0);
@@ -250,76 +350,6 @@ INLINE void wdtosc_setup (int clk, int div) {
     else ERROR ("Invalid watchdog oscillator frequency.");
   }
   LPC_SYSCON->WDTOSCCTRL = div << 0 | freq << 5;
-}
-
-INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
-{
-  int mul = out / in;
-  if (mul * in != out) ERROR("PLL output frequency is not divisible by input frequency.");
-  if (mul < 1 || mul > 32) ERROR("Required system PLL frequency multiplier value out of range [1-32].");
-  if (out > 100e6) ERROR("PLL output frequency too high [out > 100 MHz].");
-  int div;
-  if (out * 2 > 156e6) div = 2;
-  else if (out * 4 > 156e6) div = 4;
-  else if (out * 8 > 156e6) div = 8;
-  else if (out * 16 > 156e6) div = 16;
-  else ERROR("Output frequency too low for the CCO [156 < F_CCO < 320].");
-  if (out * div > 320e6) ERROR("CCO frequency too high [156 < F_CC0 < 320].");
-  mul--;
-  div = div / 2;
-  if (div == 1) div = 0;
-  else if (div == 2) div = 1;
-  else if (div == 4) div = 2;
-  else if (div == 8) div = 3;
-  else ERROR ("Invalid PLL post divider.");
-  *reg = mul << 0 | div << 5;
-}
-
-INLINE void syspll_clock_source_setup (enum clock_source src)
-{
-  int s = 0;
-  switch (src) {
-    case OSC_IRC: s = 0; break;
-    case OSC_SYS: s = 1; break;
-    case KEEP_SRC: s = -1; break;
-    default: ERROR("Invalid clock source.");
-  }
-  if (s != -1) {
-    LPC_SYSCON->SYSPLLCLKSEL = s;
-    LPC_SYSCON->SYSPLLCLKUEN = 0;
-    LPC_SYSCON->SYSPLLCLKUEN = 1;
-  }
-}
-
-INLINE void syspll_setup (int on, enum clock_source src, int in, int out)
-{
-  system_set_power (7, 0);
-  if (!on) return;
-  pll_setup_shared (in, out, &LPC_SYSCON->SYSPLLCTRL);
-  syspll_clock_source_setup(src);
-  system_set_power (7, 1);
-  while (!LPC_SYSCON->SYSPLLSTAT);
-}
-
-INLINE void system_clock_setup (enum clock_source src, int div)
-{
-  if (div < 0 || div > 255) ERROR("System (AHB) clock divider value out of range [0-255].");
-  int s = 0;
-  switch (src) {
-    case OSC_IRC: s = 0; break;
-    case PLL_SYS_IN: s = 1; break;
-    case OSC_WDT: s = 2; break;
-    case PLL_SYS: s = 3; break;
-    case KEEP_SRC: s = -1; break;
-    default: ERROR("Invalid clock source.");
-  }
-  if (s != -1) {
-    LPC_SYSCON->SYSAHBCLKDIV = 255;
-    LPC_SYSCON->MAINCLKSEL = s;
-    LPC_SYSCON->MAINCLKUEN = 0;
-    LPC_SYSCON->MAINCLKUEN = 1;
-  }
-  LPC_SYSCON->SYSAHBCLKDIV = div;
 }
 
 INLINE void rtc_clock_setup (enum clock_source src, int div)

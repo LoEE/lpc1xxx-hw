@@ -12,5 +12,6 @@ all:
 	mkdir -p ../system
 	racket system.rkt
 	racket system-lpc122x.rkt
+	racket system-lpc15xx.rkt
 	racket system-lpc17xx.rkt
 	racket hw.rkt

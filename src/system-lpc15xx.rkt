@@ -195,13 +195,13 @@ enum {
 @(decl 'sysosc "int freq")
 {
   if (freq == 0) {
-    system_set_power (5, 0);
+    system_set_power (21, 0);
   } else {
-    system_set_power (5, 1);
+    system_set_power (21, 1);
     if (freq == OSC_BYPASS) {
       LPC_SYSCON->SYSOSCCTRL = (1 << 0);
     } else if (freq < 1e6) {
-      ERROR("System oscillator frequency too high [> 25 MHz].");
+      ERROR("System oscillator frequency too low [< 1 MHz].");
     } else if (freq < 17e6) {
       LPC_SYSCON->SYSOSCCTRL = (0 << 1);
     } else if (freq <= 25e6) {
@@ -249,6 +249,90 @@ enum clock_source {
   LPC_SYSCON->CLKOUTDIV = div;
 }
 
+INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
+{
+  int mul = out / in;
+  if (mul * in != out) ERROR("PLL output frequency is not divisible by input frequency.");
+  @check-range[1 'mul 64]{Required system PLL frequency multiplier}
+  if (out > 100e6) ERROR("PLL output frequency too high [out > 100 MHz].");
+  int div;
+  if (out * 2 > 156e6) div = 2;
+  else if (out * 4 > 156e6) div = 4;
+  else if (out * 8 > 156e6) div = 8;
+  else if (out * 16 > 156e6) div = 16;
+  else ERROR("Output frequency too low for the CCO [156 < F_CCO < 320].");
+  if (out * div > 320e6) ERROR("CCO frequency too high [156 < F_CC0 < 320].");
+  mul--;
+  div = div / 2;
+  @(assoc/if 'div 'div "Invalid PLL post divider."
+               `([1 . 0]
+                 [2 . 1]
+                 [4 . 2]
+                 [8 . 3]))
+  *reg = mul << 0 | div << 6;
+}
+
+@(decl 'syspll "int on" "enum clock_source src" "int in" "int out")
+{
+  system_set_power (22, 0);
+  if (!on) return;
+  pll_setup_shared (in, out, &LPC_SYSCON->SYSPLLCTRL);
+  int s = 0;
+  @(clksrc-switch 'src 's '([OSC_IRC 0]
+                            [OSC_SYS 1]))
+  if (s != -1) LPC_SYSCON->SYSPLLCLKSEL = s;
+  system_set_power (22, 1);
+  while (!LPC_SYSCON->SYSPLLSTAT);
+}
+
+@(decl 'usbpll "int on" "enum clock_source src" "int in" "int out")
+{
+  system_set_power (23, 0);
+  if (!on) return;
+  pll_setup_shared (in, out, &LPC_SYSCON->USBPLLCTRL);
+  int s = 0;
+  @(clksrc-switch 'src 's '([OSC_IRC 0]
+                            [OSC_SYS 1]))
+  if (s != -1) LPC_SYSCON->USBPLLCLKSEL = s;
+  system_set_power (23, 1);
+  while (!LPC_SYSCON->USBPLLSTAT);
+}
+
+@(decl 'sctpll "int on" "enum clock_source src" "int in" "int out")
+{
+  system_set_power (24, 0);
+  if (!on) return;
+  pll_setup_shared (in, out, &LPC_SYSCON->SCTPLLCTRL);
+  int s = 0;
+  @(clksrc-switch 'src 's '([OSC_IRC 0]
+                            [OSC_SYS 1]))
+  if (s != -1) LPC_SYSCON->SCTPLLCLKSEL = s;
+  system_set_power (24, 1);
+  while (!LPC_SYSCON->SCTPLLSTAT);
+}
+
+@(decl 'system_clock "enum clock_source src" "int div")
+{
+  @check-range[0 'div 255]{Main clock divider.}
+  int s = 0;
+  @(clksrc-switch 'src 's '([OSC_IRC 0]
+                            [OSC_SYS 1]
+                            [OSC_WDT 2]
+                            [PLL_SYS_IN "0x11"]
+                            [PLL_SYS    "0x12"]
+                            [OSC_RTC    "0x13"]))
+  if (s != -1) {
+    LPC_SYSCON->SYSAHBCLKDIV = 255;
+    if (s < 0x10) {
+      LPC_SYSCON->MAINCLKSELA = s;
+      LPC_SYSCON->MAINCLKSELB = 0;
+    } else {
+      LPC_SYSCON->MAINCLKSELB = s - 0x10;
+    }
+  }
+  LPC_SYSCON->SYSAHBCLKDIV = div;
+}
+
 #if 0
 @(decl 'wdtosc "int clk" "int div") {
   system_set_power (6, clk ? 1 : 0);
@@ -275,68 +359,6 @@ enum clock_source {
                  [3.4 . 15]))
   }
   LPC_SYSCON->WDTOSCCTRL = div << 0 | freq << 5;
-}
-
-INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
-{
-  int mul = out / in;
-  if (mul * in != out) ERROR("PLL output frequency is not divisible by input frequency.");
-  @check-range[1 'mul 32]{Required system PLL frequency multiplier}
-  if (out > 100e6) ERROR("PLL output frequency too high [out > 100 MHz].");
-  int div;
-  if (out * 2 > 156e6) div = 2;
-  else if (out * 4 > 156e6) div = 4;
-  else if (out * 8 > 156e6) div = 8;
-  else if (out * 16 > 156e6) div = 16;
-  else ERROR("Output frequency too low for the CCO [156 < F_CCO < 320].");
-  if (out * div > 320e6) ERROR("CCO frequency too high [156 < F_CC0 < 320].");
-  mul--;
-  div = div / 2;
-  @(assoc/if 'div 'div "Invalid PLL post divider."
-               `([1 . 0]
-                 [2 . 1]
-                 [4 . 2]
-                 [8 . 3]))
-  *reg = mul << 0 | div << 5;
-}
-
-@(decl 'syspll_clock_source "enum clock_source src")
-{
-  int s = 0;
-  @(clksrc-switch 'src 's '([OSC_IRC 0]
-                            [OSC_SYS 1]))
-  if (s != -1) {
-    LPC_SYSCON->SYSPLLCLKSEL = s;
-    LPC_SYSCON->SYSPLLCLKUEN = 0;
-    LPC_SYSCON->SYSPLLCLKUEN = 1;
-  }
-}
-
-@(decl 'syspll "int on" "enum clock_source src" "int in" "int out")
-{
-  system_set_power (7, 0);
-  if (!on) return;
-  pll_setup_shared (in, out, &LPC_SYSCON->SYSPLLCTRL);
-  syspll_clock_source_setup(src);
-  system_set_power (7, 1);
-  while (!LPC_SYSCON->SYSPLLSTAT);
-}
-
-@(decl 'system_clock "enum clock_source src" "int div")
-{
-  @check-range[0 'div 255]{System (AHB) clock divider}
-  int s = 0;
-  @(clksrc-switch 'src 's '([OSC_IRC 0]
-                            [PLL_SYS_IN 1]
-                            [OSC_WDT 2]
-                            [PLL_SYS 3]))
-  if (s != -1) {
-    LPC_SYSCON->SYSAHBCLKDIV = 255;
-    LPC_SYSCON->MAINCLKSEL = s;
-    LPC_SYSCON->MAINCLKUEN = 0;
-    LPC_SYSCON->MAINCLKUEN = 1;
-  }
-  LPC_SYSCON->SYSAHBCLKDIV = div;
 }
 
 @(decl 'rtc_clock "enum clock_source src" "int div")

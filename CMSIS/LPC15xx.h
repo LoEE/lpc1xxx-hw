@@ -1117,6 +1117,8 @@ typedef struct {                                    /*!< USART0 Structure       
                                                          value.                                                                */
   __I  uint32_t  INTSTAT;                           /*!< Interrupt status register. Reflects interrupts that are currently
                                                          enabled.                                                              */
+  __IO uint32_t  OSR;
+  __IO uint32_t  ADDR;
 } LPC_USART0_Type;
 
 

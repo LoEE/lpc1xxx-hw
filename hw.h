@@ -86,9 +86,9 @@
 #endif
 
 #include "time.h"
+#include "uart.h"
 
 #if !defined(LPC15xx)
-#include "uart.h"
 #include "ssp.h"
 #include "adc.h"
 #endif

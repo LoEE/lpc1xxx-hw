@@ -87,10 +87,10 @@
 
 #include "time.h"
 #include "uart.h"
+#include "adc.h"
 
 #if !defined(LPC15xx)
 #include "ssp.h"
-#include "adc.h"
 #endif
 
 #endif // HW_H

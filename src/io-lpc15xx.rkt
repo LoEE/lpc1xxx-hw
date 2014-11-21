@@ -44,7 +44,7 @@ enum io_filter {
 };
  
 enum io_function {
-  @(add-newlines (pinout->enum-names po) #:sep ", "), MOVABLE = 0xff,
+  @(add-newlines (pinout->enum-names po) #:sep ", "), PIO = 0xff,
   @(add-newlines (map car LPC15xx-movable-functions) #:sep ", "), LPC15xx_MAX_FUNCTION
 };
 
@@ -57,10 +57,10 @@ enum pio_pin {
 INLINE
 void pin_setup_function(enum io_function func, enum pio_pin pin)
 {
-  if(func <= MOVABLE) ERROR("pin_setup_function only deals with movable functions.");
+  if(func <= PIO) ERROR("pin_setup_function only deals with movable functions.");
   if(pin >= LPC15xx_MAX_PIN) ERROR("Invalid IO pin.");
   if(pin == NOT_CONNECTED) pin = 0xff;
-  func -= MOVABLE + 1;
+  func -= PIO + 1;
   int reg = func / 4, shift = (func % 4) * 8, mask = 0xff << shift;
   LPC_SWM->PINASSIGN[reg] = (LPC_SWM->PINASSIGN[reg] & ~mask) | (pin << shift);
 }
@@ -169,7 +169,7 @@ void pin_setup_filter(enum pio_pin pin, int samples, int clocks, enum io_filter 
             default:
               ERROR("Invalid IO pin.");
           }          
-          if (func > MOVABLE)
+          if (func > PIO)
             ERROR("Movable functions are set using pin_setup_function.");
         }})
 

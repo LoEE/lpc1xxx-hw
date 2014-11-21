@@ -28,7 +28,8 @@ INLINE void system_periph_reset (int bit, int reset)
   if (bit >= 100) bit = bit - 100;
   int preset = *reg;
   *reg = preset | 1 << bit;
-  *reg = preset;
+  if(!reset)
+    *reg = preset;
 }
 
 INLINE void rom_setup (int on) { system_set_clock (1, on); }
@@ -90,9 +91,9 @@ INLINE void spi1_setup (int on) { system_set_clock (110, on); }
 
 INLINE void i2c0_setup (int on) { system_set_clock (113, on); }
 
-INLINE void uart0_setup (int on) { system_set_clock (117, on); }
-INLINE void uart1_setup (int on) { system_set_clock (118, on); }
-INLINE void uart2_setup (int on) { system_set_clock (119, on); }
+INLINE void uart0_setup (int on) { system_set_clock (117, on); system_periph_reset (117, !on); }
+INLINE void uart1_setup (int on) { system_set_clock (118, on); system_periph_reset (118, !on); }
+INLINE void uart2_setup (int on) { system_set_clock (119, on); system_periph_reset (119, !on); }
 
 INLINE void qei_clock_setup (int on) { system_set_clock (121, on); }
 

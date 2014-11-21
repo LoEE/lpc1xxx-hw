@@ -57,7 +57,8 @@ INLINE void system_periph_reset (int bit, int reset)
   if (bit >= 100) bit = bit - 100;
   int preset = *reg;
   *reg = preset | 1 << bit;
-  *reg = preset;
+  if(!reset)
+    *reg = preset;
 }
 
 @(decl 'rom "int on") { system_set_clock (1, on); }
@@ -119,9 +120,9 @@ INLINE void system_periph_reset (int bit, int reset)
 
 @(decl 'i2c0 "int on") { system_set_clock (113, on); }
 
-@(decl 'uart0 "int on") { system_set_clock (117, on); }
-@(decl 'uart1 "int on") { system_set_clock (118, on); }
-@(decl 'uart2 "int on") { system_set_clock (119, on); }
+@(decl 'uart0 "int on") { system_set_clock (117, on); system_periph_reset (117, !on); }
+@(decl 'uart1 "int on") { system_set_clock (118, on); system_periph_reset (118, !on); }
+@(decl 'uart2 "int on") { system_set_clock (119, on); system_periph_reset (119, !on); }
 
 @(decl 'qei_clock "int on") { system_set_clock (121, on); }
 

@@ -210,6 +210,27 @@ void pin_setup_filter(enum pio_pin pin, int samples, int clocks, enum io_filter 
 }
 
 INLINE
+void swm_enable(void)
+{
+  iocon_setup(1);
+  swm_setup(1);
+}
+
+INLINE
+void swm_reset(void)
+{
+  for(int f = PIO+1; f < LPC15xx_MAX_FUNCTION; f++)
+    pin_setup_function(f, NOT_CONNECTED);
+}
+
+INLINE
+void swm_disable(void)
+{
+  iocon_setup(0);
+  swm_setup(0);
+}
+
+INLINE
 void pin_write (enum pio_pin pin, int val)
 {
   switch (pin) {

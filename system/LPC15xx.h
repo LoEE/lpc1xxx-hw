@@ -38,32 +38,34 @@ INLINE void sram1_setup (int on) { system_set_clock (3, on); }
 
 INLINE void sram2_setup (int on) { system_set_clock (4, on); }
 
-INLINE void eeprom_setup (int on) { system_set_clock (9, on); system_set_power(6, on); }
+INLINE void flash_setup (int on) { system_periph_reset (7, !on); }
 
-INLINE void mux_setup (int on) { system_set_clock (11, on); }
+INLINE void eeprom_setup (int on) { system_set_clock (9, on); system_set_power(6, on); system_periph_reset (9, !on); }
+
+INLINE void mux_setup (int on) { system_set_clock (11, on); system_periph_reset (11, !on); }
 
 INLINE void swm_setup (int on) { system_set_clock (12, on); }
 
-INLINE void iocon_setup (int on) { system_set_clock (13, on); }
+INLINE void iocon_setup (int on) { system_set_clock (13, on); system_periph_reset (13, !on); }
 
 INLINE void gpio0_setup (int on) { system_set_clock (14, on); }
 INLINE void gpio1_setup (int on) { system_set_clock (15, on); }
 INLINE void gpio2_setup (int on) { system_set_clock (16, on); }
 
-INLINE void pint_setup (int on) { system_set_clock (18, on); }
+INLINE void pint_setup (int on) { system_set_clock (18, on); system_periph_reset (18, !on); }
 
-INLINE void gint_setup (int on) { system_set_clock (19, on); }
+INLINE void gint_setup (int on) { system_set_clock (19, on); system_periph_reset (19, !on); }
 
-INLINE void dma_setup (int on) { system_set_clock (20, on); }
+INLINE void dma_setup (int on) { system_set_clock (20, on); system_periph_reset (20, !on); }
 
-INLINE void crc_setup (int on) { system_set_clock (21, on); }
+INLINE void crc_setup (int on) { system_set_clock (21, on); system_periph_reset (21, !on); }
 
 INLINE void wwdt_setup (int on) { system_set_clock (22, on); }
 
 INLINE void rtc_setup (int on) { system_set_clock (23, on); }
 
-INLINE void adc0_setup (int on) { system_set_clock (27, on); system_set_power(10, on); }
-INLINE void adc1_setup (int on) { system_set_clock (28, on); system_set_power(11, on); }
+INLINE void adc0_setup (int on) { system_set_clock (27, on); system_set_power(10, on); system_periph_reset (27, !on); }
+INLINE void adc1_setup (int on) { system_set_clock (28, on); system_set_power(11, on); system_periph_reset (28, !on); }
 
 INLINE void dac_setup (int on) { system_set_clock (29, on); system_set_power(12, on); }
 
@@ -73,29 +75,30 @@ INLINE void acmp_clock_setup (int chn, int on) {
   if (on) v |= 1 << chn; else v &= ~(1 << chn);
   LPC_SYSCON->PDRUNCFG = v;
   system_set_clock (30, v & (0xf << 13));
+  system_periph_reset (30, !on);
 }
 
-INLINE void mrt_setup (int on) { system_set_clock (100, on); }
-INLINE void rit_setup (int on) { system_set_clock (101, on); }
+INLINE void mrt_setup (int on) { system_set_clock (100, on); system_periph_reset (100, !on); }
+INLINE void rit_setup (int on) { system_set_clock (101, on); system_periph_reset (101, !on); }
 
-INLINE void sct0_setup (int on) { system_set_clock (102, on); }
-INLINE void sct1_setup (int on) { system_set_clock (103, on); }
-INLINE void sct2_setup (int on) { system_set_clock (104, on); }
-INLINE void sct3_setup (int on) { system_set_clock (105, on); }
-INLINE void sctipu_setup (int on) { system_set_clock (106, on); }
+INLINE void sct0_setup (int on) { system_set_clock (102, on); system_periph_reset (102, !on); }
+INLINE void sct1_setup (int on) { system_set_clock (103, on); system_periph_reset (103, !on); }
+INLINE void sct2_setup (int on) { system_set_clock (104, on); system_periph_reset (104, !on); }
+INLINE void sct3_setup (int on) { system_set_clock (105, on); system_periph_reset (105, !on); }
+INLINE void sctipu_setup (int on) { system_set_clock (106, on); system_periph_reset (106, !on); }
 
-INLINE void ccan_system_setup (int on) { system_set_clock (107, on); }
+INLINE void ccan_system_setup (int on) { system_set_clock (107, on); system_periph_reset (107, !on); }
 
-INLINE void spi0_setup (int on) { system_set_clock (109, on); }
-INLINE void spi1_setup (int on) { system_set_clock (110, on); }
+INLINE void spi0_setup (int on) { system_set_clock (109, on); system_periph_reset (109, !on); }
+INLINE void spi1_setup (int on) { system_set_clock (110, on); system_periph_reset (110, !on); }
 
-INLINE void i2c0_setup (int on) { system_set_clock (113, on); }
+INLINE void i2c0_setup (int on) { system_set_clock (113, on); system_periph_reset (113, !on); }
 
 INLINE void uart0_setup (int on) { system_set_clock (117, on); system_periph_reset (117, !on); }
 INLINE void uart1_setup (int on) { system_set_clock (118, on); system_periph_reset (118, !on); }
 INLINE void uart2_setup (int on) { system_set_clock (119, on); system_periph_reset (119, !on); }
 
-INLINE void qei_clock_setup (int on) { system_set_clock (121, on); }
+INLINE void qei_clock_setup (int on) { system_set_clock (121, on); system_periph_reset (121, !on); }
 
 INLINE void uart_clock_setup (int div) { LPC_SYSCON->UARTCLKDIV = div; }
 INLINE void glitch_filter_clock_setup (int div) { LPC_SYSCON->IOCONCLKDIV = div; }
@@ -337,6 +340,7 @@ INLINE void usb_system_setup (enum clock_source src, int div) {
     LPC_SYSCON->USBCLKSEL = s;
   }
   system_set_clock (123, div != 0);
+  system_periph_reset (123, on == 0);
   LPC_SYSCON->USBCLKDIV = div;
 }
 

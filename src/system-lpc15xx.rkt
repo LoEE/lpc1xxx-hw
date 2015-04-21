@@ -67,32 +67,34 @@ INLINE void system_periph_reset (int bit, int reset)
 
 @(decl 'sram2 "int on") { system_set_clock (4, on); }
 
-@(decl 'eeprom "int on") { system_set_clock (9, on); system_set_power(6, on); }
+@(decl 'flash "int on") { system_periph_reset (7, !on); }
 
-@(decl 'mux "int on") { system_set_clock (11, on); }
+@(decl 'eeprom "int on") { system_set_clock (9, on); system_set_power(6, on); system_periph_reset (9, !on); }
+
+@(decl 'mux "int on") { system_set_clock (11, on); system_periph_reset (11, !on); }
 
 @(decl 'swm "int on") { system_set_clock (12, on); }
 
-@(decl 'iocon "int on") { system_set_clock (13, on); }
+@(decl 'iocon "int on") { system_set_clock (13, on); system_periph_reset (13, !on); }
 
 @(decl 'gpio0 "int on") { system_set_clock (14, on); }
 @(decl 'gpio1 "int on") { system_set_clock (15, on); }
 @(decl 'gpio2 "int on") { system_set_clock (16, on); }
 
-@(decl 'pint "int on") { system_set_clock (18, on); }
+@(decl 'pint "int on") { system_set_clock (18, on); system_periph_reset (18, !on); }
 
-@(decl 'gint "int on") { system_set_clock (19, on); }
+@(decl 'gint "int on") { system_set_clock (19, on); system_periph_reset (19, !on); }
 
-@(decl 'dma "int on") { system_set_clock (20, on); }
+@(decl 'dma "int on") { system_set_clock (20, on); system_periph_reset (20, !on); }
 
-@(decl 'crc "int on") { system_set_clock (21, on); }
+@(decl 'crc "int on") { system_set_clock (21, on); system_periph_reset (21, !on); }
 
 @(decl 'wwdt "int on") { system_set_clock (22, on); }
 
 @(decl 'rtc "int on") { system_set_clock (23, on); }
 
-@(decl 'adc0 "int on") { system_set_clock (27, on); system_set_power(10, on); }
-@(decl 'adc1 "int on") { system_set_clock (28, on); system_set_power(11, on); }
+@(decl 'adc0 "int on") { system_set_clock (27, on); system_set_power(10, on); system_periph_reset (27, !on); }
+@(decl 'adc1 "int on") { system_set_clock (28, on); system_set_power(11, on); system_periph_reset (28, !on); }
 
 @(decl 'dac "int on") { system_set_clock (29, on); system_set_power(12, on); }
 
@@ -102,29 +104,30 @@ INLINE void system_periph_reset (int bit, int reset)
   if (on) v |= 1 << chn; else v &= ~(1 << chn);
   LPC_SYSCON->PDRUNCFG = v;
   system_set_clock (30, v & (0xf << 13));
+  system_periph_reset (30, !on);
 }
 
-@(decl 'mrt "int on") { system_set_clock (100, on); }
-@(decl 'rit "int on") { system_set_clock (101, on); }
+@(decl 'mrt "int on") { system_set_clock (100, on); system_periph_reset (100, !on); }
+@(decl 'rit "int on") { system_set_clock (101, on); system_periph_reset (101, !on); }
 
-@(decl 'sct0 "int on") { system_set_clock (102, on); }
-@(decl 'sct1 "int on") { system_set_clock (103, on); }
-@(decl 'sct2 "int on") { system_set_clock (104, on); }
-@(decl 'sct3 "int on") { system_set_clock (105, on); }
-@(decl 'sctipu "int on") { system_set_clock (106, on); }
+@(decl 'sct0 "int on") { system_set_clock (102, on); system_periph_reset (102, !on); }
+@(decl 'sct1 "int on") { system_set_clock (103, on); system_periph_reset (103, !on); }
+@(decl 'sct2 "int on") { system_set_clock (104, on); system_periph_reset (104, !on); }
+@(decl 'sct3 "int on") { system_set_clock (105, on); system_periph_reset (105, !on); }
+@(decl 'sctipu "int on") { system_set_clock (106, on); system_periph_reset (106, !on); }
 
-@(decl 'ccan_system "int on") { system_set_clock (107, on); }
+@(decl 'ccan_system "int on") { system_set_clock (107, on); system_periph_reset (107, !on); }
 
-@(decl 'spi0 "int on") { system_set_clock (109, on); }
-@(decl 'spi1 "int on") { system_set_clock (110, on); }
+@(decl 'spi0 "int on") { system_set_clock (109, on); system_periph_reset (109, !on); }
+@(decl 'spi1 "int on") { system_set_clock (110, on); system_periph_reset (110, !on); }
 
-@(decl 'i2c0 "int on") { system_set_clock (113, on); }
+@(decl 'i2c0 "int on") { system_set_clock (113, on); system_periph_reset (113, !on); }
 
 @(decl 'uart0 "int on") { system_set_clock (117, on); system_periph_reset (117, !on); }
 @(decl 'uart1 "int on") { system_set_clock (118, on); system_periph_reset (118, !on); }
 @(decl 'uart2 "int on") { system_set_clock (119, on); system_periph_reset (119, !on); }
 
-@(decl 'qei_clock "int on") { system_set_clock (121, on); }
+@(decl 'qei_clock "int on") { system_set_clock (121, on); system_periph_reset (121, !on); }
 
 @(decl 'uart_clock "int div") { LPC_SYSCON->UARTCLKDIV = div; }
 @(decl 'glitch_filter_clock "int div") { LPC_SYSCON->IOCONCLKDIV = div; }
@@ -342,6 +345,7 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
     LPC_SYSCON->USBCLKSEL = s;
   }
   system_set_clock (123, div != 0);
+  system_periph_reset (123, on == 0);
   LPC_SYSCON->USBCLKDIV = div;
 }
 

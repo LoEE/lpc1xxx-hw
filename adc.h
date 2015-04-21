@@ -16,7 +16,7 @@
 #define ADC0 ((ADC_Regs *)LPC_ADC0)
 #elif defined(LPC13xx)
 #define ADC_Regs LPC_ADC_TypeDef
-#define ADC0 ((ADC_Regs *)LPC_ADC0)
+#define ADC0 ((ADC_Regs *)LPC_ADC)
 #elif defined(LPC15xx)
 #define ADC_Regs LPC_ADC0_Type
 #define ADC0 ((ADC_Regs *)LPC_ADC0)
@@ -61,17 +61,17 @@ void adc_setup_raw (ADC_Regs *ADC, int div, int resolution)
 #endif
 }
 
-#if defined(LPC15xx)
 INLINE
 void adc_calibrate (ADC_Regs *ADC, int system_clock)
 {
+#if defined(LPC15xx)
   ADC_BITS;
 
   int div = (system_clock + 499e3) / 500e3;
   ADC->CTRL = (div - 1) | CALMODE;
   while(ADC->CTRL & CALMODE);
-}
 #endif
+}
 
 INLINE
 void adc_setup (ADC_Regs *ADC, int system_clock, int resolution)

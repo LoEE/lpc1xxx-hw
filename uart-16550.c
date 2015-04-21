@@ -67,12 +67,12 @@ int uart_rx_ready (UART_Regs *UART)
   return (UART->IIR & 0xf) == 4;
 }
 
-void uart_putc_nowait (UART_Regs *UART, unsigned char x)
+void uart_putc_nowait (UART_Regs *UART, int x)
 {
   UART->THR = x;
 }
 
-char uart_getc_nowait (UART_Regs *UART)
+int uart_getc_nowait (UART_Regs *UART)
 {
   return UART->RBR;
 }

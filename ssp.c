@@ -1,5 +1,6 @@
 #include "hw.h"
 
+#if !defined(LPC15xx)
 SSP_BITS;
 
 int ssp_tx_empty (SSP_Regs *SSP)
@@ -58,3 +59,4 @@ void ssp_put (SSP_Regs *SSP, const void *x, int len)
   while (len--)
     ssp_putc (SSP, *s++);
 }
+#endif

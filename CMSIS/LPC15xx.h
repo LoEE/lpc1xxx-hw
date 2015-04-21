@@ -690,12 +690,12 @@ typedef struct {                                    /*!< ADC0 Structure         
   __IO uint32_t  THR1_HIGH;                         /*!< A/D High Compare Threshold Register 1: Contains the upper threshold
                                                          level for automatic threshold comparison for any channels linked
                                                           to threshold pair 1.                                                 */
-  __I  uint32_t  CHAN_THRSEL;                       /*!< A/D Channel-Threshold Select Register. Specifies which set of
+  __IO uint32_t  CHAN_THRSEL;                       /*!< A/D Channel-Threshold Select Register. Specifies which set of
                                                          threshold compare registers are to be used for each channel           */
   __IO uint32_t  INTEN;                             /*!< A/D Interrupt Enable Register. This register contains enable
                                                          bits that enable the sequence-A, sequence-B, threshold compare
                                                           and data overrun interrupts to be generated.                         */
-  __I  uint32_t  FLAGS;                             /*!< A/D Flags Register. Contains the four interrupt request flags
+  __IO uint32_t  FLAGS;                             /*!< A/D Flags Register. Contains the four interrupt request flags
                                                          and the individual component overrun and threshold-compare flags.
                                                           (The overrun bits replicate information stored in the result
                                                           registers).                                                          */

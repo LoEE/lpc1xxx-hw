@@ -44,6 +44,7 @@ int adc_ready_channels (ADC_Regs *ADC)
   return ADC->STAT & CHMASK;
 }
 
+__inline__ __attribute__((__always_inline__,__gnu_inline__))
 struct adc_result adc_read (ADC_Regs *ADC, int channel)
 {
   volatile const uint32_t *REG = &ADC->DR[0] + channel;

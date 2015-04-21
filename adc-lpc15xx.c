@@ -39,6 +39,7 @@ int adc_ready (ADC_Regs *ADC, int channel)
   return ADC->FLAGS & SEQAINT;
 }
 
+__inline__ __attribute__((__always_inline__,__gnu_inline__))
 struct adc_result adc_read (ADC_Regs *ADC, int channel)
 {
   uint32_t stat = ADC->DAT[channel];

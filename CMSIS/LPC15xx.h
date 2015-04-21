@@ -346,333 +346,126 @@ typedef struct {                                    /*!< CRC Structure          
   * @brief Large State Configurable Timers 0/1 (SCT0/1) (SCT0)
   */
 
-typedef struct {                                    /*!< SCT0 Structure                                                        */
-  __IO uint32_t  CONFIG;                            /*!< SCT configuration register                                            */
-  __IO uint32_t  CTRL;                              /*!< SCT control register                                                  */
-  __IO uint32_t  LIMIT;                             /*!< SCT limit register                                                    */
-  __IO uint32_t  HALT;                              /*!< SCT halt condition register                                           */
-  __IO uint32_t  STOP;                              /*!< SCT stop condition register                                           */
-  __IO uint32_t  START;                             /*!< SCT start condition register                                          */
-  __IO uint32_t  DITHER;                            /*!< SCT dither condition register                                         */
-  __I  uint32_t  RESERVED0[9];
-  __IO uint32_t  COUNT;                             /*!< SCT counter register                                                  */
-  __IO uint32_t  STATE;                             /*!< SCT state register                                                    */
-  __I  uint32_t  INPUT;                             /*!< SCT input register                                                    */
-  __IO uint32_t  REGMODE;                           /*!< SCT match/capture registers mode register                             */
-  __IO uint32_t  OUTPUT;                            /*!< SCT output register                                                   */
-  __IO uint32_t  OUTPUTDIRCTRL;                     /*!< SCT output counter direction control register                         */
-  __IO uint32_t  RES;                               /*!< SCT conflict resolution register                                      */
-  __IO uint32_t  DMAREQ0;                           /*!< SCT DMA request 0 register                                            */
-  __IO uint32_t  DMAREQ1;                           /*!< SCT DMA request 1 register                                            */
-  __I  uint32_t  RESERVED1[35];
-  __IO uint32_t  EVEN;                              /*!< SCT event enable register                                             */
-  __IO uint32_t  EVFLAG;                            /*!< SCT event flag register                                               */
-  __IO uint32_t  CONEN;                             /*!< SCT conflict enable register                                          */
-  __IO uint32_t  CONFLAG;                           /*!< SCT conflict flag register                                            */
-  
-  union {
-    __I  uint32_t  CAP0;                            /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-    __IO uint32_t  MATCH0;                          /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-  };
-  
-  union {
-    __I  uint32_t  CAP1;                            /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-    __IO uint32_t  MATCH1;                          /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-  };
-  
-  union {
-    __I  uint32_t  CAP2;                            /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-    __IO uint32_t  MATCH2;                          /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-  };
-  
-  union {
-    __I  uint32_t  CAP3;                            /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-    __IO uint32_t  MATCH3;                          /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-  };
-  
-  union {
-    __I  uint32_t  CAP4;                            /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-    __IO uint32_t  MATCH4;                          /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-  };
-  
-  union {
-    __I  uint32_t  CAP5;                            /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-    __IO uint32_t  MATCH5;                          /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-  };
-  
-  union {
-    __I  uint32_t  CAP6;                            /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-    __IO uint32_t  MATCH6;                          /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-  };
-  
-  union {
-    __IO uint32_t  MATCH7;                          /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-    __I  uint32_t  CAP7;                            /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-  };
-  
-  union {
-    __I  uint32_t  CAP8;                            /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-    __IO uint32_t  MATCH8;                          /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-  };
-  
-  union {
-    __IO uint32_t  MATCH9;                          /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-    __I  uint32_t  CAP9;                            /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-  };
-  
-  union {
-    __IO uint32_t  MATCH10;                         /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-    __I  uint32_t  CAP10;                           /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-  };
-  
-  union {
-    __IO uint32_t  MATCH11;                         /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-    __I  uint32_t  CAP11;                           /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-  };
-  
-  union {
-    __IO uint32_t  MATCH12;                         /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-    __I  uint32_t  CAP12;                           /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-  };
-  
-  union {
-    __IO uint32_t  MATCH13;                         /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-    __I  uint32_t  CAP13;                           /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-  };
-  
-  union {
-    __I  uint32_t  CAP14;                           /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-    __IO uint32_t  MATCH14;                         /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-  };
-  
-  union {
-    __IO uint32_t  MATCH15;                         /*!< SCT match value register of match channels 0 to 15; REGMOD0
-                                                         to REGMODE15 = 0                                                      */
-    __I  uint32_t  CAP15;                           /*!< SCT capture register of capture channel 0 to 15; REGMOD0 to
-                                                         REGMODE15 = 1                                                         */
-  };
-  __IO uint32_t  FRACMAT0;                          /*!< Fractional match registers 0 to 5 for SCT match value registers
-                                                         0 to 5.                                                               */
-  __IO uint32_t  FRACMAT1;                          /*!< Fractional match registers 0 to 5 for SCT match value registers
-                                                         0 to 5.                                                               */
-  __IO uint32_t  FRACMAT2;                          /*!< Fractional match registers 0 to 5 for SCT match value registers
-                                                         0 to 5.                                                               */
-  __IO uint32_t  FRACMAT3;                          /*!< Fractional match registers 0 to 5 for SCT match value registers
-                                                         0 to 5.                                                               */
-  __IO uint32_t  FRACMAT4;                          /*!< Fractional match registers 0 to 5 for SCT match value registers
-                                                         0 to 5.                                                               */
-  __IO uint32_t  FRACMAT5;                          /*!< Fractional match registers 0 to 5 for SCT match value registers
-                                                         0 to 5.                                                               */
-  __I  uint32_t  RESERVED2[42];
-  
-  union {
-    __IO uint32_t  CAPCTRL0;                        /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-    __IO uint32_t  MATCHREL0;                       /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  MATCHREL1;                       /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-    __IO uint32_t  CAPCTRL1;                        /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  MATCHREL2;                       /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-    __IO uint32_t  CAPCTRL2;                        /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  CAPCTRL3;                        /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-    __IO uint32_t  MATCHREL3;                       /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  CAPCTRL4;                        /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-    __IO uint32_t  MATCHREL4;                       /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  CAPCTRL5;                        /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-    __IO uint32_t  MATCHREL5;                       /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  MATCHREL6;                       /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-    __IO uint32_t  CAPCTRL6;                        /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  MATCHREL7;                       /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-    __IO uint32_t  CAPCTRL7;                        /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  CAPCTRL8;                        /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-    __IO uint32_t  MATCHREL8;                       /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  CAPCTRL9;                        /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-    __IO uint32_t  MATCHREL9;                       /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  CAPCTRL10;                       /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-    __IO uint32_t  MATCHREL10;                      /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  CAPCTRL11;                       /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-    __IO uint32_t  MATCHREL11;                      /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  MATCHREL12;                      /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-    __IO uint32_t  CAPCTRL12;                       /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  MATCHREL13;                      /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-    __IO uint32_t  CAPCTRL13;                       /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  CAPCTRL14;                       /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-    __IO uint32_t  MATCHREL14;                      /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-  };
-  
-  union {
-    __IO uint32_t  CAPCTRL15;                       /*!< SCT capture control register 0 to 15; REGMOD0 = 1 to REGMODE15
-                                                         = 1                                                                   */
-    __IO uint32_t  MATCHREL15;                      /*!< SCT match reload value register 0 to 15; REGMOD0 = 0 to REGMODE15
-                                                         = 0                                                                   */
-  };
-  __IO uint32_t  FRACMATREL0;                       /*!< Fractional match reload registers 0 to 5 for SCT match value
-                                                         registers 0 to 5.                                                     */
-  __IO uint32_t  FRACMATREL1;                       /*!< Fractional match reload registers 0 to 5 for SCT match value
-                                                         registers 0 to 5.                                                     */
-  __IO uint32_t  FRACMATREL2;                       /*!< Fractional match reload registers 0 to 5 for SCT match value
-                                                         registers 0 to 5.                                                     */
-  __IO uint32_t  FRACMATREL3;                       /*!< Fractional match reload registers 0 to 5 for SCT match value
-                                                         registers 0 to 5.                                                     */
-  __IO uint32_t  FRACMATREL4;                       /*!< Fractional match reload registers 0 to 5 for SCT match value
-                                                         registers 0 to 5.                                                     */
-  __IO uint32_t  FRACMATREL5;                       /*!< Fractional match reload registers 0 to 5 for SCT match value
-                                                         registers 0 to 5.                                                     */
-  __I  uint32_t  RESERVED3[42];
-  __IO uint32_t  EV0_STATE;                         /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV0_CTRL;                          /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV1_STATE;                         /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV1_CTRL;                          /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV2_STATE;                         /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV2_CTRL;                          /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV3_STATE;                         /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV3_CTRL;                          /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV4_STATE;                         /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV4_CTRL;                          /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV5_STATE;                         /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV5_CTRL;                          /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV6_STATE;                         /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV6_CTRL;                          /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV7_STATE;                         /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV7_CTRL;                          /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV8_STATE;                         /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV8_CTRL;                          /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV9_STATE;                         /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV9_CTRL;                          /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV10_STATE;                        /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV10_CTRL;                         /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV11_STATE;                        /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV11_CTRL;                         /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV12_STATE;                        /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV12_CTRL;                         /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV13_STATE;                        /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV13_CTRL;                         /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV14_STATE;                        /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV14_CTRL;                         /*!< SCT event control register 0                                          */
-  __IO uint32_t  EV15_STATE;                        /*!< SCT event state register 0                                            */
-  __IO uint32_t  EV15_CTRL;                         /*!< SCT event control register 0                                          */
-  __I  uint32_t  RESERVED4[96];
-  __IO uint32_t  OUT0_SET;                          /*!< SCT output 0 set register                                             */
-  __IO uint32_t  OUT0_CLR;                          /*!< SCT output 0 clear register                                           */
-  __IO uint32_t  OUT1_SET;                          /*!< SCT output 0 set register                                             */
-  __IO uint32_t  OUT1_CLR;                          /*!< SCT output 0 clear register                                           */
-  __IO uint32_t  OUT2_SET;                          /*!< SCT output 0 set register                                             */
-  __IO uint32_t  OUT2_CLR;                          /*!< SCT output 0 clear register                                           */
-  __IO uint32_t  OUT3_SET;                          /*!< SCT output 0 set register                                             */
-  __IO uint32_t  OUT3_CLR;                          /*!< SCT output 0 clear register                                           */
-  __IO uint32_t  OUT4_SET;                          /*!< SCT output 0 set register                                             */
-  __IO uint32_t  OUT4_CLR;                          /*!< SCT output 0 clear register                                           */
-  __IO uint32_t  OUT5_SET;                          /*!< SCT output 0 set register                                             */
-  __IO uint32_t  OUT5_CLR;                          /*!< SCT output 0 clear register                                           */
-  __IO uint32_t  OUT6_SET;                          /*!< SCT output 0 set register                                             */
-  __IO uint32_t  OUT6_CLR;                          /*!< SCT output 0 clear register                                           */
-  __IO uint32_t  OUT7_SET;                          /*!< SCT output 0 set register                                             */
-  __IO uint32_t  OUT7_CLR;                          /*!< SCT output 0 clear register                                           */
-  __IO uint32_t  OUT8_SET;                          /*!< SCT output 0 set register                                             */
-  __IO uint32_t  OUT8_CLR;                          /*!< SCT output 0 clear register                                           */
-  __IO uint32_t  OUT9_SET;                          /*!< SCT output 0 set register                                             */
-  __IO uint32_t  OUT9_CLR;                          /*!< SCT output 0 clear register                                           */
+#define CONFIG_SCT_nEV   (16)           /* Number of events */
+#define CONFIG_SCT_nRG   (16)           /* Number of match/compare registers */
+#define CONFIG_SCT_nOU   (10)           /* Number of outputs */
+
+typedef struct
+{
+    __IO  uint32_t CONFIG;              /* 0x000 Configuration Register */
+    union {
+        __IO uint32_t CTRL_U;           /* 0x004 Control Register */
+        struct {
+            __IO uint16_t CTRL_L;       /* 0x004 low control register */
+            __IO uint16_t CTRL_H;       /* 0x006 high control register */
+        };
+    };
+    __IO uint16_t LIMIT_L;              /* 0x008 limit register for counter L */
+    __IO uint16_t LIMIT_H;              /* 0x00A limit register for counter H */
+    __IO uint16_t HALT_L;               /* 0x00C halt register for counter L */
+    __IO uint16_t HALT_H;               /* 0x00E halt register for counter H */
+    __IO uint16_t STOP_L;               /* 0x010 stop register for counter L */
+    __IO uint16_t STOP_H;               /* 0x012 stop register for counter H */
+    __IO uint16_t START_L;              /* 0x014 start register for counter L */
+    __IO uint16_t START_H;              /* 0x016 start register for counter H */
+    __IO uint16_t DITHER_L;             /* 0x018 start register for dither L */
+    __IO uint16_t DITHER_H;             /* 0x01A start register for dither H */
+         uint32_t RESERVED1[9];        /* 0x01C-0x03C reserved */
+    union {
+        __IO uint32_t COUNT_U;          /* 0x040 counter register */
+        struct {
+            __IO uint16_t COUNT_L;      /* 0x040 counter register for counter L */
+            __IO uint16_t COUNT_H;      /* 0x042 counter register for counter H */
+        };
+    };
+    __IO uint16_t STATE_L;              /* 0x044 state register for counter L */
+    __IO uint16_t STATE_H;              /* 0x046 state register for counter H */
+    __I  uint32_t INPUT;                /* 0x048 input register */
+    __IO uint16_t REGMODE_L;            /* 0x04C match - capture registers mode register L */
+    __IO uint16_t REGMODE_H;            /* 0x04E match - capture registers mode register H */
+    __IO uint32_t OUTPUT;               /* 0x050 output register */
+    __IO uint32_t OUTPUTDIRCTRL;        /* 0x054 Output counter direction Control Register */
+    __IO uint32_t RES;                  /* 0x058 conflict resolution register */
+    __IO uint32_t DMA0REQUEST;          /* 0x05C DMA0 Request Register */
+    __IO uint32_t DMA1REQUEST;          /* 0x060 DMA1 Request Register */
+         uint32_t RESERVED2[35];        /* 0x064-0x0EC reserved */
+    __IO uint32_t EVEN;                 /* 0x0F0 event enable register */
+    __IO uint32_t EVFLAG;               /* 0x0F4 event flag register */
+    __IO uint32_t CONEN;                /* 0x0F8 conflict enable register */
+    __IO uint32_t CONFLAG;              /* 0x0FC conflict flag register */
+
+    union {
+        __IO union {                    /* 0x100-... Match / Capture value */
+            uint32_t U;                 /*       SCTMATCH[i].U  Unified 32-bit register */
+            struct {
+                uint16_t L;             /*       SCTMATCH[i].L  Access to L value */
+                uint16_t H;             /*       SCTMATCH[i].H  Access to H value */
+            };
+        } MATCH[CONFIG_SCT_nRG];
+        __I union {
+            uint32_t U;                 /*       SCTCAP[i].U  Unified 32-bit register */
+            struct {
+                uint16_t L;             /*       SCTCAP[i].L  Access to H value */
+                uint16_t H;             /*       SCTCAP[i].H  Access to H value */
+            };
+        } CAP[CONFIG_SCT_nRG];
+    };
+
+    union {                    /* 0x140-... FRAMatch value */
+         __IO uint32_t U;                 /*       FRASCTMATCH[i].U  Unified 32-bit register */
+            struct {
+             __IO uint16_t L;             /*       FRASCTFRAMATCH[i].L  Access to L value */
+             __IO uint16_t H;             /*       FRASCTFRAMATCH[i].H  Access to H value */
+            };
+        } FRAMATCH[6];
+
+    uint32_t RESERVED3[42];
+
+    union {
+        __IO union {                    /* 0x200-... Match Reload / Capture Control value */
+            uint32_t U;                 /*       SCTMATCHREL[i].U  Unified 32-bit register */
+            struct {
+                uint16_t L;             /*       SCTMATCHREL[i].L  Access to L value */
+                uint16_t H;             /*       SCTMATCHREL[i].H  Access to H value */
+            };
+        } MATCHREL[CONFIG_SCT_nRG];
+        __IO union {
+            uint32_t U;                 /*       SCTCAPCTRL[i].U  Unified 32-bit register */
+            struct {
+                uint16_t L;             /*       SCTCAPCTRL[i].L  Access to H value */
+                uint16_t H;             /*       SCTCAPCTRL[i].H  Access to H value */
+            };
+        } CAPCTRL[CONFIG_SCT_nRG];
+    };
+
+    union {                               /* 0x240-... FRAMatch Reload value */
+         __IO uint32_t U;                 /*       RELFRAMATCH[i].U  Unified 32-bit register */
+            struct {
+             __IO uint16_t L;             /*       RELFRAMATCH[i].L  Access to L value */
+             __IO uint16_t H;             /*       RELFRAMATCH[i].H  Access to H value */
+            };
+        }RELFRAMATCH[6];
+
+       uint32_t RESERVED6[42];
+
+    __IO struct {                       /* 0x300-0x3FC  SCTEVENT[i].STATE / SCTEVENT[i].CTRL*/
+        uint32_t STATE;                 /* Event State Register */
+        uint32_t CTRL;                  /* Event Control Register */
+    } EVENT[CONFIG_SCT_nEV];
+
+         uint32_t RESERVED9[128-2*CONFIG_SCT_nEV];   /* ...-0x4FC reserved */
+
+    __IO struct {                       /* 0x500-0x57C  SCTOUT[i].SET / SCTOUT[i].CLR */
+        uint32_t SET;                   /* Output n Set Register */
+        uint32_t CLR;                   /* Output n Clear Register */
+    } OUT[CONFIG_SCT_nOU];
+
+         uint32_t RESERVED10[191-2*CONFIG_SCT_nOU];  /* ...-0x7F8 reserved */
+
+    __I  uint32_t MODULECONTENT;        /* 0x7FC Module Content */
+
 } LPC_SCT0_Type;
+
 
 
 /* ================================================================================ */

@@ -33,11 +33,11 @@ int uart_dynamic_baud_setup (UART_Regs *UART, int clk, int baud,
   } c, best = { .error = -1 };
 
   for (c.oversampling = 5; c.oversampling <= 16; c.oversampling++) {
-    c.divider = rdiv (clk * 256, c.oversampling * baud * (256 + UART_MULVAL));
+    c.divider = rdiv (clk * 32, c.oversampling * baud * (32 + UART_MULVAL/8));
     if (c.divider > 0xffff) c.divider = 0xffff;
     if (!c.divider) c.divider = 1;
 
-    c.realbaud = rdiv (clk * 256, c.oversampling * c.divider * (256 + UART_MULVAL));
+    c.realbaud = rdiv (clk * 32, c.oversampling * c.divider * (32 + UART_MULVAL/8));
 
     /* error resolution: 0.001% */
     uint32_t abserr = absdiff (baud, c.realbaud);

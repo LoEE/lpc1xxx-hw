@@ -67,8 +67,6 @@ INLINE void system_periph_reset (int bit, int reset)
 
 @(decl 'sram2 "int on") { system_set_clock (4, on); }
 
-@(decl 'flash "int on") { system_periph_reset (7, !on); }
-
 @(decl 'eeprom "int on") { system_set_clock (9, on); system_set_power(6, on); system_periph_reset (9, !on); }
 
 @(decl 'mux "int on") { system_set_clock (11, on); system_periph_reset (11, !on); }
@@ -89,7 +87,7 @@ INLINE void system_periph_reset (int bit, int reset)
 
 @(decl 'crc "int on") { system_set_clock (21, on); system_periph_reset (21, !on); }
 
-@(decl 'wwdt "int on") { system_set_clock (22, on); }
+@(decl 'wwdt "int on") { system_set_clock (22, on); system_set_power(20, on); }
 
 @(decl 'rtc "int on") { system_set_clock (23, on); }
 
@@ -147,7 +145,7 @@ INLINE void system_periph_reset (int bit, int reset)
     @(set/mask 'LPC_SYSCON->FLASHCFG "0x3 << 12" "ws - 1")
   }
   system_set_clock (7, ws > 0); system_set_power(5, ws > 0);
-  @(set/bit 'LPC_SYSCON->PRESETCTRL0 7 "ws > 0")
+  system_periph_reset (7, ws == 0);
 }
 
 struct reset_reason {
@@ -332,9 +330,9 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
 }
 
 @(decl 'usb_system "enum clock_source src" "int div") {
-  system_set_power(9, div != 0);
+  system_set_power (9, src != CLK_OFF);
   system_set_clock (123, 0);
-  if (!div) return;
+  if (src == CLK_OFF) return;
   int s = 0;
   @(clksrc-switch 'src 's '([OSC_IRC 0]
                             [OSC_SYS 1]
@@ -344,8 +342,8 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
     LPC_SYSCON->USBCLKDIV = 255;
     LPC_SYSCON->USBCLKSEL = s;
   }
-  system_set_clock (123, div != 0);
-  system_periph_reset (123, on == 0);
+  system_set_clock (123, 1);
+  system_periph_reset (123, src == CLK_OFF);
   LPC_SYSCON->USBCLKDIV = div;
 }
 
@@ -381,24 +379,6 @@ INLINE void pll_setup_shared (int in, int out, volatile uint32_t *reg)
 {
   ERROR("Not implemented");
 }
-
-#if 0 // TODO
-@(decl 'wdt "enum clock_source src" "int div")
-{
-  @check-range[0 'div 255]{Watchdog clock divider}
-  system_set_clock (15, div ? 1 : 0);
-  int s = 0;
-  LPC_SYSCON->WDTCLKDIV = div;
-  @(clksrc-switch 'src 's '([OSC_IRC 0]
-                            [CLK_MAIN 1]
-                            [OSC_WDT 2]))
-  if (s != -1) {
-    LPC_SYSCON->WDTCLKSEL = s;
-    LPC_SYSCON->WDTCLKUEN = 0;
-    LPC_SYSCON->WDTCLKUEN = 1;
-  }
-}
-#endif
 
 INLINE void wdt_feed (void)
 {

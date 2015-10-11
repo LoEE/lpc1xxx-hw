@@ -38,8 +38,6 @@ INLINE void sram1_setup (int on) { system_set_clock (3, on); }
 
 INLINE void sram2_setup (int on) { system_set_clock (4, on); }
 
-INLINE void flash_setup (int on) { system_periph_reset (7, !on); }
-
 INLINE void eeprom_setup (int on) { system_set_clock (9, on); system_set_power(6, on); system_periph_reset (9, !on); }
 
 INLINE void mux_setup (int on) { system_set_clock (11, on); system_periph_reset (11, !on); }
@@ -60,7 +58,7 @@ INLINE void dma_setup (int on) { system_set_clock (20, on); system_periph_reset 
 
 INLINE void crc_setup (int on) { system_set_clock (21, on); system_periph_reset (21, !on); }
 
-INLINE void wwdt_setup (int on) { system_set_clock (22, on); }
+INLINE void wwdt_setup (int on) { system_set_clock (22, on); system_set_power(20, on); }
 
 INLINE void rtc_setup (int on) { system_set_clock (23, on); }
 
@@ -118,7 +116,7 @@ INLINE void flash_setup (int clock)
     LPC_SYSCON->FLASHCFG = (LPC_SYSCON->FLASHCFG & ~(0x3 << 12)) | (ws - 1);
   }
   system_set_clock (7, ws > 0); system_set_power(5, ws > 0);
-  LPC_SYSCON->PRESETCTRL0 = (LPC_SYSCON->PRESETCTRL0 & ~(1 << 7)) | (ws > 0 ? 1 << 7 : 0);
+  system_periph_reset (7, ws == 0);
 }
 
 struct reset_reason {
@@ -323,9 +321,9 @@ INLINE void system_clock_setup (enum clock_source src, int div)
 }
 
 INLINE void usb_system_setup (enum clock_source src, int div) {
-  system_set_power(9, div != 0);
+  system_set_power (9, src != CLK_OFF);
   system_set_clock (123, 0);
-  if (!div) return;
+  if (src == CLK_OFF) return;
   int s = 0;
   switch (src) {
     case OSC_IRC: s = 0; break;
@@ -339,8 +337,8 @@ INLINE void usb_system_setup (enum clock_source src, int div) {
     LPC_SYSCON->USBCLKDIV = 255;
     LPC_SYSCON->USBCLKSEL = s;
   }
-  system_set_clock (123, div != 0);
-  system_periph_reset (123, on == 0);
+  system_set_clock (123, 1);
+  system_periph_reset (123, src == CLK_OFF);
   LPC_SYSCON->USBCLKDIV = div;
 }
 
@@ -376,28 +374,6 @@ INLINE void rtc_clock_setup (enum clock_source src, int div)
 {
   ERROR("Not implemented");
 }
-
-#if 0 // TODO
-INLINE void wdt_setup (enum clock_source src, int div)
-{
-  if (div < 0 || div > 255) ERROR("Watchdog clock divider value out of range [0-255].");
-  system_set_clock (15, div ? 1 : 0);
-  int s = 0;
-  LPC_SYSCON->WDTCLKDIV = div;
-  switch (src) {
-    case OSC_IRC: s = 0; break;
-    case CLK_MAIN: s = 1; break;
-    case OSC_WDT: s = 2; break;
-    case KEEP_SRC: s = -1; break;
-    default: ERROR("Invalid clock source.");
-  }
-  if (s != -1) {
-    LPC_SYSCON->WDTCLKSEL = s;
-    LPC_SYSCON->WDTCLKUEN = 0;
-    LPC_SYSCON->WDTCLKUEN = 1;
-  }
-}
-#endif
 
 INLINE void wdt_feed (void)
 {

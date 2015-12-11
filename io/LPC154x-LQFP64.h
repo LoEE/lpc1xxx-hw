@@ -238,6 +238,9 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
       set_pinenable(30, func == ACMP1_I4);
       LPC_IOCON->PIO1_10 = mode;
       break;
+    case P1_11:
+      LPC_IOCON->PIO1_11 = mode;
+      break;
     default:
       ERROR("Invalid IO pin.");
   }

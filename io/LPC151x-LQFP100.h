@@ -238,21 +238,114 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
       set_pinenable(30, func == ACMP1_I4);
       LPC_IOCON->PIO1_10 = mode;
       break;
+    case P1_11:
+      LPC_IOCON->PIO1_11 = mode;
+      break;
+    case P1_12:
+      LPC_IOCON->PIO1_12 = mode;
+      break;
+    case P1_13:
+      LPC_IOCON->PIO1_13 = mode;
+      break;
     case P1_14:
       set_pinenable(41, func == SCT0_OUT7);
       LPC_IOCON->PIO1_14 = mode;
+      break;
+    case P1_15:
+      LPC_IOCON->PIO1_15 = mode;
+      break;
+    case P1_16:
+      LPC_IOCON->PIO1_16 = mode;
       break;
     case P1_17:
       set_pinenable(46, func == SCT1_OUT7);
       LPC_IOCON->PIO1_17 = mode;
       break;
+    case P1_18:
+      LPC_IOCON->PIO1_18 = mode;
+      break;
+    case P1_19:
+      LPC_IOCON->PIO1_19 = mode;
+      break;
     case P1_20:
       set_pinenable(49, func == SCT2_OUT5);
       LPC_IOCON->PIO1_20 = mode;
       break;
+    case P1_21:
+      LPC_IOCON->PIO1_21 = mode;
+      break;
+    case P1_22:
+      LPC_IOCON->PIO1_22 = mode;
+      break;
+    case P1_23:
+      LPC_IOCON->PIO1_23 = mode;
+      break;
     case P1_24:
       set_pinenable(52, func == SCT3_OUT5);
       LPC_IOCON->PIO1_24 = mode;
+      break;
+    case P1_25:
+      LPC_IOCON->PIO1_25 = mode;
+      break;
+    case P1_26:
+      LPC_IOCON->PIO1_26 = mode;
+      break;
+    case P1_27:
+      LPC_IOCON->PIO1_27 = mode;
+      break;
+    case P1_28:
+      LPC_IOCON->PIO1_28 = mode;
+      break;
+    case P1_29:
+      LPC_IOCON->PIO1_29 = mode;
+      break;
+    case P1_30:
+      LPC_IOCON->PIO1_30 = mode;
+      break;
+    case P1_31:
+      LPC_IOCON->PIO1_31 = mode;
+      break;
+    case P2_0:
+      LPC_IOCON->PIO2_0 = mode;
+      break;
+    case P2_1:
+      LPC_IOCON->PIO2_1 = mode;
+      break;
+    case P2_2:
+      LPC_IOCON->PIO2_2 = mode;
+      break;
+    case P2_3:
+      LPC_IOCON->PIO2_3 = mode;
+      break;
+    case P2_4:
+      LPC_IOCON->PIO2_4 = mode;
+      break;
+    case P2_5:
+      LPC_IOCON->PIO2_5 = mode;
+      break;
+    case P2_6:
+      LPC_IOCON->PIO2_6 = mode;
+      break;
+    case P2_7:
+      LPC_IOCON->PIO2_7 = mode;
+      break;
+    case P2_8:
+      LPC_IOCON->PIO2_8 = mode;
+      break;
+    case P2_9:
+      LPC_IOCON->PIO2_9 = mode;
+      break;
+    case P2_10:
+      LPC_IOCON->PIO2_10 = mode;
+      break;
+    case P2_11:
+      LPC_IOCON->PIO2_11 = mode;
+      break;
+    case P2_12:
+      LPC_IOCON->PIO2_12 = mode;
+      break;
+    case P2_13:
+      LPC_IOCON->PIO2_13 = mode;
       break;
     default:
       ERROR("Invalid IO pin.");

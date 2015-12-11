@@ -185,6 +185,12 @@ void pin_setup (enum pio_pin pin, enum io_function func, enum io_mode mode)
       set_pinenable(48, func == SCT2_OUT4);
       LPC_IOCON->PIO0_29 = mode;
       break;
+    case P2_12:
+      LPC_IOCON->PIO2_12 = mode;
+      break;
+    case P2_13:
+      LPC_IOCON->PIO2_13 = mode;
+      break;
     default:
       ERROR("Invalid IO pin.");
   }

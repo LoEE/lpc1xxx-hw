@@ -174,8 +174,7 @@ void swm_disable(void)
           }
           switch (pin) {
             @(for/nl ([p (in-list po)]
-                      #:when (pin-name p)
-                      #:when (pin-has-fixfuns? p))
+                      #:when (pin-name p))
                @list{case @(pin-enum-name p):
                        @(for/list ([f (in-list (pin-functions p))]
                                    #:when (not (symbol? f)))
